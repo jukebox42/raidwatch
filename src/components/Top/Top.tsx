@@ -5,7 +5,7 @@ import { useStore } from "hooks/useStore";
 
 const Top = () => {
   const players = useStore(store => store.players);
-  const loadingPlayers = players.length === 0 || players.filter(p => !p.profile).length > 0;
+  const loadingPlayers = players.filter(p => !p.profile).length > 0;
   const erasePlayerProfiles = useStore(store => store.erasePlayerProfiles)
 
   const onClick = () => erasePlayerProfiles();

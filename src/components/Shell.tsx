@@ -43,7 +43,7 @@ const Shell = () => {
       </Box>
       <Box as="main" pt="50px" pb="100px" w="100%">
         <VStack p={PADDING} align="stretch" spacing={PADDING}>
-          {players.length > 0 && <PlayerSynergy />}
+          <PlayerSynergy />
           {players.map(player => {
             return (
               <Player key={player.membershipId} player={player} />
