@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 
 import { VERSION } from "utils/constants";
 import GlobalLoader from "./GlobalLoader";
@@ -49,6 +49,18 @@ const Shell = () => {
               <Player key={player.membershipId} player={player} />
             );
           })}
+          {players.length === 0 && <Box pr={30} pl={30} pt={30} textAlign="center">
+            <Heading size="lg" mb={3}>
+              Welcome to Raid Watch <Text color="brand.500" as="span">BETA</Text>
+            </Heading>
+            <Text size="md" mb={3}>
+              A tool to give fireteam members quick information about their
+              loadouts and how they work with others in the fireteam.
+            </Text>
+            <Text size="md">
+              This tool is in <Text color="brand.500" as="span">BETA</Text>, things may not work.
+            </Text>
+          </Box>}
         </VStack>
       </Box>
       <Box as="footer" p={PADDING} position="fixed" bottom="0" w="100%" bg="brand.100">
