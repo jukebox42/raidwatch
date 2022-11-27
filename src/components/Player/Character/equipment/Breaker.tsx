@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Alert, AlertIcon, Heading, Image, Square, Text, Tooltip, useStyleConfig } from "@chakra-ui/react";
+import { Alert, AlertIcon, Heading, Text, useStyleConfig } from "@chakra-ui/react";
 import { DestinyBreakerTypeDefinition } from "bungie-api-ts/destiny2";
 
 import { itemUrl } from "utils/common";
 import { parseDescription } from "../utils/common";
+import TooltipImage from "components/generics/TooltipImage";
 
 
 interface Props {
@@ -12,22 +12,9 @@ interface Props {
 }
 
 const Breaker = ({ definition, sourceNames }: Props) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const styles = useStyleConfig("Square", { variant: "socket" });
 
   const missing = sourceNames.length < 1;
-
-  const image = (
-    <Square __css={styles}>
-      <Image
-        src={itemUrl(definition.displayProperties)}
-        onMouseEnter={() => setIsTooltipOpen(true)}
-        onMouseLeave={() => setIsTooltipOpen(false)}
-        onClick={() => {console.log(definition);setIsTooltipOpen(true)}}
-        opacity={missing ? ".25" : "1"}
-      />
-    </Square>
-  );
 
   const text = (
     <>
@@ -37,8 +24,14 @@ const Breaker = ({ definition, sourceNames }: Props) => {
       {parseDescription(definition.displayProperties.description)}
     </>
   );
+
   return (
-    <Tooltip hasArrow label={text} isOpen={isTooltipOpen}>{image}</Tooltip>
+    <TooltipImage
+      src={itemUrl(definition.displayProperties)}
+      tooltipText={text}
+      missing={missing}
+      __css={styles}
+    />
   );
 }
 

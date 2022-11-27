@@ -7,15 +7,14 @@ import {
   Image,
   Square,
   Text,
-  Tooltip,
   useStyleConfig
 } from "@chakra-ui/react";
-import { useState } from "react";
 
 import { itemUrl } from "utils/common";
 import { AppSocketType } from "core";
 import { parseDescription } from "../../utils/common";
 import { getAlertDetails } from "./utils";
+import TooltipImage from "components/generics/TooltipImage";
 
 interface Props {
   socket: AppSocketType;
@@ -23,7 +22,6 @@ interface Props {
 }
 
 const Socket = ({ socket, full }: Props) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const {cross, alertType, alertText, socketStyle } = getAlertDetails(socket.isUsable, socket.unusableReason);
   const styles = useStyleConfig("Square", { variant: socketStyle });
 
@@ -32,22 +30,6 @@ const Socket = ({ socket, full }: Props) => {
   const fullImage = (
     <Square __css={styles}>
       <Image src={itemUrl(socket.definition.displayProperties)} />
-    </Square>
-  );
-
-  const image = (
-    <Square __css={styles} _after={cross}>
-      {socket.energyCostDefinition && <Image
-        src={itemUrl(socket.energyCostDefinition?.displayProperties)}
-        pos="absolute"
-        pointerEvents="none"
-      />}
-      <Image
-        src={itemUrl(socket.definition.displayProperties)}
-        onMouseEnter={() => setIsTooltipOpen(true)}
-        onMouseLeave={() => setIsTooltipOpen(false)}
-        onClick={() => {console.log(socket);setIsTooltipOpen(true)}}
-      />
     </Square>
   );
 
@@ -70,7 +52,18 @@ const Socket = ({ socket, full }: Props) => {
       </>
     );
     return (
-      <Tooltip hasArrow label={text} isOpen={isTooltipOpen}>{image}</Tooltip>
+      <TooltipImage
+        src={itemUrl(socket.definition.displayProperties)}
+        tooltipText={text}
+        __css={styles}
+        _after={cross}
+      >
+        {socket.energyCostDefinition && <Image
+          src={itemUrl(socket.energyCostDefinition?.displayProperties)}
+          pos="absolute"
+          pointerEvents="none"
+        />}
+      </TooltipImage>
     );
   }
 

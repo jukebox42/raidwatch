@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Armor = ({ armor, detailMode = false }: Props) => {
-  // console.log("Armor", armor);
+  // console.log("Armor", armor.definition.displayProperties.name, armor);
 
   // if there's an ornament use that instead.
   const displayProperties = armor.armorSockets.ornament ? armor.armorSockets.ornament.definition.displayProperties :

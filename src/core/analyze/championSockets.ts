@@ -91,5 +91,7 @@ export const analyzeChampionSockets = (
 export const analyzeChampionSocketTypes = (sockets: AppSocketType[]) => {
   return sockets
     .filter(s => s.isUsable)
-    .map(s => ({ hash: s.instance.breakerTypeHash as number, sourceName: s.definition.displayProperties.name }));
+    .map(s => ({
+      hash: (s.definition.breakerTypeHash as number).toString(),
+      sourceName: s.definition.displayProperties.name }));
 }

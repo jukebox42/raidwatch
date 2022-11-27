@@ -72,6 +72,7 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
     ...analyzeChampionSocketTypes(championSockets),
     ...championBreakerHashes,
   ];
+  console.log("AB", activeBreakers);
   const breakerHashes = Object.keys(breakerDefinitions).map(hash => {
     const sourceNames: string[] = [];
     activeBreakers.forEach(b => {
