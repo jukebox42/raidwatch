@@ -25,3 +25,6 @@ export const MISSING_ICON_URL = "img/misc/missing_icon_d2.png";
 
 // Temps before i do better
 export const MAX_PLAYERS = 6;
+
+// Source code
+export const SOURCE_URL = "https://github.com/jukebox42/raidwatch";

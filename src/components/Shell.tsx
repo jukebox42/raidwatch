@@ -8,7 +8,6 @@ import Player from "./Player/Player";
 import PlayerSynergy from "./Player/PlayerSynergy";
 import Top from "./Top/Top";
 import { useStore } from "hooks/useStore";
-import { PADDING } from "context/theme";
 
 const Shell = () => {
   const [isPlayersLoaded, setIsPlayersLoaded] = useState(false);
@@ -38,18 +37,18 @@ const Shell = () => {
 
   return (
     <>
-      <Box as="header" p={PADDING} position="fixed" w="100%" bg="brand.100">
+      <Box as="header" p={1} position="fixed" w="100%" bg="brand.100" zIndex={9}>
         <Top />
       </Box>
       <Box as="main" pt="50px" pb="100px" w="100%">
-        <VStack p={PADDING} align="stretch" spacing={PADDING}>
-          <PlayerSynergy />
+        <VStack p={1} align="stretch" spacing={1}>
+          {players.length > 0 && <PlayerSynergy />}
           {players.map(player => {
             return (
               <Player key={player.membershipId} player={player} />
             );
           })}
-          {players.length === 0 && <Box pr={30} pl={30} pt={30} textAlign="center">
+          {players.length === 0 && <Box pr={30} pl={30} pt={50} textAlign="center">
             <Heading size="lg" mb={3}>
               Welcome to Raid Watch <Text color="brand.500" as="span">BETA</Text>
             </Heading>
@@ -63,7 +62,7 @@ const Shell = () => {
           </Box>}
         </VStack>
       </Box>
-      <Box as="footer" p={PADDING} position="fixed" bottom="0" w="100%" bg="brand.100">
+      <Box as="footer" p={1} position="fixed" bottom="0" w="100%" bg="brand.100">
         {activePlayer === "" && <FindPlayer />}
         <Text align="center">v{VERSION} - {manifestVersion}</Text>
       </Box>

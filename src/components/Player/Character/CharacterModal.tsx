@@ -7,7 +7,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Spacer
 } from "@chakra-ui/react"
 import { PADDING } from "context/theme";
@@ -26,10 +25,8 @@ type Props = {
 }
 
 const CharacterModal = ({ isOpen, onClose, name, data }: Props) => {
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false} size="full">
-      <ModalOverlay />
       <ModalContent>
         <ModalHeader>
           <Flex mb={PADDING} direction="row">
@@ -43,7 +40,7 @@ const CharacterModal = ({ isOpen, onClose, name, data }: Props) => {
           <Items weapons={data.weapons} armors={data.armors} subclass={data.subclass} detailMode />
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" onClick={onClose}>
+          <Button onClick={onClose} variant="ghost">
             Close
           </Button>
         </ModalFooter>
