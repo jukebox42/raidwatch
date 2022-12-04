@@ -21,14 +21,14 @@ const theme = extendTheme({
     global: {
       html: {
         overflowX: "hidden",
-        overflowY: "hidden",
+        //overflowY: "hidden",
       },
       body: {
         bg: "brand.50",
         color: "brand.0",
         position: "relative",
         overflowX: "hidden",
-        overflowY: "hidden",
+        //overflowY: "hidden",
       },
     },
   },
