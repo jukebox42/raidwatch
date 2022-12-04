@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Box, BoxProps, Flex, forwardRef } from "@chakra-ui/react";
 
-import { PADDING } from "context/theme";
-
 type Props = BoxProps & {
   controls: React.ReactNode | React.ReactNode[],
 }
@@ -76,7 +74,7 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
         position="absolute"
         top="0"
         right={`-${slideDistance - distance}px`}
-        p={PADDING}
+        p={1}
         bg="brand.200"
         height="calc(100%)"
       >

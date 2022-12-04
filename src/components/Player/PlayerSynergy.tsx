@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
-import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean, Select } from "@chakra-ui/react";
+import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean, Select, Text } from "@chakra-ui/react";
 import { AllDestinyManifestComponents, DamageType, DestinyDamageTypeDefinition, DestinyEnergyType, DestinyEnergyTypeDefinition} from "bungie-api-ts/destiny2";
 
 import { Sockets } from "components/Player/Character/equipment";
@@ -8,8 +8,8 @@ import { energyTypeToDamageType } from "core/analyze/helpers";
 import { AppBreakerType } from "core/itemTypes";
 import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
-import { AppActivity } from "store/activityStore";
 import Modifiers from "./Character/partials/Modifiers";
+import { AppActivity } from "core";
 
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
@@ -54,7 +54,7 @@ const PlayerSynergy = () => {
 
   useEffect(() => {
     loadActivities();
-  }, []);
+  }, [loadActivities]);
 
   useEffect(() => {
     const processedWellTypes: DestinyEnergyType[] = [];
@@ -97,8 +97,9 @@ const PlayerSynergy = () => {
   }
 
   let modifiers = [];
+  let activity: AppActivity | undefined;
   if (selectedActivityId) {
-    const activity = activities.find(a => a.activity.activityHash.toString() === selectedActivityId) as AppActivity;
+    activity = activities.find(a => a.activity.activityHash.toString() === selectedActivityId) as AppActivity;
     modifiers.push(...activity.modifiers);
   }
 
@@ -157,6 +158,7 @@ const PlayerSynergy = () => {
             >{a.definition.displayProperties.name}</option>
           ))}
         </Select>
+        {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
         {modifiers && <Modifiers definitions={modifiers} />}
       </Box>
     </Box>

@@ -1,5 +1,4 @@
 import { Wrap, WrapItem } from "@chakra-ui/react";
-import { PADDING } from "context/theme";
 
 import { AppSocketType } from "core";
 import Socket, { SocketSpacer } from "./Socket/Socket";
@@ -13,7 +12,7 @@ type Props = {
 
 const Sockets = ({ sockets, breakers }: Props) => {
   return (
-    <Wrap spacing={PADDING}>
+    <Wrap spacing={1}>
       {breakers && breakers.map(b =>
         <WrapItem key={b.hash}>
           <Breaker definition={b.definition} sourceNames={b.sourceNames} />

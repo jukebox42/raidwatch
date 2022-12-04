@@ -5,7 +5,6 @@ import { AppWeaponType, AppArmorType, AppSubclassType } from "core";
 import Weapon from "../equipment/Weapon";
 import Armor from "../equipment/Armor";
 import Subclass from "./Subclass";
-import { PADDING } from "context/theme";
 import { DestinyEquippingBlockDefinition } from "bungie-api-ts/destiny2";
 
 
@@ -41,14 +40,14 @@ const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
     return (
       <>
         <Divider mt={2} mb={2} />
-        <Heading size="md" mb={PADDING}>Subclass</Heading>
+        <Heading size="md" mb={1}>Subclass</Heading>
         <Subclass subclass={subclass} detailMode={detailMode} />
-        <Heading size="md" mb={PADDING}>Weapons</Heading>
-        <VStack spacing={PADDING} align="stretch">
+        <Heading size="md" mb={1}>Weapons</Heading>
+        <VStack spacing={1} align="stretch">
           {weaponDisplay}
         </VStack>
-        <Heading size="md" mb={PADDING}>Armor</Heading>
-        <VStack spacing={PADDING} align="stretch">
+        <Heading size="md" mb={1}>Armor</Heading>
+        <VStack spacing={1} align="stretch">
           {armorDisplay}
         </VStack>
       </>
@@ -59,7 +58,7 @@ const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
 
   return (
     <>
-      <HStack spacing={PADDING}>
+      <HStack spacing={1}>
         <Subclass subclass={subclass} />
         {weaponDisplay}
         {exoticArmor && <Armor key={exoticArmor.item.itemInstanceId} armor={exoticArmor} />}

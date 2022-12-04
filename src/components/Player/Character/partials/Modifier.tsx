@@ -6,8 +6,8 @@ import { parseDescription } from "../utils/common";
 import TooltipImage from "components/generics/TooltipImage";
 
 
-interface Props {
-  definition: DestinyActivityModifierDefinition;
+type Props = {
+  definition: DestinyActivityModifierDefinition,
 }
 
 const Modifier = ({ definition }: Props) => {

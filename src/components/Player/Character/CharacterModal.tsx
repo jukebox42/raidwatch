@@ -9,7 +9,6 @@ import {
   ModalHeader,
   Spacer
 } from "@chakra-ui/react"
-import { PADDING } from "context/theme";
 import { AppCharacterType } from "core";
 import { AppBreakerType } from "core/itemTypes";
 import { Items } from "./equipment";
@@ -29,7 +28,7 @@ const CharacterModal = ({ isOpen, onClose, name, data }: Props) => {
     <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false} size="full">
       <ModalContent>
         <ModalHeader>
-          <Flex mb={PADDING} direction="row">
+          <Flex mb={1} direction="row">
             <Heading size="lg" noOfLines={1}>{name}</Heading>
             <Spacer />
             <LightStat stat={data.lightStat} />

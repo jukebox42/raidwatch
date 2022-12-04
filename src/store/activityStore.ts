@@ -1,4 +1,4 @@
-import { AllDestinyManifestComponents, DestinyActivityDefinition, DestinyActivityModifierDefinition, DestinyPublicMilestone, DestinyPublicMilestoneChallengeActivity, getPublicMilestones } from "bungie-api-ts/destiny2";
+import { AllDestinyManifestComponents, getPublicMilestones } from "bungie-api-ts/destiny2";
 
 import { StateCreator } from "zustand";
 import { PlayerStore } from "./playerStore";
@@ -6,35 +6,14 @@ import db from "./db";
 
 import { $http } from "bungie/api";
 import { ManifestStore } from "./manifestStore";
+import { AppActivity, getActivitiesData } from "core";
 
-export type AppActivity = {
-  activity: DestinyPublicMilestoneChallengeActivity,
-  definition: DestinyActivityDefinition,
-  modifiers: DestinyActivityModifierDefinition[],
-}
 
 export type ActivityStore = {
   activePlayer: string,
   activities: AppActivity[],
   setActivePlayer: (membershipId: string) => void,
   loadActivities: () => void,
-}
-
-const getActivitiesData = (activities: DestinyPublicMilestone[], manifest: AllDestinyManifestComponents) => {
-  const activitiesList = activities
-    .filter(a => !!a.activities)
-    .flatMap(a => a.activities)
-    .filter(a => !!a.modifierHashes)
-    .map(activity => ({
-      activity,
-      definition: manifest.DestinyActivityDefinition[activity.activityHash],
-      modifiers: activity.modifierHashes.map(m => manifest.DestinyActivityModifierDefinition[m]),
-    }));
-
-  return [
-    ...activitiesList.filter(
-      (a, i) => activitiesList.findIndex(b => b.activity.activityHash.toString() === a.activity.activityHash.toString()) === i)
-  ];
 }
 
 export const createActivityStore: StateCreator<PlayerStore & ActivityStore & ManifestStore, any, [], ActivityStore> = (set, get) => ({
@@ -55,9 +34,9 @@ export const createActivityStore: StateCreator<PlayerStore & ActivityStore & Man
     }
   },
   loadActivities: async () => {
-    console.log("activityStore:loadActivities");
     const result = await getPublicMilestones($http);
     const activities = getActivitiesData(Object.values(result.Response), get().manifest as AllDestinyManifestComponents);
+    console.log("activityStore:loadActivities", activities);
     set({ activities });
   },
 });

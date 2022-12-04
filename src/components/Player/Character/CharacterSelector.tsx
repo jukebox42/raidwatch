@@ -5,7 +5,6 @@ import { lastOnlineCharacterId } from "./utils/common";
 import Emblem from "./partials/Emblem";
 import { useStore } from "hooks/useStore";
 import { PlayerData } from "types/player";
-import { PADDING } from "context/theme";
 
 interface Props {
   player: PlayerData;
@@ -32,9 +31,9 @@ const CharacterSelector = ({ player }: Props) => {
   }
 
   return (
-    <Box p={PADDING}>
+    <Box p={1}>
       <Heading size="md">{userInfo?.bungieGlobalDisplayName}#{userInfo?.bungieGlobalDisplayNameCode}</Heading>
-      <Flex mt={PADDING} justify="space-around">
+      <Flex mt={1} justify="space-around">
         {Object.keys(characters).map(characterId => (
           <Emblem
             key={characterId}

@@ -18,7 +18,6 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 import { DestinyDisplayPropertiesDefinition } from "bungie-api-ts/destiny2";
-import { PADDING } from "context/theme";
 
 import { assetUrl, itemUrl } from "utils/common";
 
@@ -55,7 +54,7 @@ const Item = ({ icon, name, type, level, energyIcon, children, watermarkIcon, de
       <Flex direction="row" gap="1" alignItems="top" __css={detailStyles}>
         {itemImage}
         <Box flex="1" flexDir="column">
-          <Heading size="md" mb={PADDING}>{name}</Heading>
+          <Heading size="md" mb={1}>{name}</Heading>
           <Text color="gray.400">{level !== undefined && `${level} - `}{type}</Text>
           {children}
         </Box>
@@ -71,7 +70,7 @@ const Item = ({ icon, name, type, level, energyIcon, children, watermarkIcon, de
       <Portal>
         <PopoverContent bg="brand.100">
           <PopoverHeader bg="brand.150">
-            <HStack spacing={PADDING}>
+            <HStack spacing={1}>
               {energyIcon && <Center w="20px">
                 <Image src={itemUrl(energyIcon)} />
               </Center>}
@@ -83,7 +82,7 @@ const Item = ({ icon, name, type, level, energyIcon, children, watermarkIcon, de
                 {level ? level : ""}
               </Center>
             </HStack>
-            {type && <Box mt={PADDING} mb={`-${PADDING}`} color="gray.400">{type}</Box>}
+            {type && <Box mt={1} mb={-1} color="gray.400">{type}</Box>}
           </PopoverHeader>
           <PopoverArrow />
           <PopoverBody>

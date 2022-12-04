@@ -1,20 +1,20 @@
-import { HStack } from "@chakra-ui/react";
+import { Wrap, WrapItem } from "@chakra-ui/react";
 import { DestinyActivityModifierDefinition} from "bungie-api-ts/destiny2";
 import Modifier from "./Modifier";
 
 
 
 type Props = {
-  definitions: DestinyActivityModifierDefinition[]
+  definitions: DestinyActivityModifierDefinition[],
 }
 
 const Modifiers = ({ definitions }: Props) => {
   return (
-    <HStack gap={1}>
+    <Wrap spacing={1} mt={1}>
       {definitions
-        .filter(m => m.displayInActivitySelection && m.displayProperties.name)
-        .map(d => <Modifier key={d.hash} definition={d} />)}
-    </HStack>
+        .filter(m => m.displayInActivitySelection)
+        .map(d => <WrapItem key={d.hash}><Modifier definition={d} /></WrapItem>)}
+    </Wrap>
   )
 }
 

@@ -1,9 +1,13 @@
 import {
   AllDestinyManifestComponents,
+  DestinyActivityDefinition,
+  DestinyActivityModifierDefinition,
   DestinyClass,
   DestinyColor,
   DestinyItemType,
   DestinyProfileResponse,
+  DestinyPublicMilestone,
+  DestinyPublicMilestoneChallengeActivity,
 } from "bungie-api-ts/destiny2";
 
 import { getEquipment, filterEquipmentBySubclass, filterEquipmentByItemType } from "./items";
@@ -31,6 +35,12 @@ export type AppCharacterType = {
   armors: AppArmorType[],
   importantSockets: ImportantSockets,
   analyzeData: AnalyzeData,
+}
+
+export type AppActivity = {
+  activity: DestinyPublicMilestoneChallengeActivity,
+  definition: DestinyActivityDefinition,
+  modifiers: DestinyActivityModifierDefinition[],
 }
 
 type GetDataType = (
@@ -72,4 +82,37 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
     importantSockets,
     analyzeData,
   };
+}
+
+// TODO: make these hashes
+const importantModifiers = [
+  "Shielded Foes",
+  "Champion Foes",
+  "Acute Arc Burn",
+  "Acute Solar Burn",
+  "Acute Void Burn",
+  "Acute Stasis Burn",
+  "Enfilade",
+];
+
+export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest: AllDestinyManifestComponents) => {
+  const activitiesList = activities
+    .filter(a => !!a.activities)
+    .flatMap(a => a.activities)
+    .filter(a => !!a.modifierHashes)
+    .map(activity => ({
+      activity,
+      definition: manifest.DestinyActivityDefinition[activity.activityHash],
+      modifiers: activity.modifierHashes
+        .map(m => manifest.DestinyActivityModifierDefinition[m])
+        .filter(m => importantModifiers.includes(m.displayProperties.name)),
+    }))
+    // TODO: this could likely be filtered better. I'm trying to remove the encounters that dont have champions
+    .filter(a => a.modifiers.length > 0);
+
+  return [
+    ...activitiesList.filter(
+      (a, i) => activitiesList.findIndex(
+        b => b.activity.activityHash.toString() === a.activity.activityHash.toString()) === i)
+  ];
 }

@@ -1,5 +1,5 @@
 import { Stack } from "@chakra-ui/react";
-import { PADDING } from "context/theme";
+
 import { AppSubclassType } from "core";
 import Item from "./Item";
 import Socket from "./Socket/Socket";
@@ -28,7 +28,7 @@ const Subclass = ({ subclass, detailMode = false }: Props) => {
       ...subclass.subclassSockets.fragments,
     ]
     subclassDetails = (
-      <Stack spacing={PADDING}>
+      <Stack spacing={1}>
         <Socket socket={subclass.subclassSockets.super} full />
         <Sockets sockets={classAbilities} />
         <Sockets sockets={fragspects} />

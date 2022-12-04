@@ -122,64 +122,63 @@ export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & Activ
     }));
   },
 
-  erasePlayerProfiles: async () => {
+  erasePlayerProfiles: () => {
     console.log("playerStore:erasePlayerProfiles");
+    const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
+    set({ players });
     // If there is no active player then just refresh the existing list.
     const activePlayerId = get().activePlayer;
     if (!activePlayerId) {
-      const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
-      set({ players });
-
       // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
       get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
       return;
     }
 
-    // See if the active player is online, if not then just refresh the list
+    // If there is an active player do more
     const activePlayer = get().players.find(p => p.membershipId === activePlayerId) as PlayerData;
-    const activePlayerProfile = await loadPlayerProfile(activePlayerId, activePlayer.membershipType, true);
-    if (!activePlayerProfile.profileTransitoryData.data || !activePlayerProfile.profileTransitoryData.data.partyMembers.length) {
-      // TODO: Need to inform the user that the player is not online
-      const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
-      set({ players });
-
-      // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
-      get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
-      return;
-    }
-
-    // Player is logged in, so purge the list and load the new list of party members
-    // TODO: This is a kind of a mess but it handles forcing the active player list to be the loaded list.
-    console.log("playerStore:erasePlayerProfiles Result", activePlayerProfile.profileTransitoryData.data);
-    const membershipIds = activePlayerProfile.profileTransitoryData.data.partyMembers.map(p => p.membershipId.toString());
-    const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
-    const newPlayers: PlayerData[] = [];
-    const idQueue: string[] = [];
-    // Keep the players that are already loaded and in the party. queue the ones not
-    membershipIds.forEach(id => {
-      const existingPlayer = players.find(p => p.membershipId === id);
-      if (existingPlayer) {
-        return newPlayers.push(existingPlayer);
+    loadPlayerProfile(activePlayerId, activePlayer.membershipType, true).then(activePlayerProfile => {
+      // See if the active player is online, if not then just refresh the list
+      if (!activePlayerProfile.profileTransitoryData.data || !activePlayerProfile.profileTransitoryData.data.partyMembers.length) {
+        // TODO: Need to inform the user that the player is not online
+  
+        // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
+        get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
+        return;
       }
-      return idQueue.push(id);
-    });
 
-    // cleanup the database for all players that arent in the party but were loaded
-    const removeIds = players.map(p => p.membershipId).filter(id => !membershipIds.includes(id));
-    console.log("playerStore:erasePlayerProfiles Queues", removeIds, idQueue, newPlayers);
-    db.AppPlayers.bulkDelete(removeIds);
-    
-    set({ players: newPlayers });
-    // load existing players profiles
-    get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
-    // If we have more then load them
-    if (idQueue.length > 0) {
-      idQueue.forEach(id => {
-        getMembershipDataById($http, { membershipId: id, membershipType: BungieMembershipType.None }).then(membershipData => {
-          get().addPlayer(id, membershipData.Response.destinyMemberships[0].membershipType);
-        });
+      // Player is logged in, so purge the list and load the new list of party members
+      // TODO: This is a kind of a mess but it handles forcing the active player list to be the loaded list.
+      console.log("playerStore:erasePlayerProfiles Result", activePlayerProfile.profileTransitoryData.data);
+      const membershipIds = activePlayerProfile.profileTransitoryData.data.partyMembers.map(p => p.membershipId.toString());
+      const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
+      const newPlayers: PlayerData[] = [];
+      const idQueue: string[] = [];
+      // Keep the players that are already loaded and in the party. queue the ones not
+      membershipIds.forEach(id => {
+        const existingPlayer = players.find(p => p.membershipId === id);
+        if (existingPlayer) {
+          return newPlayers.push(existingPlayer);
+        }
+        return idQueue.push(id);
       });
-    }
+
+      // cleanup the database for all players that arent in the party but were loaded
+      const removeIds = players.map(p => p.membershipId).filter(id => !membershipIds.includes(id));
+      console.log("playerStore:erasePlayerProfiles Queues", removeIds, idQueue, newPlayers);
+      db.AppPlayers.bulkDelete(removeIds);
+      
+      set({ players: newPlayers });
+      // load existing players profiles
+      get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
+      // If we have more then load them
+      if (idQueue.length > 0) {
+        idQueue.forEach(id => {
+          getMembershipDataById($http, { membershipId: id, membershipType: BungieMembershipType.None }).then(membershipData => {
+            get().addPlayer(id, membershipData.Response.destinyMemberships[0].membershipType);
+          });
+        });
+      }
+    });
   },
 
   setPlayerCharacterId: (membershipId: string, selectedCharacterId: string) => set(state => {

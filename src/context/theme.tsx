@@ -9,7 +9,6 @@ const config: ThemeConfig = {
 
 const BORDER_RADIUS = "5px";
 const BORDER_WIDTH = "1px";
-export const PADDING = "5px";
 
 const theme = extendTheme({
   config,
@@ -53,8 +52,8 @@ const theme = extendTheme({
       baseStyle: {
         container: {
           borderRadius: BORDER_RADIUS,
-          mb: PADDING,
-          mt: PADDING,
+          mb: 1,
+          mt: 1,
         }
       },
     },
@@ -93,8 +92,8 @@ const theme = extendTheme({
       variants: {
         "charstats": {
           display: "flex",
-          p: PADDING,
-          mb: PADDING,
+          p: 1,
+          mb: 1,
           bg: "brand.100",
         },
       },
