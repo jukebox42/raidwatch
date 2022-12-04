@@ -7,6 +7,8 @@ import { $http } from "bungie/api";
 import { lastOnlineCharacterId } from "components/Player/Character/utils/common";
 import db from "./db";
 import { ManifestStore } from "./manifestStore";
+import { getMembershipDataById } from "bungie-api-ts/user";
+import { ActivityStore } from "./activityStore";
 
 const loadPlayerProfile = async (membershipId: string, membershipType: BungieMembershipType, onlyLive=false) => {
   const profileResponse = await getProfile($http, {
@@ -18,7 +20,6 @@ const loadPlayerProfile = async (membershipId: string, membershipType: BungieMem
 }
 
 export type PlayerStore = {
-  activePlayer: string,
   players: PlayerData[],
 
   loadPlayers: () => void,
@@ -31,8 +32,7 @@ export type PlayerStore = {
   setChatacterData: (characterData: AppCharacterType) => void,
 }
 
-export const createPlayerStore: StateCreator<PlayerStore & ManifestStore, any, [], PlayerStore> = (set, get) => ({
-  activePlayer: "",
+export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & ActivityStore, any, [], PlayerStore> = (set, get) => ({
   players: [],
 
   loadPlayers: async () => {
@@ -124,40 +124,62 @@ export const createPlayerStore: StateCreator<PlayerStore & ManifestStore, any, [
 
   erasePlayerProfiles: async () => {
     console.log("playerStore:erasePlayerProfiles");
-    const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
-    set({ players });
-
-    // TODO: This is a kind of a mess but it handles forcing the active player list to be the loaded list.
+    // If there is no active player then just refresh the existing list.
     const activePlayerId = get().activePlayer;
-    if (activePlayerId) {
-      const activePlayer = get().players.find(p => p.membershipId === activePlayerId) as PlayerData;
-      const result = await loadPlayerProfile(activePlayerId, activePlayer.membershipType, true);
-      if (result.profileTransitoryData.data && result.profileTransitoryData.data.partyMembers.length > 1) {
-        console.log("playerStore:erasePlayerProfiles Result", result.profileTransitoryData.data);
-        const membershipIds = result.profileTransitoryData.data.partyMembers.map(p => p.membershipId.toString());
-        const newPlayers: PlayerData[] = [];
-        const idQueue: string[] = [];
-        membershipIds.forEach(id => {
-          const newPlayer = players.find(p => p.membershipId === id);
-          if (newPlayer) {
-            return newPlayers.push(newPlayer);
-          }
-          return idQueue.push(id);
-        });
-        const removeIds = players.map(p => p.membershipId).filter(id => !membershipIds.includes(id));
-        console.log("playerStore:erasePlayerProfiles Queues", removeIds, idQueue, newPlayers);
-        db.AppPlayers.bulkDelete(removeIds);
-        set({ players: newPlayers });
-        get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
-        if (idQueue.length > 0) {
-          idQueue.forEach(id => get().addPlayer(id, BungieMembershipType.All));
-        }
-        return;
-      }
+    if (!activePlayerId) {
+      const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
+      set({ players });
+
+      // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
+      get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
+      return;
     }
 
-    // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
+    // See if the active player is online, if not then just refresh the list
+    const activePlayer = get().players.find(p => p.membershipId === activePlayerId) as PlayerData;
+    const activePlayerProfile = await loadPlayerProfile(activePlayerId, activePlayer.membershipType, true);
+    if (!activePlayerProfile.profileTransitoryData.data || !activePlayerProfile.profileTransitoryData.data.partyMembers.length) {
+      // TODO: Need to inform the user that the player is not online
+      const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
+      set({ players });
+
+      // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
+      get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
+      return;
+    }
+
+    // Player is logged in, so purge the list and load the new list of party members
+    // TODO: This is a kind of a mess but it handles forcing the active player list to be the loaded list.
+    console.log("playerStore:erasePlayerProfiles Result", activePlayerProfile.profileTransitoryData.data);
+    const membershipIds = activePlayerProfile.profileTransitoryData.data.partyMembers.map(p => p.membershipId.toString());
+    const players = get().players.map(p => ({ ...p, profile: undefined, characterData: undefined }));
+    const newPlayers: PlayerData[] = [];
+    const idQueue: string[] = [];
+    // Keep the players that are already loaded and in the party. queue the ones not
+    membershipIds.forEach(id => {
+      const existingPlayer = players.find(p => p.membershipId === id);
+      if (existingPlayer) {
+        return newPlayers.push(existingPlayer);
+      }
+      return idQueue.push(id);
+    });
+
+    // cleanup the database for all players that arent in the party but were loaded
+    const removeIds = players.map(p => p.membershipId).filter(id => !membershipIds.includes(id));
+    console.log("playerStore:erasePlayerProfiles Queues", removeIds, idQueue, newPlayers);
+    db.AppPlayers.bulkDelete(removeIds);
+    
+    set({ players: newPlayers });
+    // load existing players profiles
     get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
+    // If we have more then load them
+    if (idQueue.length > 0) {
+      idQueue.forEach(id => {
+        getMembershipDataById($http, { membershipId: id, membershipType: BungieMembershipType.None }).then(membershipData => {
+          get().addPlayer(id, membershipData.Response.destinyMemberships[0].membershipType);
+        });
+      });
+    }
   },
 
   setPlayerCharacterId: (membershipId: string, selectedCharacterId: string) => set(state => {

@@ -1,12 +1,15 @@
+import { ChangeEvent, useEffect, useState } from "react";
 import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
-import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean } from "@chakra-ui/react";
-import { AllDestinyManifestComponents, DamageType, DestinyDamageTypeDefinition, DestinyEnergyType, DestinyEnergyTypeDefinition } from "bungie-api-ts/destiny2";
+import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean, Select } from "@chakra-ui/react";
+import { AllDestinyManifestComponents, DamageType, DestinyDamageTypeDefinition, DestinyEnergyType, DestinyEnergyTypeDefinition} from "bungie-api-ts/destiny2";
 
 import { Sockets } from "components/Player/Character/equipment";
 import { energyTypeToDamageType } from "core/analyze/helpers";
 import { AppBreakerType } from "core/itemTypes";
 import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
+import { AppActivity } from "store/activityStore";
+import Modifiers from "./Character/partials/Modifiers";
 
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
@@ -14,10 +17,12 @@ const PlayerSynergy = () => {
   const [isExpanded, setIsExpanded] = useBoolean(true);
   const players = useStore(state => state.players);
   const manifest = useStore(state => state.manifest);
-
-  const wellTypes: DestinyEnergyType[] = [];
-  const damageTypes: DamageType[] = [];
-  let friendlyCharge = false;
+  const activities = useStore(state =>  state.activities);
+  const loadActivities = useStore(store => store.loadActivities);
+  const [selectedActivityId, setSelectedActivityId] = useState("");
+  const [wellTypes, setWellTypes] = useState<DestinyEnergyType[]>([]);
+  const [damageTypes, setDamageTypes] = useState<DamageType[]>([]);
+  const [friendlyCharge, setFriendlyCharge] = useState(false);
 
   // TODO: This is the only place in the display layer we're using the manifest...
   // Get Damage Definitions
@@ -28,14 +33,13 @@ const PlayerSynergy = () => {
     DamageType.Stasis,
   ];
   const damageDefinitions = (manifest as AllDestinyManifestComponents).DestinyDamageTypeDefinition;
-  const damageDefinitionsArray: DestinyDamageTypeDefinition[] = Object.keys(damageDefinitions)
-    .map(e => damageDefinitions[e])
-    .filter(e => importantDamageEnums.includes(e.enumValue));
+  const damageDefinitionsArray: DestinyDamageTypeDefinition[] =
+    Object.values(damageDefinitions).filter(e => importantDamageEnums.includes(e.enumValue));
 
   // Get Breaker Definitions
   const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
-  const breakerDefinitionsArray: AppBreakerType[] = Object.keys(breakerDefinitions)
-    .map(b => ({ hash: b, definition: breakerDefinitions[b], sourceNames: [] }));
+  const breakerDefinitionsArray: AppBreakerType[] =
+    Object.values(breakerDefinitions).map(b => ({ hash: b.hash.toString(), definition: b, sourceNames: [] }));
 
   // Get energy Definitions
   const importantEnergyEnums = [
@@ -45,39 +49,58 @@ const PlayerSynergy = () => {
     DestinyEnergyType.Stasis,
   ];
   const energyDefinitions = (manifest as AllDestinyManifestComponents).DestinyEnergyTypeDefinition;
-  const energyDefinitionsArray: DestinyEnergyTypeDefinition[] = Object.keys(energyDefinitions)
-    .map(e => energyDefinitions[e])
-    .filter(e => importantEnergyEnums.includes(e.enumValue));
+  const energyDefinitionsArray: DestinyEnergyTypeDefinition[] =
+    Object.values(energyDefinitions).filter(e => importantEnergyEnums.includes(e.enumValue));
 
-  // Iterate over players for synergy
-  players.forEach(player => {
-    if (!player.characterData) {
-      return;
-    }
-    const data = player.characterData;
+  useEffect(() => {
+    loadActivities();
+  }, []);
 
-    // Friendly Charge with Light
-    if (data.analyzeData.canChargeFriends) {
-      friendlyCharge = true;
-    }
-
-    // Breakers
-    breakerDefinitionsArray.forEach(breaker => {
-      const foundBreaker = data.analyzeData.championBreakers.find(b => b.hash === breaker.hash);
-      if (foundBreaker) {
-        breaker.sourceNames.push(...foundBreaker.sourceNames);
+  useEffect(() => {
+    const processedWellTypes: DestinyEnergyType[] = [];
+    const processedDamageTypes: DamageType[] = []
+    // Iterate over players for synergy
+    players.forEach(player => {
+      if (!player.characterData) {
+        return;
       }
+      const data = player.characterData;
+
+      // Friendly Charge with Light
+      if (data.analyzeData.canChargeFriends) {
+        setFriendlyCharge(true);
+      }
+
+      // Breakers
+      breakerDefinitionsArray.forEach(breaker => {
+        const foundBreaker = data.analyzeData.championBreakers.find(b => b.hash === breaker.hash);
+        if (foundBreaker) {
+          breaker.sourceNames.push(...foundBreaker.sourceNames);
+        }
+      });
+
+      // Well Types
+      processedWellTypes.push(...data.analyzeData.wellTypesGenerated);
+
+      // Damage elements (including subclass)
+      processedDamageTypes.push(
+        ...data.analyzeData.weaponDamageTypes,
+        energyTypeToDamageType(data.analyzeData.subclassEnergyType)
+      );
     });
+    setWellTypes(processedWellTypes);
+    setDamageTypes(processedDamageTypes);
+  }, [players])
 
-    // Well Types
-    wellTypes.push(...data.analyzeData.wellTypesGenerated);
+  const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedActivityId(event.target.value);
+  }
 
-    // Damage elements (including subclass)
-    damageTypes.push(
-      ...data.analyzeData.weaponDamageTypes,
-      energyTypeToDamageType(data.analyzeData.subclassEnergyType)
-    );
-  });
+  let modifiers = [];
+  if (selectedActivityId) {
+    const activity = activities.find(a => a.activity.activityHash.toString() === selectedActivityId) as AppActivity;
+    modifiers.push(...activity.modifiers);
+  }
 
   // console.log("PlayerSynergy", breakers, wellTypes, damageTypes);
 
@@ -125,6 +148,17 @@ const PlayerSynergy = () => {
           </HStack>
         </GridItem>
       </Grid>}
+      <Box p={1}>
+        <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
+          {activities.map(a => (
+            <option
+              key={a.activity.activityHash.toString()}
+              value={a.activity.activityHash.toString()}
+            >{a.definition.displayProperties.name}</option>
+          ))}
+        </Select>
+        {modifiers && <Modifiers definitions={modifiers} />}
+      </Box>
     </Box>
   );
 }
