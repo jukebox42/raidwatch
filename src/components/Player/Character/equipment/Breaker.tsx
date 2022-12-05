@@ -4,14 +4,16 @@ import { DestinyBreakerTypeDefinition } from "bungie-api-ts/destiny2";
 import { itemUrl } from "utils/common";
 import { parseDescription } from "../utils/common";
 import TooltipImage from "components/generics/TooltipImage";
+import { socketNotch } from "context/theme";
 
 
-interface Props {
-  definition: DestinyBreakerTypeDefinition;
-  sourceNames: string[];
+type Props = {
+  definition: DestinyBreakerTypeDefinition,
+  sourceNames: string[],
+  isRequired?: boolean,
 }
 
-const Breaker = ({ definition, sourceNames }: Props) => {
+const Breaker = ({ definition, sourceNames, isRequired = false }: Props) => {
   const styles = useStyleConfig("Square", { variant: "socket" });
 
   const missing = sourceNames.length < 1;
@@ -31,6 +33,7 @@ const Breaker = ({ definition, sourceNames }: Props) => {
       tooltipText={text}
       missing={missing}
       __css={styles}
+      _after={isRequired ? socketNotch : undefined}
     />
   );
 }

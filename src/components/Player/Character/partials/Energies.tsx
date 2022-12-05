@@ -7,12 +7,14 @@ import Energy from "./Energy";
 type Props = {
   energyDefinitions: DestinyDamageTypeDefinition[] | DestinyEnergyTypeDefinition[],
   energyEnumValues: number[],
+  requiredEnumValues?: number[],
 }
 
-const Energies = ({ energyDefinitions, energyEnumValues }: Props) => {
+const Energies = ({ energyDefinitions, energyEnumValues, requiredEnumValues = [] }: Props) => {
   const energyDisplay = energyDefinitions.map(e => {
     const missing = !energyEnumValues.includes(e.enumValue);
-    return <Energy key={e.enumValue} definition={e} missing={missing} />
+    const isRequired = !!requiredEnumValues.find(r => r === e.enumValue);
+    return <Energy key={e.enumValue} definition={e} missing={missing} isRequired={isRequired} />
   });
 
   return (

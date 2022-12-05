@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
-import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean, Select, Text } from "@chakra-ui/react";
+import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean, Select, Text, Divider } from "@chakra-ui/react";
 import { AllDestinyManifestComponents, DamageType, DestinyDamageTypeDefinition, DestinyEnergyType, DestinyEnergyTypeDefinition} from "bungie-api-ts/destiny2";
 
 import { Sockets } from "components/Player/Character/equipment";
@@ -96,11 +96,10 @@ const PlayerSynergy = () => {
     setSelectedActivityId(event.target.value);
   }
 
-  let modifiers = [];
   let activity: AppActivity | undefined;
   if (selectedActivityId) {
     activity = activities.find(a => a.activity.activityHash.toString() === selectedActivityId) as AppActivity;
-    modifiers.push(...activity.modifiers);
+    console.log("Selected Activity", activity);
   }
 
   // console.log("PlayerSynergy", breakers, wellTypes, damageTypes);
@@ -117,18 +116,36 @@ const PlayerSynergy = () => {
           onClick={setIsExpanded.toggle}
         />
       </Flex>
+      <Box p={1}>
+        <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
+          {activities.map(a => (
+            <option
+              key={a.activity.activityHash.toString()}
+              value={a.activity.activityHash.toString()}
+            >{a.definition.displayProperties.name}</option>
+          ))}
+        </Select>
+        {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
+        {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
+      </Box>
+      <Divider mt={1} />
       {isExpanded && <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
         <GridItem>
           <Heading size="sm" mb={1}>Damage Types</Heading>
           <Energies
             energyDefinitions={damageDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
             energyEnumValues={damageTypes}
+            requiredEnumValues={activity ? activity.shieldTypes : []}
           />
         </GridItem>
         <GridItem>
           <Heading size="sm" mb={1}>Breaker Types</Heading>
           <HStack>
-            <Sockets sockets={[]} breakers={breakerDefinitionsArray} />
+            <Sockets
+              sockets={[]}
+              breakers={breakerDefinitionsArray}
+              requiredBreakerEnumValues={activity ? activity.breakerTypes : []}
+            />
           </HStack>
         </GridItem>
       </Grid>}
@@ -149,18 +166,7 @@ const PlayerSynergy = () => {
           </HStack>
         </GridItem>
       </Grid>}
-      <Box p={1}>
-        <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
-          {activities.map(a => (
-            <option
-              key={a.activity.activityHash.toString()}
-              value={a.activity.activityHash.toString()}
-            >{a.definition.displayProperties.name}</option>
-          ))}
-        </Select>
-        {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
-        {modifiers && <Modifiers definitions={modifiers} />}
-      </Box>
+      
     </Box>
   );
 }

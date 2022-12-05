@@ -9,6 +9,7 @@ type Props = {
 }
 
 const Modifiers = ({ definitions }: Props) => {
+  // definitions.forEach(d => console.log("Modifier", d.displayProperties.name, d));
   return (
     <Wrap spacing={1} mt={1}>
       {definitions

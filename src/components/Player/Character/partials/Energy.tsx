@@ -4,14 +4,16 @@ import { DestinyDamageTypeDefinition, DestinyEnergyTypeDefinition } from "bungie
 import { assetUrl } from "utils/common";
 import { parseDescription } from "../utils/common";
 import TooltipImage from "components/generics/TooltipImage";
+import { socketNotch } from "context/theme";
 
 
-interface Props {
-  definition: DestinyDamageTypeDefinition | DestinyEnergyTypeDefinition;
-  missing?: boolean;
+type Props = {
+  definition: DestinyDamageTypeDefinition | DestinyEnergyTypeDefinition,
+  missing?: boolean,
+  isRequired?: boolean,
 }
 
-const Energy = ({ definition, missing = false }: Props) => {
+const Energy = ({ definition, missing = false, isRequired = false }: Props) => {
   const styles = useStyleConfig("Square", { variant: "socket" });
 
   const iconUrl = missing ? definition.transparentIconPath : definition.displayProperties.icon;
@@ -30,6 +32,7 @@ const Energy = ({ definition, missing = false }: Props) => {
       tooltipText={text}
       missing={missing}
       __css={styles}
+      _after={isRequired ? socketNotch : undefined}
     />
   );
 }

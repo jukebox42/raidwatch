@@ -10,6 +10,17 @@ const config: ThemeConfig = {
 const BORDER_RADIUS = "5px";
 const BORDER_WIDTH = "1px";
 
+export const socketNotch = {
+  content: "''",
+  position: "absolute",
+  left: "-10px",
+  top: "-10px",
+  w: "20px",
+  h: "20px",
+  transform: "rotate(45deg)",
+  bg: "brand.375",
+}
+
 const theme = extendTheme({
   config,
   fonts: {
@@ -134,6 +145,12 @@ const theme = extendTheme({
         "socket": {
           w: "30px",
           h: "30px",
+        },
+        "socketRequired": {
+          w: "30px",
+          h: "30px",
+          borderWidth: "1px",
+          borderColor: "brand.375",
         },
         "socketWarning": {
           w: "30px",
