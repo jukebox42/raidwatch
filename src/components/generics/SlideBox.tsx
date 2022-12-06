@@ -1,8 +1,14 @@
-import { useState } from "react";
-import { Box, BoxProps, Flex, forwardRef } from "@chakra-ui/react";
+import { JSXElementConstructor, ReactElement, useState } from "react";
+import { Box, BoxProps, Flex, forwardRef, IconButton, Spacer } from "@chakra-ui/react";
+
+type Control = {
+  icon: ReactElement<any, string | JSXElementConstructor<any>>,
+  label: string,
+  onClick: () => void,
+}
 
 type Props = BoxProps & {
-  controls: React.ReactNode | React.ReactNode[],
+  controls: (Control | undefined)[],
 }
 
 // the required distance between touchStart and touchEnd to be detected as a swipe
@@ -18,9 +24,9 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
   const [touchStartY, setTouchStartY] = useState(null);
   const [touchEndY, setTouchEndY] = useState(null);
 
-   // clean up the custom props added for touch events
-   const boxProps = { ...props };
-   delete (boxProps as any).controls;
+  // clean up the custom props added for touch events
+  const boxProps = { ...props };
+  delete (boxProps as any).controls;
 
   const handleTouchMove = (e: any) => {
     setTouchEnd(e.targetTouches[0].clientX);
@@ -54,6 +60,28 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
     setTouchStartY(e.targetTouches[0].clientY);
   }
 
+  const resetSlide = () => {
+    // TODO: this doesnt reset for the modal open. I wonder why...
+    setDistance(0);
+    setTouchStart(null);
+    setTouchStartY(null);
+    setTouchEnd(null);
+    setTouchEndY(null);
+  }
+
+  const controlComponents = props.controls.map((control, i) => {
+    if (control === undefined) {
+      return <Spacer key={i} />;
+    }
+
+    const onClick = () => {
+      control.onClick();
+      resetSlide();
+    }
+
+    return <IconButton key={control.label} icon={control.icon} aria-label={control.label} onClick={onClick} />;
+  });
+
   return (
     <Box
       {...boxProps}
@@ -78,7 +106,7 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
         bg="brand.200"
         height="calc(100%)"
       >
-        {props.controls}
+        {controlComponents}
       </Flex>
     </Box>
   );

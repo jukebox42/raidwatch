@@ -8,5 +8,8 @@ import { AppWeaponType } from "core/itemTypes";
 export const analyzeChampionWeapons = (weapons: AppWeaponType[]) => {
   return weapons
     .filter(w => w.definition.breakerTypeHash !== undefined)
-    .map(w => ({ hash: w.definition.breakerTypeHash as number, sourceName: w.definition.displayProperties.name }));
+    .map(w => ({
+      hash: w.definition.breakerTypeHash as number,
+      sourceName: w.definition.displayProperties.name,
+    }));
 }

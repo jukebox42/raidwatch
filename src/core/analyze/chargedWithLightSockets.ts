@@ -8,6 +8,7 @@ type Chargers = {
   name: string,
   hash: number, // the mod type hash
   sourceType?: DestinyItemSubType[], // the source of the generation
+  requiresWells?: boolean,
   alwaysTrue?: boolean, // if the mod is always going to generate.
 }
 
@@ -20,6 +21,8 @@ type Spenders = {
   alwaysTrue?: boolean, // if the mod has no unique spend(like requiring a weapon ect)
 }
 
+const elementalChargeHash = 3730619869;
+
 const chargers: Chargers[] = [
   // === Artifact ===
 
@@ -27,6 +30,7 @@ const chargers: Chargers[] = [
   { name: "Blast Radius", hash: 3185435911, sourceType: [DestinyItemSubType.RocketLauncher, DestinyItemSubType.GrenadeLauncher], },
   { name: "Charge Harvester", hash: 2263321587, alwaysTrue: true, },
   { name: "Empowered Finish", hash: 3632726236, alwaysTrue: true, },
+  { name: "Elemental Charge", hash: elementalChargeHash, requiresWells: true, },
   { name: "Precisely Charged", hash: 3523075122, sourceType: [DestinyItemSubType.FusionRifleLine, DestinyItemSubType.SniperRifle] },
   { name: "Precision Charge", hash: 2263321584, sourceType: [DestinyItemSubType.Bow, DestinyItemSubType.HandCannon, DestinyItemSubType.ScoutRifle] },
   { name: "Quick Charge", hash: 1484685884, sourceType: [DestinyItemSubType.FusionRifle, DestinyItemSubType.Shotgun] },
@@ -65,14 +69,16 @@ const spenders: Spenders[] = [
 
 const itemTypeDisplayName = "Charged with Light Mod";
 const isChargedWithLightSocket = (socket: AppSocketType) =>
-  socket.definition.itemTypeDisplayName === itemTypeDisplayName;
+  socket.definition.itemTypeDisplayName === itemTypeDisplayName ||
+  // TODO: this shouldn't be hardcoded, but Elemental Charge is a well mod that chages the player.
+  socket.definition.hash.toString() === elementalChargeHash.toString();
 
 /**
  * Filter mods array down to mods that generate charged with light.
  */
 const filterChargedWithLightChargerSockets = (sockets: AppSocketType[]) => {
   return sockets.filter(s => {
-    return isChargedWithLightSocket(s) && chargers.find(c => c.hash === s.definition.hash);
+    return isChargedWithLightSocket(s) && chargers.find(c => c.hash.toString() === s.definition.hash.toString());
   });
 };
 
@@ -99,7 +105,8 @@ const hasFriendChargers = (sockets: AppSocketType[], canCharge: boolean) => {
 
 export const analyzeChargedWithLightChargerSockets = (
   sockets: AppSocketType[],
-  weaponTypes: DestinyItemSubType[]
+  weaponTypes: DestinyItemSubType[],
+  generatesWells: boolean,
 ): { chargedWithLightChargerSockets: AppSocketType[], canCharge: boolean, canChargeFriends: boolean } => {
   const chargedWithLightChargerSockets = filterChargedWithLightChargerSockets(sockets)
     .map(socket => {
@@ -111,6 +118,13 @@ export const analyzeChargedWithLightChargerSockets = (
         return {
           ...chargeSocket,
           isUsable: SocketUsable.YES,
+        };
+      }
+
+      if (charger.requiresWells) {
+        return {
+          ...chargeSocket,
+          isUsable: generatesWells ? SocketUsable.YES : SocketUsable.MAYBE,
         };
       }
 
@@ -138,13 +152,10 @@ export const analyzeChargedWithLightChargerSockets = (
   return { chargedWithLightChargerSockets, canCharge, canChargeFriends };
 }
 
-// TODO: Can Charge Allies?
-
 export const analyzeChargedWithLightSpenderSockets = (
   sockets: AppSocketType[],
   weaponTypes: DestinyItemSubType[],
   weaponDamageTypes: DamageType[],
-  subclassEnergy: DestinyEnergyType,
   hasChargers: boolean
 ): AppSocketType[] => {
   return filterChargedWithLightSpenderMods(sockets)

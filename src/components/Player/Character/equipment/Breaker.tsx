@@ -22,7 +22,9 @@ const Breaker = ({ definition, sourceNames, isRequired = false }: Props) => {
     <>
       {missing && <Alert status="warning" variant="left-accent"><AlertIcon />Breaker type not present.</Alert>}
       <Heading size="md">{definition.displayProperties.name}</Heading>
-      <Text color="gray.400"><Text as="strong">Sources:</Text> {sourceNames.length ? sourceNames.join(", ") : "None"}</Text>
+      <Text color="gray.400">
+        <Text as="strong">Sources:</Text> {sourceNames.length ? sourceNames.join(", ") : "None"}
+      </Text>
       {parseDescription(definition.displayProperties.description)}
     </>
   );

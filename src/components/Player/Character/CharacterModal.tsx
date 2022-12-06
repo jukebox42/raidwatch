@@ -25,7 +25,7 @@ type Props = {
 
 const CharacterModal = ({ isOpen, onClose, name, data }: Props) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false} size="full">
+    <Modal isOpen={isOpen} onClose={onClose} size="lg" returnFocusOnClose={false}>
       <ModalContent>
         <ModalHeader>
           <Flex mb={1} direction="row">

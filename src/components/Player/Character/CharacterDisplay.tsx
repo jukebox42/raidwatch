@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, IconButton, Spacer, useDisclosure, useStyleConfig } from "@chakra-ui/react";
+import { Box, Flex, Heading, Spacer, useDisclosure, useStyleConfig } from "@chakra-ui/react";
 import { CloseIcon, LockIcon, UnlockIcon, ViewIcon } from "@chakra-ui/icons";
 
 import { Emblem, Stats, LightStat } from "./partials";
@@ -46,14 +46,12 @@ const CharacterDisplay = ({ player }: Props) => {
   const name = <>{userInfo?.bungieGlobalDisplayName}#{userInfo?.bungieGlobalDisplayNameCode}</>;
 
   return (
-    <SlideBox controls={
-      <>
-        <IconButton icon={<CloseIcon />} aria-label="Remove" onClick={handleDelete} />
-        <Spacer />
-        <IconButton icon={<ViewIcon />} aria-label="Detailed View" onClick={onOpen} />
-        <IconButton icon={activeIcon} aria-label="Set Active Player" onClick={handleToggleActive} />
-      </>
-    }>
+    <SlideBox controls={[
+      { icon: <CloseIcon />, label: "Remove", onClick: handleDelete },
+      undefined,
+      { icon: <ViewIcon />, label: "Detailed View", onClick: onOpen },
+      { icon: activeIcon, label: "Set Active Player", onClick: handleToggleActive },
+    ]}>
       <CharacterModal
         isOpen={isOpen}
         onClose={onClose}

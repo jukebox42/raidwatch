@@ -6,7 +6,6 @@ import { parseDescription } from "../utils/common";
 import TooltipImage from "components/generics/TooltipImage";
 import { socketNotch } from "context/theme";
 
-
 type Props = {
   definition: DestinyDamageTypeDefinition | DestinyEnergyTypeDefinition,
   missing?: boolean,

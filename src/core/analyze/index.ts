@@ -66,11 +66,14 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   const ammoScavengerSockets = analyzeAmmoScavengerSockets(allArmorSockets, analyzeData.weaponTypes);
 
   // Champion
-  const championSockets = analyzeChampionSockets(allArmorSockets, analyzeData.weaponTypes, analyzeData.subclassEnergyType);
-  const championBreakerHashes = analyzeChampionWeapons(weapons);
+  const championWeaponBreakers = analyzeChampionWeapons(weapons);
+  // If any weapons have breakers on them already then filter them out. They cannot double dip.
+  const nonBreakerWeaponTypes = weapons.filter(w => !!!w.definition.breakerTypeHash).map(w => w.definition.itemSubType);
+  const championSockets = analyzeChampionSockets(allArmorSockets, nonBreakerWeaponTypes, analyzeData.subclassEnergyType);
+  
   const activeBreakers = [
     ...analyzeChampionSocketTypes(championSockets),
-    ...championBreakerHashes,
+    ...championWeaponBreakers,
   ];
   const breakerHashes = Object.keys(breakerDefinitions).map(hash => {
     const sourceNames: string[] = [];
@@ -87,20 +90,6 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   const artifactSockets = filterArtifactSockets(allArmorSockets);
   const raidSockets = filterRaidSockets(allArmorSockets);
 
-  // Charged with light
-  const { chargedWithLightChargerSockets, canCharge, canChargeFriends } = analyzeChargedWithLightChargerSockets(
-    allArmorSockets,
-    analyzeData.weaponTypes);
-  analyzeData.canCharge = canCharge;
-  analyzeData.canChargeFriends = canChargeFriends;
-
-  const chargedWithLightSpenderSockets = analyzeChargedWithLightSpenderSockets(
-    allArmorSockets,
-    analyzeData.weaponTypes,
-    analyzeData.weaponDamageTypes,
-    analyzeData.subclassEnergyType,
-    analyzeData.canCharge);
-
   // Well
   const { wellGeneratorSockets, generatedWellEnergies } = analyzeWellGeneratorSockets(
     allArmorSockets,
@@ -111,6 +100,20 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
     allArmorSockets,
     analyzeData.subclassEnergyType,
     generatedWellEnergies);
+
+  // Charged with light
+  const { chargedWithLightChargerSockets, canCharge, canChargeFriends } = analyzeChargedWithLightChargerSockets(
+    allArmorSockets,
+    analyzeData.weaponTypes,
+    generatedWellEnergies.length > 0);
+  analyzeData.canCharge = canCharge;
+  analyzeData.canChargeFriends = canChargeFriends;
+
+  const chargedWithLightSpenderSockets = analyzeChargedWithLightSpenderSockets(
+    allArmorSockets,
+    analyzeData.weaponTypes,
+    analyzeData.weaponDamageTypes,
+    analyzeData.canCharge);
 
   return {
     importantSockets: {

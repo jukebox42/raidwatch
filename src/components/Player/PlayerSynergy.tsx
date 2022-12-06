@@ -1,9 +1,29 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
-import { Box, Heading, useStyleConfig, HStack, Grid, GridItem, Flex, IconButton, Spacer, useBoolean, Select, Text, Divider } from "@chakra-ui/react";
-import { AllDestinyManifestComponents, DamageType, DestinyDamageTypeDefinition, DestinyEnergyType, DestinyEnergyTypeDefinition} from "bungie-api-ts/destiny2";
+import {
+  Box,
+  Heading,
+  useStyleConfig,
+  HStack,
+  Grid,
+  GridItem,
+  Flex,
+  IconButton,
+  Spacer,
+  useBoolean,
+  Select,
+  Text,
+  Divider
+} from "@chakra-ui/react";
+import {
+  AllDestinyManifestComponents,
+  DamageType,
+  DestinyDamageTypeDefinition,
+  DestinyEnergyType,
+  DestinyEnergyTypeDefinition
+} from "bungie-api-ts/destiny2";
 
-import { Sockets } from "components/Player/Character/equipment";
+import { Breakers } from "components/Player/Character/equipment";
 import { energyTypeToDamageType } from "core/analyze/helpers";
 import { AppBreakerType } from "core/itemTypes";
 import { useStore } from "hooks/useStore";
@@ -23,6 +43,7 @@ const PlayerSynergy = () => {
   const [wellTypes, setWellTypes] = useState<DestinyEnergyType[]>([]);
   const [damageTypes, setDamageTypes] = useState<DamageType[]>([]);
   const [friendlyCharge, setFriendlyCharge] = useState(false);
+  const [breakers, setBreakers] = useState<AppBreakerType[]>([]);
 
   // TODO: This is the only place in the display layer we're using the manifest...
   // Get Damage Definitions
@@ -35,11 +56,6 @@ const PlayerSynergy = () => {
   const damageDefinitions = (manifest as AllDestinyManifestComponents).DestinyDamageTypeDefinition;
   const damageDefinitionsArray: DestinyDamageTypeDefinition[] =
     Object.values(damageDefinitions).filter(e => importantDamageEnums.includes(e.enumValue));
-
-  // Get Breaker Definitions
-  const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
-  const breakerDefinitionsArray: AppBreakerType[] =
-    Object.values(breakerDefinitions).map(b => ({ hash: b.hash.toString(), definition: b, sourceNames: [] }));
 
   // Get energy Definitions
   const importantEnergyEnums = [
@@ -58,7 +74,12 @@ const PlayerSynergy = () => {
 
   useEffect(() => {
     const processedWellTypes: DestinyEnergyType[] = [];
-    const processedDamageTypes: DamageType[] = []
+    const processedDamageTypes: DamageType[] = [];
+    // Get Breaker Definitions
+    const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
+    const breakerDefinitionsArray: AppBreakerType[] =
+      Object.values(breakerDefinitions).map(b => ({ hash: b.hash.toString(), definition: b, sourceNames: [] }));
+
     // Iterate over players for synergy
     players.forEach(player => {
       if (!player.characterData) {
@@ -90,7 +111,8 @@ const PlayerSynergy = () => {
     });
     setWellTypes(processedWellTypes);
     setDamageTypes(processedDamageTypes);
-  }, [players])
+    setBreakers(breakerDefinitionsArray);
+  }, [players]);
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedActivityId(event.target.value);
@@ -141,9 +163,8 @@ const PlayerSynergy = () => {
         <GridItem>
           <Heading size="sm" mb={1}>Breaker Types</Heading>
           <HStack>
-            <Sockets
-              sockets={[]}
-              breakers={breakerDefinitionsArray}
+            <Breakers
+              breakers={breakers}
               requiredBreakerEnumValues={activity ? activity.breakerTypes : []}
             />
           </HStack>
