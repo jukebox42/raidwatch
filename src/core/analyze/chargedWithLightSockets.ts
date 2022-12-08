@@ -9,6 +9,7 @@ type Chargers = {
   hash: number, // the mod type hash
   sourceType?: DestinyItemSubType[], // the source of the generation
   requiresWells?: boolean,
+  requiresChampionBreaker?: boolean
   alwaysTrue?: boolean, // if the mod is always going to generate.
 }
 
@@ -25,7 +26,7 @@ const elementalChargeHash = 3730619869;
 
 const chargers: Chargers[] = [
   // === Artifact ===
-
+  { name: "Counter Charge", hash: 3138762877, requiresChampionBreaker: true, },
   // === Rest ===
   { name: "Blast Radius", hash: 3185435911, sourceType: [DestinyItemSubType.RocketLauncher, DestinyItemSubType.GrenadeLauncher], },
   { name: "Charge Harvester", hash: 2263321587, alwaysTrue: true, },
@@ -107,6 +108,7 @@ export const analyzeChargedWithLightChargerSockets = (
   sockets: AppSocketType[],
   weaponTypes: DestinyItemSubType[],
   generatesWells: boolean,
+  stunsChampions: boolean,
 ): { chargedWithLightChargerSockets: AppSocketType[], canCharge: boolean, canChargeFriends: boolean } => {
   const chargedWithLightChargerSockets = filterChargedWithLightChargerSockets(sockets)
     .map(socket => {
@@ -121,10 +123,20 @@ export const analyzeChargedWithLightChargerSockets = (
         };
       }
 
+      if (charger.requiresChampionBreaker) {
+        return {
+          ...chargeSocket,
+          isUsable: stunsChampions ? SocketUsable.YES : SocketUsable.MAYBE,
+          unusableReason: stunsChampions ? undefined : SocketUnusableReason.missingChampionBreaker,
+        };
+      }
+
+      // wells
       if (charger.requiresWells) {
         return {
           ...chargeSocket,
           isUsable: generatesWells ? SocketUsable.YES : SocketUsable.MAYBE,
+          unusableReason: generatesWells ? undefined : SocketUnusableReason.missingWellGenerator,
         };
       }
 

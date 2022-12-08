@@ -92,29 +92,29 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
 // https://archive.destiny.report/version/e0c36174-e416-4093-8bb4-ca4c35cd37bd/DestinyActivityModifierDefinition
 const importantModifiers = [
   // Shielded Foes
-  { name: "Shielded Foes", hash: "1651706850", damageTypes: [DamageType.Arc, DamageType.Thermal, DamageType.Void] },
-  { name: "Shielded Foes", hash: "2833087500", damageTypes: [DamageType.Arc, DamageType.Void] },
-  { name: "Shielded Foes", hash: "3230561446", damageTypes: [DamageType.Arc, DamageType.Thermal] },
-  { name: "Shielded Foes", hash: "3958417570", damageTypes: [DamageType.Thermal, DamageType.Void] },
-  { name: "Shielded Foes", hash: "3139381566", damageTypes: [DamageType.Arc] },
-  { name: "Shielded Foes", hash: "1553093202", damageTypes: [DamageType.Thermal] },
-  { name: "Shielded Foes", hash: "3538098588", damageTypes: [DamageType.Void] },
+  { name: "Shielded Foes", hash: 1651706850, damageTypes: [DamageType.Arc, DamageType.Thermal, DamageType.Void] },
+  { name: "Shielded Foes", hash: 2833087500, damageTypes: [DamageType.Arc, DamageType.Void] },
+  { name: "Shielded Foes", hash: 3230561446, damageTypes: [DamageType.Arc, DamageType.Thermal] },
+  { name: "Shielded Foes", hash: 3958417570, damageTypes: [DamageType.Thermal, DamageType.Void] },
+  { name: "Shielded Foes", hash: 3139381566, damageTypes: [DamageType.Arc] },
+  { name: "Shielded Foes", hash: 1553093202, damageTypes: [DamageType.Thermal] },
+  { name: "Shielded Foes", hash: 3538098588, damageTypes: [DamageType.Void] },
   // Champion Foes
-  { name: "Champion Foes", hash: "2006149364", breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption, DestinyBreakerType.Stagger] },
-  { name: "Champion Foes", hash: "1990363418", breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption] },
-  { name: "Champion Foes", hash: "438106166", breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Stagger] },
-  { name: "Champion Foes", hash: "3307318061", breakerTypes: [DestinyBreakerType.Stagger, DestinyBreakerType.Disruption] },
-  { name: "Champion Foes", hash: "2475764450", breakerTypes: [DestinyBreakerType.Stagger] },
-  { name: "Champions: Overload", hash: "1201462052", breakerTypes: [DestinyBreakerType.Disruption] },
-  { name: "Champions: Barrier", hash: "1974619026", breakerTypes: [DestinyBreakerType.ShieldPiercing] },
+  { name: "Champion Foes", hash: 2006149364, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption, DestinyBreakerType.Stagger] },
+  { name: "Champion Foes", hash: 1990363418, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption] },
+  { name: "Champion Foes", hash: 438106166, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Stagger] },
+  { name: "Champion Foes", hash: 3307318061, breakerTypes: [DestinyBreakerType.Stagger, DestinyBreakerType.Disruption] },
+  { name: "Champion Foes", hash: 2475764450, breakerTypes: [DestinyBreakerType.Stagger] },
+  { name: "Champions: Overload", hash: 1201462052, breakerTypes: [DestinyBreakerType.Disruption] },
+  { name: "Champions: Barrier", hash: 1974619026, breakerTypes: [DestinyBreakerType.ShieldPiercing] },
   // Acute Burns
-  { name: "Acute Arc Burn", hash: "258452800" },
-  { name: "Acute Solar Burn", hash: "2931859389" },
-  { name: "Acute Void Burn", hash: "1691458972" },
+  { name: "Acute Arc Burn", hash: 258452800 },
+  { name: "Acute Solar Burn", hash: 2931859389 },
+  { name: "Acute Void Burn", hash: 1691458972 },
   // Burns
-  { name: "Arc Burn", hash: "2495620299" },
-  { name: "Solar Burn", hash: "434011922" },
-  { name: "Void Burn", hash: "2295785649" },
+  { name: "Arc Burn", hash: 2495620299 },
+  { name: "Solar Burn", hash: 434011922 },
+  { name: "Void Burn", hash: 2295785649 },
 ];
 
 export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest: AllDestinyManifestComponents) => {
@@ -123,7 +123,7 @@ export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest
     .flatMap(a => a.activities)
     .filter(a => !!a.modifierHashes)
     .map(activity => {
-      const modifiers = importantModifiers.filter(m => activity.modifierHashes.find(h => m.hash === h.toString()));
+      const modifiers = importantModifiers.filter(m => activity.modifierHashes.find(hash => m.hash === hash));
       const shieldTypes = modifiers.filter(m => m.damageTypes).flatMap(m => m.damageTypes as DamageType[]);
       const breakerTypes = modifiers.filter(m => m.breakerTypes).flatMap(m => m.breakerTypes as DestinyBreakerType[]);
       return {

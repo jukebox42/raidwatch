@@ -181,7 +181,9 @@ const PlayerSynergy = () => {
           </HStack>
         </GridItem>
         <GridItem>
-          <Heading size="sm" mb={1}>Friendly Charge</Heading>
+          <Heading size="sm" mb={1}>Misc.</Heading>
+          { /* TODO: replace with https://data.destinysets.com/i/SandboxPerk:629293731 */ }
+          { /* TODO: add warmind cells? https://data.destinysets.com/i/InventoryItem:4184362623 */}
           <HStack>
             {friendlyCharge ? <CheckIcon w="26px" /> : <CloseIcon w="26px" h="26px" />}
           </HStack>

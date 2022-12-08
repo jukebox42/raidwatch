@@ -105,7 +105,8 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   const { chargedWithLightChargerSockets, canCharge, canChargeFriends } = analyzeChargedWithLightChargerSockets(
     allArmorSockets,
     analyzeData.weaponTypes,
-    generatedWellEnergies.length > 0);
+    generatedWellEnergies.length > 0,
+    breakerHashes.length > 0);
   analyzeData.canCharge = canCharge;
   analyzeData.canChargeFriends = canChargeFriends;
 

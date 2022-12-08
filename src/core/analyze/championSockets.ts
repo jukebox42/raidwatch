@@ -23,15 +23,27 @@ const championSockets: ChampionSocketTypes[] = [
   { name: "Anti-Barrier Sniper Rifle", hash: 1404465538, requiredTypes: [DestinyItemSubType.SniperRifle] },
   { name: "Inferno Whip", hash: 1404465541, requiredSubclassEnergyTypes: [DestinyEnergyType.Thermal] },
   { name: "Surge Detonators", hash: 1404465540, requiredSubclassEnergyTypes: [DestinyEnergyType.Arc] },
+  // Season 19 Artifact
+  { name: "Unstopable Hand Cannon", hash: 1360604625, requiredTypes: [DestinyItemSubType.HandCannon] },
+  { name: "Overload Scout Rifle", hash: 1360604626, requiredTypes: [DestinyItemSubType.ScoutRifle] },
+  { name: "Piercing Bowstring", hash: 1360604627, requiredTypes: [DestinyItemSubType.Bow] },
+  { name: "Anti-Barrier Pulse Rifle", hash: 1360604628, requiredTypes: [DestinyItemSubType.PulseRifle] },
+  { name: "Overload Rounds", hash: 1360604629, requiredTypes: [DestinyItemSubType.AutoRifle, DestinyItemSubType.SubmachineGun] },
+  { name: "Unstoppable Grenade Launcher", hash: 3138762878, requiredTypes: [DestinyItemSubType.GrenadeLauncher] },
+  { name: "Lord Kelvin's Basilisk", hash: 3138762875, requiredSubclassEnergyTypes: [DestinyEnergyType.Void, DestinyEnergyType.Stasis] },
+  { name: "Low Entropy Super Conductor", hash: 3138762874, requiredSubclassEnergyTypes: [DestinyEnergyType.Arc, DestinyEnergyType.Stasis] },
 ];
 
 /**
  * Identify if a mod belongs to the Champion list.
- * 
- * TODO: move to hash checks
  */
-const isChampionSocket = (socket: AppSocketType) => 
-  /^(Unstoppable|Anti-Barrier|Overload|Inferno Whip|Surge Detonators)/.test(socket.definition.displayProperties.name);
+const isChampionSocket = (socket: AppSocketType) => {
+  if (championSockets.find(s => s.hash === socket.definition.hash)) {
+    return true;
+  }
+  // failsafe to catch sockets we didn't support.
+  return /^(Unstoppable|Anti-Barrier|Overload|Inferno Whip|Surge Detonators)/.test(socket.definition.displayProperties.name);
+}
 
 /**
  * Filter mods array down to mods that are champion mods

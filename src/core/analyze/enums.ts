@@ -17,6 +17,7 @@ export enum SocketUnusableReason {
   missingLightCharger,
   missingWellGenerator,
   missingWellEnergyType,
+  missingChampionBreaker,
   unknown,
   unsupported,
 }

@@ -18,6 +18,8 @@ const getAlertText = (unusableReason: SocketUnusableReason | undefined) => {
       return "Must equip a mod that generates wells. This mod may still work if your allies can generate matching wells.";
     case SocketUnusableReason.missingWellEnergyType:
       return "Must equip a mod that generates a matching well energy type. This mod may still work if your allies can generate matching wells.";
+    case SocketUnusableReason.missingChampionBreaker:
+      return "Must have a working champion mod. This mod may still work if your allies can stun champions."
     case SocketUnusableReason.unsupported:
     case SocketUnusableReason.unknown:
     default:
