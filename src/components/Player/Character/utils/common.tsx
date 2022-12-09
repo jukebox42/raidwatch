@@ -31,5 +31,5 @@ export const isLastOnlineCharacter = (characterId: string, characters: { [key: s
  * TODO: it's be cool if we replaced [thing] with the icon. Maybe later.
  */
 export const parseDescription = (description: string): React.ReactNode[] => {
-  return description.split("\n").map(d => <Text mb="5px" key={id()}>{d}</Text>);
+  return description.split("\n").map(d => <Text mb={1} key={id()}>{d}</Text>);
 }

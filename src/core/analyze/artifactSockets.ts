@@ -3,7 +3,9 @@ import { SocketPurpose } from "./enums";
 
 // TODO: move to hashes
 const specialDamageSockets = [
-  "Thunderous Retort",
+  "Solo Operative",
+  "Monocromatic Maestro",
+  "Advance Scout",
 ];
 
 /**
@@ -25,4 +27,3 @@ const isArtifactSocket = (socket: AppSocketType) => {
     }
   ));
  }
- 

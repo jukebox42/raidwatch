@@ -41,7 +41,7 @@ const Shell = () => {
         <Top />
       </Box>
       <Box as="main" pt="50px" pb="100px" w="100%">
-        <VStack p={1} align="stretch" spacing={1}>
+        <VStack p={1} pb="75px" align="stretch" spacing={1}>
           {players.length > 0 && <PlayerSynergy />}
           {players.map(player => {
             return (
@@ -64,7 +64,7 @@ const Shell = () => {
       </Box>
       <Box as="footer" p={1} position="fixed" bottom="0" w="100%" bg="brand.100">
         {activePlayer === "" && <FindPlayer />}
-        <Text align="center">v{VERSION} - {manifestVersion}</Text>
+        <Text align="center" fontSize="sm">v{VERSION} - {manifestVersion}</Text>
       </Box>
     </>
   );

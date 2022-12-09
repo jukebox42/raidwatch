@@ -38,11 +38,7 @@ const championSockets: ChampionSocketTypes[] = [
  * Identify if a mod belongs to the Champion list.
  */
 const isChampionSocket = (socket: AppSocketType) => {
-  if (championSockets.find(s => s.hash === socket.definition.hash)) {
-    return true;
-  }
-  // failsafe to catch sockets we didn't support.
-  return /^(Unstoppable|Anti-Barrier|Overload|Inferno Whip|Surge Detonators)/.test(socket.definition.displayProperties.name);
+  return !!socket.definition.breakerTypeHash;
 }
 
 /**

@@ -12,7 +12,6 @@ const CharacterLoading = () => {
         <Skeleton height={SkelHeight} width={SkelHeight} />
         <Skeleton height={SkelHeight} width={SkelHeight} />
         <Skeleton height={SkelHeight} width={SkelHeight} />
-        <Skeleton height={SkelHeight} width={SkelHeight} />
       </Stack>
       <Box pr={1} pl="55px">
         <Skeleton height="20px" ml={1} mr={1} />

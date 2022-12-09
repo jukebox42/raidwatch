@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -30,6 +30,8 @@ import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
 import Modifiers from "./Character/partials/Modifiers";
 import { AppActivity } from "core";
+import FriendlyCharge from "./Character/equipment/FriendlyCharge";
+import Warmind from "./Character/equipment/Warmind";
 
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
@@ -70,7 +72,7 @@ const PlayerSynergy = () => {
 
   useEffect(() => {
     loadActivities();
-  }, [loadActivities]);
+  }, [loadActivities, manifest]);
 
   useEffect(() => {
     const processedWellTypes: DestinyEnergyType[] = [];
@@ -112,7 +114,7 @@ const PlayerSynergy = () => {
     setWellTypes(processedWellTypes);
     setDamageTypes(processedDamageTypes);
     setBreakers(breakerDefinitionsArray);
-  }, [players]);
+  }, [players, manifest]);
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedActivityId(event.target.value);
@@ -138,7 +140,7 @@ const PlayerSynergy = () => {
           onClick={setIsExpanded.toggle}
         />
       </Flex>
-      <Box p={1}>
+      {isExpanded && <Box p={1}>
         <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
           {activities.map(a => (
             <option
@@ -149,7 +151,7 @@ const PlayerSynergy = () => {
         </Select>
         {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
         {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
-      </Box>
+      </Box>}
       <Divider mt={1} />
       {isExpanded && <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
         <GridItem>
@@ -185,7 +187,8 @@ const PlayerSynergy = () => {
           { /* TODO: replace with https://data.destinysets.com/i/SandboxPerk:629293731 */ }
           { /* TODO: add warmind cells? https://data.destinysets.com/i/InventoryItem:4184362623 */}
           <HStack>
-            {friendlyCharge ? <CheckIcon w="26px" /> : <CloseIcon w="26px" h="26px" />}
+            <FriendlyCharge missing={!friendlyCharge} />
+            <Warmind missing={true} />
           </HStack>
         </GridItem>
       </Grid>}
