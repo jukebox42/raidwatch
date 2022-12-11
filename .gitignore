@@ -12,6 +12,7 @@
 /build
 raidwatch.key
 upload.sh
+uploadprod.sh
 
 # misc
 .git_old

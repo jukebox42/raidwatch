@@ -8,8 +8,15 @@ if (DEV_MODE) {
   console.log("---------------------");
 }
 
+export const IS_BETA = process.env.REACT_APP_MODE === "beta";
+if (IS_BETA) {
+  console.log("---------------------");
+  console.log("BETA", IS_BETA);
+  console.log("---------------------");
+}
+
 // Get API Key from .env
-const key = DEV_MODE ? process.env.REACT_APP_DEV_API_KEY : process.env.REACT_APP_API_KEY;
+const key = DEV_MODE ? process.env.REACT_APP_DEV_API_KEY : IS_BETA ? process.env.REACT_APP_API_BETA_KEY : process.env.REACT_APP_API_KEY;
 if (!key) {
   throw new Error("Missing .env file for API key. See .envExample")
 }

@@ -5,7 +5,7 @@ import { FaTwitter } from "react-icons/fa";
 import { TwitterTimelineEmbed } from "react-twitter-embed";
 
 import { useStore } from "hooks/useStore";
-import { VERSION } from "utils/constants";
+import { IS_BETA, VERSION } from "utils/constants";
 
 import GlobalLoader from "./GlobalLoader";
 import FindPlayer from "./FindPlayer";
@@ -80,15 +80,15 @@ const Shell = () => {
           })}
           {players.length === 0 && <Box pr={30} pl={30} pt={50} textAlign="center">
             <Heading size="lg" mb={3}>
-              Welcome to Raid Watch <Text color="brand.500" as="span">BETA</Text>
+              Welcome to Raid Watch {IS_BETA && <Text color="brand.500" as="span">BETA</Text>}
             </Heading>
             <Text size="md" mb={3}>
               A tool to give fireteam members quick information about their
               loadouts and how they work with others in the fireteam.
             </Text>
-            <Text size="md">
+            {IS_BETA && <Text size="md">
               This tool is in <Text color="brand.500" as="span">BETA</Text>, things may not work.
-            </Text>
+            </Text>}
           </Box>}
         </VStack>}
       </Box>

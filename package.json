@@ -24,10 +24,12 @@
     "zustand": "^4.1.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "upload": "yarn build && bash upload.sh"
+    "start": "REACT_APP_MODE=beta react-scripts start",
+    "startprod": "react-scripts start",
+    "build": "REACT_APP_MODE=beta react-scripts build",
+    "buildprod": "react-scripts build",
+    "upload": "REACT_APP_MODE=beta yarn build && bash upload.sh",
+    "uploadprod": "yarn buildprod && bash uploadprod.sh"
   },
   "eslintConfig": {
     "extends": [

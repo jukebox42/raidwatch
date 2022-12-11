@@ -2,7 +2,7 @@ import { Box, Flex, Heading, IconButton, Menu, MenuButton, MenuDivider, MenuItem
 import { DeleteIcon, HamburgerIcon, QuestionIcon, RepeatIcon, SettingsIcon, UpDownIcon } from "@chakra-ui/icons";
 
 import { useStore } from "hooks/useStore";
-import { SOURCE_URL } from "utils/constants";
+import { IS_BETA, SOURCE_URL } from "utils/constants";
 import SettingsModal from "./SettingsModal";
 import AboutModal from "./AboutModal";
 import ResetDataModal from "./ResetDataModal";
@@ -41,7 +41,7 @@ const Top = () => {
             </MenuItem>
           </MenuList>
         </Menu>
-        <Heading>Raid Watch <Text color="brand.500" as="span">BETA</Text></Heading>
+        <Heading>Raid Watch {IS_BETA && <Text color="brand.500" as="span">BETA</Text>}</Heading>
         <Spacer />
         <IconButton
           isLoading={loadingPlayers && !apiDisabled && players.length > 0}
