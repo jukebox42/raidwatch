@@ -4,6 +4,7 @@ import { AllDestinyManifestComponents, getAllDestinyManifestComponents, getDesti
 import { $http, $httpUnsigned } from "bungie/api";
 import db from "./db";
 import { LANGUAGE } from "utils/constants";
+import { ToastStore } from "./toastStore";
 
 export type ManifestStore = {
   isInitialized: boolean,
@@ -14,7 +15,7 @@ export type ManifestStore = {
   loadManifest: () => Promise<void>,
 }
 
-export const createManifestStore: StateCreator<ManifestStore, any, [], ManifestStore> = (set) => ({
+export const createManifestStore: StateCreator<ManifestStore & ToastStore, any, [], ManifestStore> = (set, get) => ({
   isInitialized: false,
   manifest: undefined,
   manifestVersion: "",
@@ -26,8 +27,10 @@ export const createManifestStore: StateCreator<ManifestStore, any, [], ManifestS
     await db.init();
     // Get the manifest data (where the components are)
     const manifestResponse = await getDestinyManifest($http);
-  
-    // TODO handle error
+    if (get().checkError(manifestResponse)) {
+      return;
+    }
+
     const manifest = manifestResponse.Response;
     
     // Do some version checking and return the db data if version hasnt change
@@ -48,6 +51,8 @@ export const createManifestStore: StateCreator<ManifestStore, any, [], ManifestS
       // always set version last, if above erros it'll ensure we force a new fetch.
       db.setManifestVersion(manifestVersion);
       set({ manifest: components, manifestVersion, isInitialized: true });
+    }).catch(reason => {
+      get().showToast(reason.toString(), "ManifestComponentsFailed", true);
     });
   }
 });

@@ -30,7 +30,18 @@ export const createHttp = (headers: HeadersInit|void = undefined, mode: RequestM
       redirect: follow,
     }
     const frequest = await fetch(url, options);
-    return await frequest.json();
+    try {
+      return await frequest.json();
+    } catch (e: any) {
+      const resp = new Response(JSON.stringify({
+        ErrorCode: 0,
+        ErrorStatus: "None",
+        Message: e.toString(),
+        MessageData: {},
+        ThrottleSeconds: 0,
+      }));
+      return await resp.json();
+    }
   };
 }
 

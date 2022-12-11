@@ -6,6 +6,7 @@ import CharacterDisplay from "./Character/CharacterDisplay";
 import CharacterLoading from "./Character/CharacterLoading";
 import { useStore } from "hooks/useStore";
 import { PlayerData } from "types/player";
+import CharacterFailed from "./Character/CharacterFailed";
 
 type Props = {
   player: PlayerData,
@@ -20,9 +21,10 @@ const Player = ({ player }: Props) => {
 
   return (
     <Box id={`player_${player.membershipId}`} __css={styles}>
-      {!player.profile && <CharacterLoading />}
-      {player.selectedCharacterId && player.profile && <CharacterDisplay player={player} />}
-      {!player.selectedCharacterId && player.profile && <CharacterSelector player={player} />}
+      {player.loadFailed && <CharacterFailed player={player} />}
+      {!player.loadFailed && !player.profile && <CharacterLoading />}
+      {!player.loadFailed && player.selectedCharacterId && player.profile && <CharacterDisplay player={player} />}
+      {!player.loadFailed && !player.selectedCharacterId && player.profile && <CharacterSelector player={player} />}
     </Box>
   );
 }

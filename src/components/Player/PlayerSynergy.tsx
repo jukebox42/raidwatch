@@ -31,7 +31,7 @@ import Energies from "./Character/partials/Energies";
 import Modifiers from "./Character/partials/Modifiers";
 import { AppActivity } from "core";
 import FriendlyCharge from "./Character/equipment/FriendlyCharge";
-import Warmind from "./Character/equipment/Warmind";
+// import Warmind from "./Character/equipment/Warmind";
 
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });

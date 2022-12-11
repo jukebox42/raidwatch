@@ -1,8 +1,7 @@
 import { ChakraProvider, ColorModeScript, Flex } from "@chakra-ui/react";
 
-import "./index.less";
 import Shell from "./components/Shell";
-import theme from "context/theme"
+import theme from "context/theme";
 
 
 const App = () => {

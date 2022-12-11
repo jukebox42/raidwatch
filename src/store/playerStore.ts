@@ -1,4 +1,5 @@
 import { StateCreator } from "zustand";
+import { getMembershipDataById } from "bungie-api-ts/user";
 import { AllDestinyManifestComponents, BungieMembershipType, getProfile } from "bungie-api-ts/destiny2";
 
 import { PlayerData, PLAYER_COMPONENTS, PLAYER_LIVE_COMPONENTS } from "types/player";
@@ -7,8 +8,8 @@ import { $http } from "bungie/api";
 import { lastOnlineCharacterId } from "components/Player/Character/utils/common";
 import db from "./db";
 import { ManifestStore } from "./manifestStore";
-import { getMembershipDataById } from "bungie-api-ts/user";
 import { ActivityStore } from "./activityStore";
+import { ToastStore } from "./toastStore";
 
 const loadPlayerProfile = async (membershipId: string, membershipType: BungieMembershipType, onlyLive=false) => {
   const profileResponse = await getProfile($http, {
@@ -16,7 +17,7 @@ const loadPlayerProfile = async (membershipId: string, membershipType: BungieMem
     destinyMembershipId: membershipId,
     membershipType: membershipType,
   });
-  return profileResponse.Response;
+  return profileResponse;
 }
 
 export type PlayerStore = {
@@ -32,14 +33,15 @@ export type PlayerStore = {
   setChatacterData: (characterData: AppCharacterType) => void,
 }
 
-export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & ActivityStore, any, [], PlayerStore> = (set, get) => ({
+type Store = PlayerStore & ManifestStore & ActivityStore & ToastStore;
+
+export const createPlayerStore: StateCreator<Store, any, [], PlayerStore> = (set, get) => ({
   players: [],
 
   loadPlayers: async () => {
-    console.log("playerStore:loadPlayers");
     const players = await db.AppPlayers.toArray();
     const config = await db.getConfig();
-    console.log("PLAYERS", players);
+    console.log("playerStore:loadPlayers", players);
     set({ players, activePlayer: config.activePlayer });
 
     // TODO: I know this violates the "no sideeffects" rule but I think it's cleaner and we NEED
@@ -80,8 +82,12 @@ export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & Activ
   removePlayer: (membershipId: string) => set(state => {
     console.log("playerStore:removePlayer", membershipId, state.players);
     if (!state.players.find(p => p.membershipId === membershipId)) {
-      console.log("PLAYER NOT FOUND");
+      console.log("playerStore:removePlayer Player not found");
       return {};
+    }
+
+    if (membershipId === get().activePlayer) {
+      db.setConfig({ activePlayer: "" });
     }
 
     db.AppPlayers.delete(membershipId);
@@ -98,7 +104,22 @@ export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & Activ
       return {};
     }
 
-    const profile = await loadPlayerProfile(membershipId, player.membershipType);
+    const profileResponse = await loadPlayerProfile(membershipId, player.membershipType);
+    // Handle Error
+    if (get().checkError(profileResponse)) {
+      return set(state => ({
+        players: state.players.map(player => {
+          if (player.membershipId === membershipId) {
+            return {
+              ...player,
+              loadFailed: true,
+            };
+          }
+          return { ...player };
+        })
+      }));
+    }
+    const profile = profileResponse.Response;
 
     // if we dont have a selected character select one
     const selectedCharacterId = !player.selectedCharacterId && profile.characters.data ?
@@ -136,10 +157,15 @@ export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & Activ
 
     // If there is an active player do more
     const activePlayer = get().players.find(p => p.membershipId === activePlayerId) as PlayerData;
-    loadPlayerProfile(activePlayerId, activePlayer.membershipType, true).then(activePlayerProfile => {
+    loadPlayerProfile(activePlayerId, activePlayer.membershipType, true).then(profileResponse => {
+      if (get().checkError(profileResponse)) {
+        return;
+      }
+      const activePlayerProfile = profileResponse.Response;
+
       // See if the active player is online, if not then just refresh the list
       if (!activePlayerProfile.profileTransitoryData.data || !activePlayerProfile.profileTransitoryData.data.partyMembers.length) {
-        // TODO: Need to inform the user that the player is not online
+        get().showToast("Player is not online.", "playerNotActive");
   
         // TODO: More violating "no sideeffects" but again, I kinda think it belongs here
         get().players.forEach(p => get().loadPlayerProfile(p.membershipId));
@@ -174,6 +200,9 @@ export const createPlayerStore: StateCreator<PlayerStore & ManifestStore & Activ
       if (idQueue.length > 0) {
         idQueue.forEach(id => {
           getMembershipDataById($http, { membershipId: id, membershipType: BungieMembershipType.None }).then(membershipData => {
+            if (get().checkError(membershipData)) {
+              return;
+            }
             get().addPlayer(id, membershipData.Response.destinyMemberships[0].membershipType);
           });
         });

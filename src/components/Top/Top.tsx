@@ -9,6 +9,7 @@ import ResetDataModal from "./ResetDataModal";
 
 const Top = () => {
   const players = useStore(store => store.players);
+  const apiDisabled = useStore(store => store.apiDisabled);
   const loadingPlayers = players.filter(p => !p.profile).length > 0;
   const erasePlayerProfiles = useStore(store => store.erasePlayerProfiles);
   const { isOpen: settingsIsOpen, onOpen: settingsOnOpen, onClose: settingsOnClose } = useDisclosure();
@@ -43,11 +44,11 @@ const Top = () => {
         <Heading>Raid Watch <Text color="brand.500" as="span">BETA</Text></Heading>
         <Spacer />
         <IconButton
-          isLoading={loadingPlayers}
+          isLoading={loadingPlayers && !apiDisabled && players.length > 0}
           aria-label="Reload"
           icon={<RepeatIcon />}
           onClick={erasePlayerProfiles}
-          disabled={loadingPlayers}
+          disabled={loadingPlayers || apiDisabled || players.length === 0}
         />
       </Flex>
       <SettingsModal isOpen={settingsIsOpen} onClose={settingsOnClose} />

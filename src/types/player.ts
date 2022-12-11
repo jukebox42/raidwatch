@@ -24,4 +24,5 @@ export type PlayerData = {
   profile?: DestinyProfileResponse,
   characterData?: AppCharacterType,
   isEnemy?: boolean,
+  loadFailed?: boolean,
 };
