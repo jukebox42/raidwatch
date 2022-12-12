@@ -32,6 +32,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+For prod use `yarn start-prod`.
+
 ### `yarn build`
 
 Builds the app for production to the `build` folder.\
@@ -43,7 +45,11 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for
 more information.
 
+For a prod build use `yarn build-prod`.
+
 ### `yarn upload`
 
 Runs `yarn build` and then calls an `upload.sh` that should handle uploading the site. This script
 is missing from the repository for obvious reasons...
+
+For a prod upload use `yarn upload-prod`.

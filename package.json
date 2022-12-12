@@ -25,11 +25,11 @@
   },
   "scripts": {
     "start": "REACT_APP_MODE=beta react-scripts start",
-    "startprod": "react-scripts start",
+    "start-prod": "react-scripts start",
     "build": "REACT_APP_MODE=beta react-scripts build",
-    "buildprod": "react-scripts build",
+    "build-prod": "react-scripts build",
     "upload": "REACT_APP_MODE=beta yarn build && bash upload.sh",
-    "uploadprod": "yarn buildprod && bash uploadprod.sh"
+    "upload-prod": "yarn buildprod && bash uploadprod.sh"
   },
   "eslintConfig": {
     "extends": [
