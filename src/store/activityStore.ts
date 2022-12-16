@@ -7,7 +7,7 @@ import db from "./db";
 import { $http } from "bungie/api";
 import { ManifestStore } from "./manifestStore";
 import { AppActivity, getActivitiesData } from "core";
-import { ToastStore } from "./toastStore";
+import { ErrorStore } from "./errorStore";
 
 
 export type ActivityStore = {
@@ -17,7 +17,7 @@ export type ActivityStore = {
   loadActivities: () => void,
 }
 
-type Store = PlayerStore & ManifestStore & ActivityStore & ToastStore;
+type Store = PlayerStore & ManifestStore & ActivityStore & ErrorStore;
 
 export const createActivityStore: StateCreator<Store, any, [], ActivityStore> = (set, get) => ({
   activePlayer: "",
@@ -38,7 +38,7 @@ export const createActivityStore: StateCreator<Store, any, [], ActivityStore> = 
   },
   loadActivities: async () => {
     const response = await getPublicMilestones($http);
-    if (get().checkError(response)) {
+    if (get().checkApiError(response)) {
       return;
     }
     const activities = getActivitiesData(Object.values(response.Response), get().manifest as AllDestinyManifestComponents);

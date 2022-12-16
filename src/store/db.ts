@@ -8,6 +8,19 @@ import { AppConfig } from "types/config";
 
 const INDEX = 0;
 
+export const defaultSettings = {
+  hideSynergy: false,
+  hideSynergyActivity: false,
+  hideAnalyzeMods: false,
+  hideAmmoFinderMods: false,
+  hideAmmoScavengerMods: false,
+  hideChampionMods: false,
+  hideChargedWithLightMods: false,
+  hideWellMods: false,
+  hideWarmindMods: false,
+  hideRaidMods: false,
+};
+
 class Db extends Dexie {
   AppSettings!: Table<AppSettings>;
   AppSearches!: Table<UserSearchResponseDetail>;
@@ -57,12 +70,11 @@ class Db extends Dexie {
   }
 
   async getSettings() {
-    return await this.AppSettings.get(INDEX);
+    return await this.AppSettings.get(INDEX) ?? { ...defaultSettings };
   }
 
   async setSettings(data: AppSettings) {
-    const defaultSettings = { };
-    return await this.AppSettings.put(data, INDEX) ?? { ...defaultSettings };
+    return await this.AppSettings.put(data, INDEX);
   }
 
   async getConfig() {

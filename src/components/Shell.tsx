@@ -3,6 +3,7 @@ import { Alert, AlertIcon, Box, Button, Flex, Heading, Spacer, Text, useToast, V
 import { Icon, QuestionIcon } from "@chakra-ui/icons";
 import { FaTwitter } from "react-icons/fa";
 import { TwitterTimelineEmbed } from "react-twitter-embed";
+import shallow from "zustand/shallow";
 
 import { useStore } from "hooks/useStore";
 import { IS_BETA, VERSION } from "utils/constants";
@@ -15,29 +16,42 @@ import Top from "./Top/Top";
 
 const Shell = () => {
   const [isPlayersLoaded, setIsPlayersLoaded] = useState(false);
-  const isInitialized = useStore(store => store.isInitialized);
-  const manifestVersion = useStore(store => store.manifestVersion);
-  const loadingMessage = useStore(store => store.loadingMessage);
+  const {
+    // keys
+    isInitialized, manifestVersion, apiDisabled, loadingMessage, activePlayer,
+    // functions
+    loadManifest, loadPlayers, setToast, loadSettings,
+  } = useStore(state => ({
+    isInitialized: state.isInitialized,
+    manifestVersion: state.manifestVersion,
+    apiDisabled: state.apiDisabled,
+    loadingMessage: state.loadingMessage,
+    activePlayer: state.activePlayer,
+    loadManifest: state.loadManifest,
+    loadPlayers: state.loadPlayers,
+    setToast: state.setToast,
+    loadSettings: state.loadSettings
+  }), shallow);
   const players = useStore(store => store.players);
-  const apiDisabled = useStore(store => store.apiDisabled);
-  const activePlayer = useStore(store => store.activePlayer);
-  const loadManifest = useStore(store => store.loadManifest);
-  const loadPlayers = useStore(store => store.loadPlayers);
-  const setToast = useStore(store => store.setToast);
+  const settings = useStore(store => store.settings);
   const toast = useToast();
 
   useEffect(() => {
     if (isPlayersLoaded) {
       return;
     }
-    if (!isInitialized) {
+    const init = async () => {
       setToast(toast);
-      loadManifest();
+      await loadSettings();
+      await loadManifest();
+    }
+    if (!isInitialized) {
+      init()
       return;
     }
     loadPlayers();
     setIsPlayersLoaded(true);
-  }, [isInitialized, loadManifest, loadPlayers, isPlayersLoaded]);
+  }, [isInitialized, loadManifest, loadSettings, loadPlayers, isPlayersLoaded, setToast, toast]);
 
   if (!isInitialized) {
     return (<GlobalLoader text={loadingMessage} />);
@@ -72,7 +86,7 @@ const Shell = () => {
           />
         </Box>}
         {!apiDisabled && <VStack p={1} pb="75px" align="stretch" spacing={1}>
-          {players.length > 0 && <PlayerSynergy />}
+          {players.length > 0 && !settings.hideSynergy && <PlayerSynergy />}
           {players.map(player => {
             return (
               <Player key={player.membershipId} player={player} />

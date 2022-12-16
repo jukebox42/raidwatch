@@ -3,7 +3,6 @@ import { ChakraProvider, ColorModeScript, Flex } from "@chakra-ui/react";
 import Shell from "./components/Shell";
 import theme from "context/theme";
 
-
 const App = () => {
   return (
     <>

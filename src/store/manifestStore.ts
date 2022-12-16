@@ -4,7 +4,7 @@ import { AllDestinyManifestComponents, getAllDestinyManifestComponents, getDesti
 import { $http, $httpUnsigned } from "bungie/api";
 import db from "./db";
 import { LANGUAGE } from "utils/constants";
-import { ToastStore } from "./toastStore";
+import { ErrorStore } from "./errorStore";
 
 export type ManifestStore = {
   isInitialized: boolean,
@@ -15,7 +15,7 @@ export type ManifestStore = {
   loadManifest: () => Promise<void>,
 }
 
-export const createManifestStore: StateCreator<ManifestStore & ToastStore, any, [], ManifestStore> = (set, get) => ({
+export const createManifestStore: StateCreator<ManifestStore & ErrorStore, any, [], ManifestStore> = (set, get) => ({
   isInitialized: false,
   manifest: undefined,
   manifestVersion: "",
@@ -27,7 +27,7 @@ export const createManifestStore: StateCreator<ManifestStore & ToastStore, any, 
     await db.init();
     // Get the manifest data (where the components are)
     const manifestResponse = await getDestinyManifest($http);
-    if (get().checkError(manifestResponse)) {
+    if (get().checkApiError(manifestResponse)) {
       return;
     }
 

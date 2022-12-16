@@ -13,7 +13,7 @@ import { useStore } from "hooks/useStore";
 const FindPlayer = () => {
   const players = useStore(store => store.players);
   const addPlayer = useStore(store => store.addPlayer);
-  const checkError = useStore(store => store.checkError);
+  const checkApiError = useStore(store => store.checkApiError);
   const [loading, setLoading] = useState(true);
   const [profiles, setProfiles] = useState<UserSearchResponseDetail[]>([]);
   const [searching, setSearching] = useState(false);
@@ -62,7 +62,7 @@ const FindPlayer = () => {
   const loadOptions = (inputValue: string, callback: (results: UserSearchResponseDetail[]) => void) => {
     setSearching(true);
     search(inputValue, (value) => {
-      if (checkError(value)) {
+      if (checkApiError(value)) {
         setSearching(false);
         callback([]);
       }

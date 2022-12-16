@@ -37,10 +37,18 @@ const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
   const charStatStyles = useStyleConfig("Flex", { variant: "charstats" });
   const [isExpanded, setIsExpanded] = useBoolean(true);
-  const players = useStore(state => state.players);
-  const manifest = useStore(state => state.manifest);
-  const activities = useStore(state =>  state.activities);
-  const loadActivities = useStore(store => store.loadActivities);
+  const {
+    // keys
+    manifest, players, activities, settings,
+    // functions
+    loadActivities,
+  } = useStore(state => ({
+    manifest: state.manifest,
+    players: state.players,
+    activities: state.activities,
+    settings: state.settings,
+    loadActivities: state.loadActivities,
+  }));
   const [selectedActivityId, setSelectedActivityId] = useState("");
   const [wellTypes, setWellTypes] = useState<DestinyEnergyType[]>([]);
   const [damageTypes, setDamageTypes] = useState<DamageType[]>([]);
@@ -140,57 +148,58 @@ const PlayerSynergy = () => {
           onClick={setIsExpanded.toggle}
         />
       </Flex>
-      {isExpanded && <Box p={1}>
-        <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
-          {activities.map(a => (
-            <option
-              key={a.activity.activityHash.toString()}
-              value={a.activity.activityHash.toString()}
-            >{a.definition.displayProperties.name}</option>
-          ))}
-        </Select>
-        {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
-        {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
-      </Box>}
-      <Divider mt={1} />
-      {isExpanded && <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
-        <GridItem>
-          <Heading size="sm" mb={1}>Damage Types</Heading>
-          <Energies
-            energyDefinitions={damageDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
-            energyEnumValues={damageTypes}
-            requiredEnumValues={activity ? activity.shieldTypes : []}
-          />
-        </GridItem>
-        <GridItem>
-          <Heading size="sm" mb={1}>Breaker Types</Heading>
-          <HStack>
-            <Breakers
-              breakers={breakers}
-              requiredBreakerEnumValues={activity ? activity.breakerTypes : []}
+      {isExpanded && <>
+        {!settings.hideSynergyActivity && <Box p={1}>
+            <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
+              {activities.map(a => (
+                <option
+                  key={a.activity.activityHash.toString()}
+                  value={a.activity.activityHash.toString()}
+                >{a.definition.displayProperties.name}</option>
+              ))}
+            </Select>
+            {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
+            {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
+          </Box>}
+        <Divider mt={1} />
+        <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
+          <GridItem>
+            <Heading size="sm" mb={1}>Damage Types</Heading>
+            <Energies
+              energyDefinitions={damageDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
+              energyEnumValues={damageTypes}
+              requiredEnumValues={!settings.hideSynergyActivity && activity ? activity.shieldTypes : []}
             />
-          </HStack>
-        </GridItem>
-      </Grid>}
-      {isExpanded && <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
-        <GridItem>
-          <Heading size="sm" mb={1}>Well Types</Heading>
-          <HStack>
-          <Energies
-            energyDefinitions={energyDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
-            energyEnumValues={wellTypes}
-          />
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <Heading size="sm" mb={1}>Misc.</Heading>
-          <HStack>
-            <FriendlyCharge missing={!friendlyCharge} />
-            { /*<Warmind missing={true} />*/ }
-          </HStack>
-        </GridItem>
-      </Grid>}
-      
+          </GridItem>
+          <GridItem>
+            <Heading size="sm" mb={1}>Breaker Types</Heading>
+            <HStack>
+              <Breakers
+                breakers={breakers}
+                requiredBreakerEnumValues={!settings.hideSynergyActivity && activity ? activity.breakerTypes : []}
+              />
+            </HStack>
+          </GridItem>
+        </Grid>
+        <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
+          <GridItem>
+            <Heading size="sm" mb={1}>Well Types</Heading>
+            <HStack>
+            <Energies
+              energyDefinitions={energyDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
+              energyEnumValues={wellTypes}
+            />
+            </HStack>
+          </GridItem>
+          <GridItem>
+            <Heading size="sm" mb={1}>Misc.</Heading>
+            <HStack>
+              <FriendlyCharge missing={!friendlyCharge} />
+              { /*<Warmind missing={true} />*/ }
+            </HStack>
+          </GridItem>
+        </Grid>
+      </>}
     </Box>
   );
 }

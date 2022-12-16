@@ -10,13 +10,13 @@ import SlideBox from "components/generics/SlideBox";
 import CharacterModal from "./CharacterModal";
 import { lastOnlineCharacterId } from "./utils/common";
 
-
 type Props = {
   player: PlayerData;
 }
 
 const CharacterDisplay = ({ player }: Props) => {
-  const setPlayerCharacterId = useStore(store => store.setPlayerCharacterId);
+  const setPlayerCharacterId = useStore(state => state.setPlayerCharacterId);
+  const settings = useStore(state => state.settings);
   const removePlayer = useStore(state => state.removePlayer);
   const setActivePlayer = useStore(state => state.setActivePlayer);
   const isActivePlayer = useStore(state => state.activePlayer) === player.membershipId;
@@ -41,7 +41,17 @@ const CharacterDisplay = ({ player }: Props) => {
 
   const userInfo = player.profile.profile.data?.userInfo;
   const data = player.characterData;
-  const sockets = Object.keys(data.importantSockets).flatMap(s => data.importantSockets[s]);
+  const sockets = [
+    ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
+    ...(settings.hideAmmoScavengerMods ? [] : data.importantSockets.ammoScavengerSockets),
+    ...(settings.hideChampionMods ? [] : data.importantSockets.championSockets),
+    ...(settings.hideChargedWithLightMods ? [] : data.importantSockets.chargedWithLightChargerSockets),
+    ...(settings.hideChargedWithLightMods ? [] : data.importantSockets.chargedWithLightSpenderSockets),
+    ...(settings.hideWellMods ? [] : data.importantSockets.wellGeneratorSockets),
+    ...(settings.hideWellMods ? [] : data.importantSockets.wellSpenderSockets),
+    ...(settings.hideRaidMods ? [] : data.importantSockets.raidSockets),
+    ...(data.importantSockets.artifactSockets),
+  ];
   const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === player.characterData.characterId;
   const name = <>{userInfo?.bungieGlobalDisplayName}#{userInfo?.bungieGlobalDisplayNameCode}</>;
 
@@ -78,9 +88,9 @@ const CharacterDisplay = ({ player }: Props) => {
       </Flex>
       <Flex m={1} flex="1" gap="1" direction="column">
         <Items weapons={data.weapons} armors={data.armors} subclass={data.subclass} detailMode={false} />
-        <Box pl="55px">
-          <Sockets sockets={sockets} breakers={data.analyzeData.championBreakers} />
-        </Box>
+        {!settings.hideAnalyzeMods && <Box pl="55px">
+          <Sockets sockets={sockets} breakers={settings.hideChampionMods ? [] : data.analyzeData.championBreakers} />
+        </Box>}
       </Flex>
     </SlideBox>
   );

@@ -9,7 +9,7 @@ import { lastOnlineCharacterId } from "components/Player/Character/utils/common"
 import db from "./db";
 import { ManifestStore } from "./manifestStore";
 import { ActivityStore } from "./activityStore";
-import { ToastStore } from "./toastStore";
+import { ErrorStore } from "./errorStore";
 
 const loadPlayerProfile = async (membershipId: string, membershipType: BungieMembershipType, onlyLive=false) => {
   const profileResponse = await getProfile($http, {
@@ -33,7 +33,7 @@ export type PlayerStore = {
   setChatacterData: (characterData: AppCharacterType) => void,
 }
 
-type Store = PlayerStore & ManifestStore & ActivityStore & ToastStore;
+type Store = PlayerStore & ManifestStore & ActivityStore & ErrorStore;
 
 export const createPlayerStore: StateCreator<Store, any, [], PlayerStore> = (set, get) => ({
   players: [],
@@ -106,7 +106,7 @@ export const createPlayerStore: StateCreator<Store, any, [], PlayerStore> = (set
 
     const profileResponse = await loadPlayerProfile(membershipId, player.membershipType);
     // Handle Error
-    if (get().checkError(profileResponse)) {
+    if (get().checkApiError(profileResponse)) {
       return set(state => ({
         players: state.players.map(player => {
           if (player.membershipId === membershipId) {
@@ -158,7 +158,7 @@ export const createPlayerStore: StateCreator<Store, any, [], PlayerStore> = (set
     // If there is an active player do more
     const activePlayer = get().players.find(p => p.membershipId === activePlayerId) as PlayerData;
     loadPlayerProfile(activePlayerId, activePlayer.membershipType, true).then(profileResponse => {
-      if (get().checkError(profileResponse)) {
+      if (get().checkApiError(profileResponse)) {
         return;
       }
       const activePlayerProfile = profileResponse.Response;
@@ -200,7 +200,7 @@ export const createPlayerStore: StateCreator<Store, any, [], PlayerStore> = (set
       if (idQueue.length > 0) {
         idQueue.forEach(id => {
           getMembershipDataById($http, { membershipId: id, membershipType: BungieMembershipType.None }).then(membershipData => {
-            if (get().checkError(membershipData)) {
+            if (get().checkApiError(membershipData)) {
               return;
             }
             get().addPlayer(id, membershipData.Response.destinyMemberships[0].membershipType);
