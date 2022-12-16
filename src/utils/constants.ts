@@ -1,5 +1,5 @@
 // Handle Development
-export const VERSION = "2.0.0b.2022.12.12";
+export const VERSION = "2.0.0b.2022.12.15";
 
 export const DEV_MODE = process.env.NODE_ENV === "development";
 if (DEV_MODE) {
@@ -33,5 +33,7 @@ export const MISSING_ICON_URL = "img/misc/missing_icon_d2.png";
 // Temps before i do better
 export const MAX_PLAYERS = 6;
 
-// Source code
+// URLs
 export const SOURCE_URL = "https://github.com/jukebox42/raidwatch";
+export const BUNGIE_HELP_URL = "https://help.bungie.net";
+export const BUNGIE_HELP_TWITTER_URL = "https://twitter.com/bungiehelp";

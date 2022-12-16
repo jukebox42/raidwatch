@@ -61,7 +61,6 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
   }
 
   const resetSlide = () => {
-    // TODO: this doesnt reset for the modal open. I wonder why...
     setDistance(0);
     setTouchStart(null);
     setTouchStartY(null);

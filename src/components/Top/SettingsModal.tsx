@@ -9,7 +9,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import { useStore } from "hooks/useStore";
 
@@ -19,55 +18,35 @@ type Props = {
 }
 
 const SettingsModal = ({ isOpen, onClose }: Props) => {
-  // TODO: Do this again, it's a mess
   const settings = useStore(store => store.settings);
   const toggleSetting = useStore(store => store.toggleSetting);
 
+  const newCheckbox = (key: string, title: string, disabled: boolean = false) => (
+    <Checkbox isChecked={settings[key]} onChange={() => toggleSetting(key)} disabled={disabled}>{title}</Checkbox>
+  );
+  {newCheckbox("", "")}
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xs">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Settings</ModalHeader>
         <ModalBody>
-          <Text mb={1}>FYI not implemented... getting there.</Text>
           <Stack spacing={1}>
-
             <Heading size="sm">Synergy</Heading>
-            <Checkbox isChecked={settings.hideSynergy} onChange={() => toggleSetting("hideSynergy")}>
-              Hide Player Synergy
-            </Checkbox>
+            {newCheckbox("hideSynergy", "Hide Player Synergy")}
             <Stack pl={6} mt={1} spacing={1} pb={2}>
-              <Checkbox isChecked={settings.hideSynergyActivity} onChange={() => toggleSetting("hideSynergyActivity")} disabled={settings.hideSynergy}>
-                Hide Activity Selector
-              </Checkbox>
+              {newCheckbox("hideSynergyActivity", "Hide Activity Selector", settings.hideSynergy)}
             </Stack>
-
             <Heading size="sm">Mods</Heading>
-            <Checkbox isChecked={settings.hideAnalyzeMods} onChange={() => toggleSetting("hideAnalyzeMods")}>
-              Hide Character Mod Analyzer
-            </Checkbox>
+            {newCheckbox("hideAnalyzeMods", "Hide Character Mod Analyzer")}
             <Stack pl={6} mt={1} spacing={1} pb={2}>
-              <Checkbox isChecked={settings.hideAmmoFinderMods} onChange={() => toggleSetting("hideAmmoFinderMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Ammo Finder Mods
-              </Checkbox>
-              <Checkbox isChecked={settings.hideAmmoScavengerMods} onChange={() => toggleSetting("hideAmmoScavengerMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Ammo Scavenger Mods
-              </Checkbox>
-              <Checkbox isChecked={settings.hideChampionMods} onChange={() => toggleSetting("hideChampionMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Champion Mods
-              </Checkbox>
-              <Checkbox isChecked={settings.hideChargedWithLightMods} onChange={() => toggleSetting("hideChargedWithLightMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Charged With Light Mods
-              </Checkbox>
-              <Checkbox isChecked={settings.hideWellMods} onChange={() => toggleSetting("hideWellMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Well Mods
-              </Checkbox>
-              {/*<Checkbox isChecked={settings.hideWarmindMods} onChange={() => toggleSetting("hideWarmindMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Warmind Mods
-              </Checkbox>*/}
-              <Checkbox isChecked={settings.hideRaidMods} onChange={() => toggleSetting("hideRaidMods")} disabled={settings.hideAnalyzeMods}>
-                Hide Raid Mods
-              </Checkbox>
+              {newCheckbox("hideAmmoFinderMods", "Hide Ammo Finder Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideAnalyzeMods", "Hide Ammo Scavenger Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideChampionMods", "Hide Champion Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideChargedWithLightMods", "Hide Charged With Light Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideWellMods", "Hide Well Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideWarmindMods", "Hide Warmind Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideRaidMods", "Hide Raid Mods", settings.hideAnalyzeMods)}
             </Stack>
           </Stack>
         </ModalBody>

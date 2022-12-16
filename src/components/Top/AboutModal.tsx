@@ -25,8 +25,12 @@ const AboutModal = ({ isOpen, onClose }: Props) => {
       <ModalContent>
         <ModalHeader>About</ModalHeader>
         <ModalBody>
-          <Text mb={2}>Raidwatch is a tool to give fireteam members quick information about their loadouts.</Text>
-          <Text mb={2}>It was made mostly for fun but if you find bugs feel free to file them on the github issues page.</Text>
+          <Text mb={2}>
+            Raidwatch is a tool to give fireteam members quick information about their loadouts.
+          </Text>
+          <Text mb={2}>
+            It was made mostly for fun but if you find bugs feel free to file them on the github issues page.
+          </Text>
           <Text>Created by PlasmaticSpoon.</Text>
           <Text align="center" fontSize="sm" mt={5}>v{VERSION} - {manifestVersion}</Text>
         </ModalBody>

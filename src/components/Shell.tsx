@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
-import { Alert, AlertIcon, Box, Button, Flex, Heading, Spacer, Text, useToast, VStack } from "@chakra-ui/react";
-import { Icon, QuestionIcon } from "@chakra-ui/icons";
-import { FaTwitter } from "react-icons/fa";
-import { TwitterTimelineEmbed } from "react-twitter-embed";
+import { Box, Heading, Text, useToast, VStack } from "@chakra-ui/react";
 import shallow from "zustand/shallow";
 
 import { useStore } from "hooks/useStore";
 import { IS_BETA, VERSION } from "utils/constants";
 
-import GlobalLoader from "./GlobalLoader";
+import GlobalLoader from "./generics/GlobalLoader";
 import FindPlayer from "./FindPlayer";
 import Player from "./Player/Player";
 import PlayerSynergy from "./Player/PlayerSynergy";
 import Top from "./Top/Top";
+import GlobalError from "./generics/GlobalError";
 
 const Shell = () => {
   const [isPlayersLoaded, setIsPlayersLoaded] = useState(false);
@@ -57,34 +55,13 @@ const Shell = () => {
     return (<GlobalLoader text={loadingMessage} />);
   }
 
-  const handleBungieHelp = () => window.open("https://help.bungie.net", "_blank");
-  const handleBungieTwitter = () => window.open("https://twitter.com/bungiehelp", "_blank");
-
   return (
     <>
       <Box as="header" p={1} position="fixed" w="100%" bg="brand.100" zIndex={9}>
         <Top />
       </Box>
       <Box as="main" pt="50px" pb="100px" w="100%">
-        {apiDisabled && <Box pr={5} pl={5} pt={5}>
-          <Alert status="error" variant="left-accent">
-            <AlertIcon /> The Bungie API is down for maintenence.
-          </Alert>
-          <Flex mt={1} mb={5}>
-            <Button leftIcon={<Icon as={FaTwitter} />} onClick={handleBungieTwitter}>@BungieHelp</Button>
-            <Spacer />
-            <Button leftIcon={<QuestionIcon />} onClick={handleBungieHelp}>help.bungie.net</Button>
-          </Flex>
-          <TwitterTimelineEmbed
-            sourceType="profile"
-            screenName="BungieHelp"
-            options={{ height: 450 }}
-            theme="dark"
-            noHeader
-            noFooter
-            noBorders
-          />
-        </Box>}
+        {apiDisabled && <GlobalError />}
         {!apiDisabled && <VStack p={1} pb="75px" align="stretch" spacing={1}>
           {players.length > 0 && !settings.hideSynergy && <PlayerSynergy />}
           {players.map(player => {
