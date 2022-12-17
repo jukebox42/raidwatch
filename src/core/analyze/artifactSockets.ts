@@ -11,7 +11,7 @@ const specialDamageSockets = [
 /**
  * Identify if a mod belongs to the artifact list.
  */
-const isArtifactSocket = (socket: AppSocketType) => {
+export const isArtifactSocket = (socket: AppSocketType) => {
   return socket.definition.displayProperties && specialDamageSockets.includes(socket.definition.displayProperties.name);
 }
 

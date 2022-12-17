@@ -69,7 +69,7 @@ const spenders: Spenders[] = [
 ];
 
 const itemTypeDisplayName = "Charged with Light Mod";
-const isChargedWithLightSocket = (socket: AppSocketType) =>
+export const isChargedWithLightSocket = (socket: AppSocketType) =>
   socket.definition.itemTypeDisplayName === itemTypeDisplayName ||
   // TODO: this shouldn't be hardcoded, but Elemental Charge is a well mod that chages the player.
   socket.definition.hash.toString() === elementalChargeHash.toString();

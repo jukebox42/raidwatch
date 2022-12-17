@@ -7,8 +7,9 @@ import { weaponMap } from "./helpers";
  * 
  * TODO: move to hash checks
  */
-const isAmmoScavengerSocket = (socket: AppSocketType) => socket.definition.displayProperties &&
-                              /Scavenger$/.test(socket.definition.displayProperties.name);
+export const isAmmoScavengerSocket = (socket: AppSocketType) => {
+  return socket.definition.displayProperties && /Scavenger$/.test(socket.definition.displayProperties.name);
+}
 
 /**
  * Filter sockets array down to mods that are ammo scavenger sockets

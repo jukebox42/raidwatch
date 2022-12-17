@@ -37,7 +37,7 @@ const championSockets: ChampionSocketTypes[] = [
 /**
  * Identify if a mod belongs to the Champion list.
  */
-const isChampionSocket = (socket: AppSocketType) => {
+export const isChampionSocket = (socket: AppSocketType) => {
   return !!socket.definition.breakerTypeHash;
 }
 

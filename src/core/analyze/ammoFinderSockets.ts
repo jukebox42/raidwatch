@@ -7,8 +7,9 @@ import { weaponMap } from "./helpers";
  * 
  * TODO: move to hash checks
  */
-const isAmmoFinderSocket = (socket: AppSocketType) => socket.definition.displayProperties &&
-                           /Ammo Finder$/.test(socket.definition.displayProperties.name);
+export const isAmmoFinderSocket = (socket: AppSocketType) => {
+  return socket.definition.displayProperties && /Ammo Finder$/.test(socket.definition.displayProperties.name);
+}
 
 /**
  * Filter sockets array down to mods that are ammo finder sockets

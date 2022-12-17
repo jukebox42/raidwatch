@@ -63,7 +63,7 @@ const spenders: Spenders[] = [
 ];
 
 const itemTypeDisplayName = "Elemental Well Mod";
-const isWellSocket = (socket: AppSocketType) => socket.definition.itemTypeDisplayName === itemTypeDisplayName;
+export const isWellSocket = (socket: AppSocketType) => socket.definition.itemTypeDisplayName === itemTypeDisplayName;
 
 /**
  * Filter mods array down to mods that generate wells.
