@@ -1,14 +1,14 @@
 import { Box, Flex, Heading, Spacer, useDisclosure, useStyleConfig } from "@chakra-ui/react";
-import { CloseIcon, LockIcon, UnlockIcon, ViewIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LockIcon, UnlockIcon, ViewIcon } from "@chakra-ui/icons";
 
 import { Emblem, Stats, LightStat } from "./partials";
 import { Items, Sockets } from "./equipment";
-import CharacterLoading from "./CharacterLoading";
 import { PlayerData } from "types/player";
 import { useStore } from "hooks/useStore";
 import SlideBox from "components/generics/SlideBox";
 import CharacterModal from "./CharacterModal";
 import { lastOnlineCharacterId } from "./utils/common";
+import { AppCharacterType } from "core";
 
 type Props = {
   player: PlayerData;
@@ -28,11 +28,6 @@ const CharacterDisplay = ({ player }: Props) => {
     return (<>Failed to load player profile.</>);
   }
 
-  console.log("CharacterDisplay", player.membershipId, player.characterData);
-  if (!player.characterData) {
-    return (<CharacterLoading />);
-  }
-
   const handleDelete = () => removePlayer(player.membershipId);
   const handleToggleActive = () => setActivePlayer(isActivePlayer ? "" : player.membershipId);
   const handleBadgeClick = () => setPlayerCharacterId(player.membershipId, "");
@@ -40,7 +35,7 @@ const CharacterDisplay = ({ player }: Props) => {
   const activeIcon = isActivePlayer ? <LockIcon /> : <UnlockIcon />;
 
   const userInfo = player.profile.profile.data?.userInfo;
-  const data = player.characterData;
+  const data = player.characterData as AppCharacterType;
   const sockets = [
     ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
     ...(settings.hideAmmoScavengerMods ? [] : data.importantSockets.ammoScavengerSockets),
@@ -52,12 +47,12 @@ const CharacterDisplay = ({ player }: Props) => {
     ...(settings.hideRaidMods ? [] : data.importantSockets.raidSockets),
     ...(data.importantSockets.artifactSockets),
   ];
-  const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === player.characterData.characterId;
+  const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === data.characterId;
   const name = <>{userInfo?.bungieGlobalDisplayName}#{userInfo?.bungieGlobalDisplayNameCode}</>;
 
   return (
     <SlideBox controls={[
-      { icon: <CloseIcon />, label: "Remove", onClick: handleDelete },
+      { icon: <DeleteIcon />, label: "Delete", onClick: handleDelete },
       undefined,
       { icon: <ViewIcon />, label: "Detailed View", onClick: onOpen },
       { icon: activeIcon, label: "Set Active Player", onClick: handleToggleActive },

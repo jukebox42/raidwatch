@@ -1,5 +1,6 @@
 import { JSXElementConstructor, ReactElement, useState } from "react";
 import { Box, BoxProps, Flex, forwardRef, IconButton, Spacer } from "@chakra-ui/react";
+import { ArrowRightIcon } from "@chakra-ui/icons";
 
 type Control = {
   icon: ReactElement<any, string | JSXElementConstructor<any>>,
@@ -53,6 +54,10 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
     return false;
   }
 
+  const handleTouchEnd = () => {
+    setDistance(dist => dist > slideDistance / 2 ? slideDistance : 0);
+  }
+
   const handleTouchStart = (e: any) => {
     setTouchEnd(null); // otherwise the swipe is fired even with usual touch events
     setTouchEndY(null);
@@ -87,7 +92,9 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
       ref={ref}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
+      <ArrowRightIcon pos="absolute" right="2px" top="50%" boxSize={3} color="brand.200" />
       <Box
         ml={`-${distance}px`}
         width={`calc(100% + ${slideDistance}px)`}

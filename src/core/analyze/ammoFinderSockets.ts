@@ -20,7 +20,7 @@ export const analyzeAmmoFinderSockets = (sockets: AppSocketType[], weaponTypes: 
   const presentWeaponMap = weaponMap.filter(w => weaponTypes.includes(w.type));
   return filterAmmoFinderSockets(sockets)
     .map(s => {
-      const hasWeapon = !!presentWeaponMap.find(w => s.definition.itemSubType === w.type);
+      const hasWeapon = !!presentWeaponMap.find(w => s.definition.displayProperties.name.indexOf(w.name) === 0);
       return {
         ...s,
         purpose: SocketPurpose.ammoFinderSockets,

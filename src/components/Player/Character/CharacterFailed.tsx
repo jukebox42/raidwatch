@@ -21,7 +21,7 @@ const CharacterFailed = ({ player }: Props) => {
         <AlertIcon /> <Text>Player failed to load.</Text>
         <Stack mt={1} ml={10} direction="row" spacing={1} justify="right">
           <IconButton icon={<RepeatIcon />} aria-label="Retry" onClick={handleLoad} />
-          <IconButton icon={<DeleteIcon /> } aria-label="Retry" onClick={handleDelete} />
+          <IconButton icon={<DeleteIcon /> } aria-label="Delete" onClick={handleDelete} />
         </Stack>
       </Alert>
     </Box>
