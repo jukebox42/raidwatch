@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  ModalOverlay,
   Spacer
 } from "@chakra-ui/react"
 import { AppCharacterType } from "core";
@@ -26,6 +27,7 @@ type Props = {
 const CharacterModal = ({ isOpen, onClose, name, data }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" returnFocusOnClose={false}>
+      <ModalOverlay />
       <ModalContent>
         <ModalHeader>
           <Flex mb={1} direction="row">

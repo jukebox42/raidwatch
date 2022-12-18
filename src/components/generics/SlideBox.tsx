@@ -1,5 +1,5 @@
-import { JSXElementConstructor, ReactElement, useState } from "react";
-import { Box, BoxProps, Flex, forwardRef, IconButton, Spacer } from "@chakra-ui/react";
+import { JSXElementConstructor, ReactElement, useEffect, useState } from "react";
+import { Box, BoxProps, Fade, Flex, forwardRef, IconButton, Spacer, useMediaQuery } from "@chakra-ui/react";
 import { ArrowRightIcon } from "@chakra-ui/icons";
 
 type Control = {
@@ -19,17 +19,35 @@ const maxVeticalDistance = 50;
 const slideDistance = 50;
 
 const SlideBox = forwardRef<Props, "div">((props, ref) => {
+  const [isLargeScreen] = useMediaQuery(`(min-width: ${600 - slideDistance}px)`);
+  const [showArrow, setShowArrow] = useState(true);
   const [distance, setDistance] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const [touchStartY, setTouchStartY] = useState(null);
   const [touchEndY, setTouchEndY] = useState(null);
 
+  useEffect(() => {
+    const loop = setInterval(() => setShowArrow(show => !show), 800);
+    const loopCleaner = setTimeout(() => {
+      clearInterval(loop);
+      setShowArrow(false);
+    }, 5000);
+
+    return () => {
+      clearInterval(loop);
+      clearInterval(loopCleaner);
+    };
+  }, []);
+
   // clean up the custom props added for touch events
   const boxProps = { ...props };
   delete (boxProps as any).controls;
 
   const handleTouchMove = (e: any) => {
+    if (isLargeScreen) {
+      return;
+    }
     setTouchEnd(e.targetTouches[0].clientX);
     setTouchEndY(e.targetTouches[0].clientY);
     if (!touchStart || !touchEnd || !touchStartY || !touchEndY) {
@@ -55,10 +73,16 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
   }
 
   const handleTouchEnd = () => {
+    if (isLargeScreen) {
+      return;
+    }
     setDistance(dist => dist > slideDistance / 2 ? slideDistance : 0);
   }
 
   const handleTouchStart = (e: any) => {
+    if (isLargeScreen) {
+      return;
+    }
     setTouchEnd(null); // otherwise the swipe is fired even with usual touch events
     setTouchEndY(null);
     setTouchStart(e.targetTouches[0].clientX);
@@ -66,6 +90,9 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
   }
 
   const resetSlide = () => {
+    if (isLargeScreen) {
+      return;
+    }
     setDistance(0);
     setTouchStart(null);
     setTouchStartY(null);
@@ -94,10 +121,12 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <ArrowRightIcon pos="absolute" right="2px" top="50%" boxSize={3} color="brand.200" />
+      {!isLargeScreen && <Fade in={showArrow}>
+        <ArrowRightIcon pos="absolute" right={`${distance + 2}px`} top="50%" boxSize={3} color="brand.200" />
+      </Fade>}
       <Box
-        ml={`-${distance}px`}
-        width={`calc(100% + ${slideDistance}px)`}
+        ml={!isLargeScreen ? `-${distance}px` : 0}
+        width={!isLargeScreen ? `calc(100% + ${slideDistance}px)` : "100%"}
         pr={slideDistance}>
         {props.children}
       </Box>
@@ -107,7 +136,7 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
         w={`${slideDistance}px`}
         position="absolute"
         top="0"
-        right={`-${slideDistance - distance}px`}
+        right={!isLargeScreen ? `-${slideDistance - distance}px` : 0}
         p={1}
         bg="brand.200"
         height="calc(100%)"

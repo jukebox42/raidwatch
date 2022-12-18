@@ -13,7 +13,8 @@ import {
   useBoolean,
   Select,
   Text,
-  Divider
+  Divider,
+  Collapse
 } from "@chakra-ui/react";
 import {
   AllDestinyManifestComponents,
@@ -148,19 +149,19 @@ const PlayerSynergy = () => {
           onClick={setIsExpanded.toggle}
         />
       </Flex>
-      {isExpanded && <>
+      <Collapse in={isExpanded} animateOpacity>
         {!settings.hideSynergyActivity && <Box p={1}>
-            <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
-              {activities.map(a => (
-                <option
-                  key={a.activity.activityHash.toString()}
-                  value={a.activity.activityHash.toString()}
-                >{a.definition.displayProperties.name}</option>
-              ))}
-            </Select>
-            {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
-            {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
-          </Box>}
+          <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
+            {activities.map(a => (
+              <option
+                key={a.activity.activityHash.toString()}
+                value={a.activity.activityHash.toString()}
+              >{a.definition.displayProperties.name}</option>
+            ))}
+          </Select>
+          {activity && <Text color="gray.400" mt={1}>{activity.definition.displayProperties.description}</Text>}
+          {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
+        </Box>}
         <Divider mt={1} />
         <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
           <GridItem>
@@ -199,7 +200,7 @@ const PlayerSynergy = () => {
             </HStack>
           </GridItem>
         </Grid>
-      </>}
+      </Collapse>
     </Box>
   );
 }

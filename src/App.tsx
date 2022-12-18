@@ -8,7 +8,7 @@ const App = () => {
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <ChakraProvider theme={theme}>
-        <Flex h="calc(100vh)">
+        <Flex h="calc(100vh)" maxW="600px">
           <Shell />
         </Flex>
       </ChakraProvider>
