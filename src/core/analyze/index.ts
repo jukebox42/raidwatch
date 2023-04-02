@@ -13,10 +13,14 @@ import { analyzeChargedWithLightChargerSockets, analyzeChargedWithLightSpenderSo
 import { filterRaidSockets } from "./raidSockets";
 import { analyzeWellGeneratorSockets, analyzeWellSpenderSockets } from "./wellSockets";
 import { analyzeChampionWeapons } from "./championWeapons";
+import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
+import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
 
 export type ImportantSockets = {
   ammoFinderSockets: AppSocketType[],
+  ammoScoutSockets: AppSocketType[],
   ammoScavengerSockets: AppSocketType[],
+  weaponDamageTypeSockets: AppSocketType[],
   artifactSockets: AppSocketType[],
   championSockets: AppSocketType[],
   chargedWithLightChargerSockets: AppSocketType[],
@@ -62,8 +66,10 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   };
 
   // Weapon
-  const ammoFinderSockets = analyzeAmmoFinderSockets(allArmorSockets, analyzeData.weaponTypes);
+  const ammoFinderSockets = analyzeAmmoFinderSockets(allArmorSockets);
+  const ammoScoutSockets = analyzeAmmoScoutSockets(allArmorSockets);
   const ammoScavengerSockets = analyzeAmmoScavengerSockets(allArmorSockets, analyzeData.weaponTypes);
+  const weaponDamageTypeSockets = analyzeWeaponDamageTypeSockets(allArmorSockets, analyzeData.weaponDamageTypes);
 
   // Champion
   const championWeaponBreakers = analyzeChampionWeapons(weapons);
@@ -125,7 +131,9 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
       wellSpenderSockets,
       raidSockets,
       ammoFinderSockets,
+      ammoScoutSockets,
       ammoScavengerSockets,
+      weaponDamageTypeSockets,
       artifactSockets,
     },
     analyzeData,

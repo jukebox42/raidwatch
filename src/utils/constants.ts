@@ -1,5 +1,5 @@
 // Handle Development
-export const VERSION = "2.0.0b.2023.4.1";
+export const VERSION = "2.0.0b.2023.4.2";
 
 export const DEV_MODE = process.env.NODE_ENV === "development";
 if (DEV_MODE) {

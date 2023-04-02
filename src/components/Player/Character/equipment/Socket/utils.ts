@@ -10,6 +10,8 @@ const getAlertText = (unusableReason: SocketUnusableReason | undefined) => {
       return "Must equip a matching weapon for this mod to activate.";
     case SocketUnusableReason.missingEnergyType:
       return "Must equip a weapon or subclass with a matching energy type for this mod to activate.";
+      case SocketUnusableReason.missingDamageType:
+        return "Must equip a weapon with a matching damage type for this mod to activate.";
     case SocketUnusableReason.wrongSubclass:
       return "This mod requires a different subclass to activate.";
     case SocketUnusableReason.missingLightCharger:

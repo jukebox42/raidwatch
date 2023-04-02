@@ -38,6 +38,8 @@ const CharacterDisplay = ({ player }: Props) => {
   const data = player.characterData as AppCharacterType;
   const sockets = [
     ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
+    ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoScoutSockets),
+    ...(data.importantSockets.weaponDamageTypeSockets),
     ...(settings.hideAmmoScavengerMods ? [] : data.importantSockets.ammoScavengerSockets),
     ...(settings.hideChampionMods ? [] : data.importantSockets.championSockets),
     ...(settings.hideChargedWithLightMods ? [] : data.importantSockets.chargedWithLightChargerSockets),

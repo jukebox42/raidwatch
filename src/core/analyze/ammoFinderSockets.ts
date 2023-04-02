@@ -1,14 +1,19 @@
 import { AppSocketType, SocketUsable } from "../sockets";
-import { SocketPurpose, SocketUnusableReason } from "./enums";
-import { weaponMap } from "./helpers";
+import { SocketPurpose } from "./enums";
+
+const finders = [
+  // === Artifact ===
+
+  // === Rest ===
+  { name: "Heavy Ammo Finder", hash: 554409585 },
+  { name: "Special Ammo Finder", hash: 3775800797 },
+];
 
 /**
  * Identify if a mod belongs to the Ammo Finder list.
- * 
- * TODO: move to hash checks
  */
 export const isAmmoFinderSocket = (socket: AppSocketType) => {
-  return socket.definition.displayProperties && /Ammo Finder$/.test(socket.definition.displayProperties.name);
+  return !!finders.find(s => s.hash.toString() === socket.definition.hash.toString());
 }
 
 /**
@@ -16,16 +21,14 @@ export const isAmmoFinderSocket = (socket: AppSocketType) => {
  */
 const filterAmmoFinderSockets = (sockets: AppSocketType[]) => sockets.filter(s => isAmmoFinderSocket(s));
 
-export const analyzeAmmoFinderSockets = (sockets: AppSocketType[], weaponTypes: number[]): AppSocketType[] => {
-  const presentWeaponMap = weaponMap.filter(w => weaponTypes.includes(w.type));
+export const analyzeAmmoFinderSockets = (sockets: AppSocketType[]): AppSocketType[] => {
   return filterAmmoFinderSockets(sockets)
     .map(s => {
-      const hasWeapon = !!presentWeaponMap.find(w => s.definition.displayProperties.name.indexOf(w.name) === 0);
       return {
         ...s,
         purpose: SocketPurpose.ammoFinderSockets,
-        isUsable: hasWeapon ? SocketUsable.YES : SocketUsable.NO,
-        unusableReason: hasWeapon ? undefined : SocketUnusableReason.missingWeapon,
+        isUsable: SocketUsable.YES,
+        unusableReason: undefined,
       }
     });
 }

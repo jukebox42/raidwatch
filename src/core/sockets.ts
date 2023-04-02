@@ -111,9 +111,10 @@ export const getSockets: GetSocketsType = (profile, item, manifest) => {
 
 export const getWeaponSockets = (sockets: AppSocketType[]): AppWeaponSocketsType => {
   const shader = sockets.find(s => s.definition.plug?.plugCategoryIdentifier === "shader");
-  const perkIdentifiers = ["Magazine", "Trait", "Barrel"];
+  const perkIdentifiers = ["Magazine", "Trait", "Barrel", "Origin Trait", "Enhanced Trait"];
   const perks = sockets.filter(s => perkIdentifiers.includes(s.definition.itemTypeDisplayName));
-  const intrinsic = sockets.find(s => s.definition.itemTypeDisplayName === "Intrinsic");
+  const intrinsic = sockets.find(s => 
+    s.definition.itemTypeDisplayName === "Intrinsic" || s.definition.itemTypeDisplayName === "Enhanced Intrinsic");
   const mod = sockets.find(s => s.definition.itemTypeDisplayName === "Weapon Mod");
   const catalyst = sockets.find(s => {
     if (s.definition.plug?.plugCategoryIdentifier === "v400.empty.exotic.masterwork") {
@@ -174,7 +175,6 @@ export const getArmorSockets = (sockets: AppSocketType[]): AppArmorSocketsType =
 }
 
 export const getSubclassSockets = (sockets: AppSocketType[]): AppSubclassSocketsType => {
-  console.log("FFF", sockets);
   const superAbility = sockets.find(s => s.definition.itemTypeDisplayName === "Super Ability");
   const ability = sockets.find(s => s.definition.itemTypeDisplayName === "Class Ability");
   const movement = sockets.find(s => s.definition.itemTypeDisplayName === "Movement Ability");

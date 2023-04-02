@@ -1,5 +1,6 @@
 export enum SocketPurpose {
   ammoFinderSockets = 1,
+  ammoScoutSockets,
   ammoScavengerSockets,
   artifactSockets,
   championSockets,
@@ -13,6 +14,7 @@ export enum SocketPurpose {
 export enum SocketUnusableReason {
   missingWeapon = 1,
   missingEnergyType,
+  missingDamageType,
   wrongSubclass,
   missingLightCharger,
   missingWellGenerator,
