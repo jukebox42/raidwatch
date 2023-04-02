@@ -20,8 +20,6 @@ import {
   AllDestinyManifestComponents,
   DamageType,
   DestinyDamageTypeDefinition,
-  DestinyEnergyType,
-  DestinyEnergyTypeDefinition
 } from "bungie-api-ts/destiny2";
 
 import { Breakers } from "components/Player/Character/equipment";
@@ -31,7 +29,6 @@ import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
 import Modifiers from "./Character/partials/Modifiers";
 import { AppActivity } from "core";
-import FriendlyCharge from "./Character/equipment/FriendlyCharge";
 // import Warmind from "./Character/equipment/Warmind";
 
 const PlayerSynergy = () => {
@@ -51,9 +48,7 @@ const PlayerSynergy = () => {
     loadActivities: state.loadActivities,
   }));
   const [selectedActivityId, setSelectedActivityId] = useState("");
-  const [wellTypes, setWellTypes] = useState<DestinyEnergyType[]>([]);
   const [damageTypes, setDamageTypes] = useState<DamageType[]>([]);
-  const [friendlyCharge, setFriendlyCharge] = useState(false);
   const [breakers, setBreakers] = useState<AppBreakerType[]>([]);
 
   // TODO: This is the only place in the display layer we're using the manifest...
@@ -63,28 +58,17 @@ const PlayerSynergy = () => {
     DamageType.Thermal,
     DamageType.Void,
     DamageType.Stasis,
+    DamageType.Strand,
   ];
   const damageDefinitions = (manifest as AllDestinyManifestComponents).DestinyDamageTypeDefinition;
   const damageDefinitionsArray: DestinyDamageTypeDefinition[] =
     Object.values(damageDefinitions).filter(e => importantDamageEnums.includes(e.enumValue));
-
-  // Get energy Definitions
-  const importantEnergyEnums = [
-    DestinyEnergyType.Arc,
-    DestinyEnergyType.Thermal,
-    DestinyEnergyType.Void,
-    DestinyEnergyType.Stasis,
-  ];
-  const energyDefinitions = (manifest as AllDestinyManifestComponents).DestinyEnergyTypeDefinition;
-  const energyDefinitionsArray: DestinyEnergyTypeDefinition[] =
-    Object.values(energyDefinitions).filter(e => importantEnergyEnums.includes(e.enumValue));
 
   useEffect(() => {
     loadActivities();
   }, [loadActivities, manifest]);
 
   useEffect(() => {
-    const processedWellTypes: DestinyEnergyType[] = [];
     const processedDamageTypes: DamageType[] = [];
     // Get Breaker Definitions
     const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
@@ -98,11 +82,6 @@ const PlayerSynergy = () => {
       }
       const data = player.characterData;
 
-      // Friendly Charge with Light
-      if (data.analyzeData.canChargeFriends) {
-        setFriendlyCharge(true);
-      }
-
       // Breakers
       breakerDefinitionsArray.forEach(breaker => {
         const foundBreaker = data.analyzeData.championBreakers.find(b => b.hash === breaker.hash);
@@ -111,16 +90,12 @@ const PlayerSynergy = () => {
         }
       });
 
-      // Well Types
-      processedWellTypes.push(...data.analyzeData.wellTypesGenerated);
-
       // Damage elements (including subclass)
       processedDamageTypes.push(
         ...data.analyzeData.weaponDamageTypes,
         energyTypeToDamageType(data.analyzeData.subclassEnergyType)
       );
     });
-    setWellTypes(processedWellTypes);
     setDamageTypes(processedDamageTypes);
     setBreakers(breakerDefinitionsArray);
   }, [players, manifest]);
@@ -179,24 +154,6 @@ const PlayerSynergy = () => {
                 breakers={breakers}
                 requiredBreakerEnumValues={!settings.hideSynergyActivity && activity ? activity.breakerTypes : []}
               />
-            </HStack>
-          </GridItem>
-        </Grid>
-        <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
-          <GridItem>
-            <Heading size="sm" mb={1}>Well Types</Heading>
-            <HStack>
-            <Energies
-              energyDefinitions={energyDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
-              energyEnumValues={wellTypes}
-            />
-            </HStack>
-          </GridItem>
-          <GridItem>
-            <Heading size="sm" mb={1}>Misc.</Heading>
-            <HStack>
-              <FriendlyCharge missing={!friendlyCharge} />
-              { /*<Warmind missing={true} />*/ }
             </HStack>
           </GridItem>
         </Grid>

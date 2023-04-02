@@ -1,5 +1,5 @@
 // Handle Development
-export const VERSION = "2.0.0b.2022.12.18";
+export const VERSION = "2.0.0b.2023.4.1";
 
 export const DEV_MODE = process.env.NODE_ENV === "development";
 if (DEV_MODE) {
@@ -18,7 +18,7 @@ if (IS_BETA) {
 // Get API Key from .env
 const key = DEV_MODE ? process.env.REACT_APP_DEV_API_KEY : IS_BETA ? process.env.REACT_APP_API_BETA_KEY : process.env.REACT_APP_API_KEY;
 if (!key) {
-  throw new Error("Missing .env file for API key. See .envExample")
+  throw new Error("Missing .env file for API key. See .envExample");
 }
 export const API_KEY = key ?? "";
 

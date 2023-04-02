@@ -21,7 +21,6 @@ const Armor = ({ armor, detailMode = false }: Props) => {
   return (
     <Item
       icon={displayProperties}
-      energyIcon={armor.energyType.displayProperties}
       name={armor.definition.displayProperties.name}
       type={armor.definition.itemTypeDisplayName}
       level={armor.instance?.primaryStat.value}

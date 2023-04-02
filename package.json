@@ -7,7 +7,7 @@
     "@chakra-ui/react": "^2.3.5",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
-    "bungie-api-ts": "^4.19.0",
+    "bungie-api-ts": "^4.22.2",
     "chakra-react-select": "4.1.4",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",

@@ -174,12 +174,13 @@ export const getArmorSockets = (sockets: AppSocketType[]): AppArmorSocketsType =
 }
 
 export const getSubclassSockets = (sockets: AppSocketType[]): AppSubclassSocketsType => {
+  console.log("FFF", sockets);
   const superAbility = sockets.find(s => s.definition.itemTypeDisplayName === "Super Ability");
   const ability = sockets.find(s => s.definition.itemTypeDisplayName === "Class Ability");
   const movement = sockets.find(s => s.definition.itemTypeDisplayName === "Movement Ability");
-  const meleeList = ["Solar Melee", "Arc Melee", "Void Melee", "Stasis Melee"];
+  const meleeList = ["Solar Melee", "Arc Melee", "Void Melee", "Stasis Melee", "Melee"];
   const melee = sockets.find(s => meleeList.includes(s.definition.itemTypeDisplayName));
-  const grenadeList = ["Solar Grenade", "Arc Grenade", "Void Grenade", "Stasis Grenade"];
+  const grenadeList = ["Solar Grenade", "Arc Grenade", "Void Grenade", "Stasis Grenade", "Strand Grenade"];
   const grenade = sockets.find(s => grenadeList.includes(s.definition.itemTypeDisplayName));
   const fragments = sockets.filter(s => s.definition.traitIds && s.definition.traitIds.includes("item_type.aspect"));
   const aspects = sockets.filter(s => s.definition.traitIds && s.definition.traitIds.includes("item_type.fragment"));

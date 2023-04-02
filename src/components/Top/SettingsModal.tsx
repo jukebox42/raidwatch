@@ -24,7 +24,7 @@ const SettingsModal = ({ isOpen, onClose }: Props) => {
   const newCheckbox = (key: string, title: string, disabled: boolean = false) => (
     <Checkbox isChecked={settings[key]} onChange={() => toggleSetting(key)} disabled={disabled}>{title}</Checkbox>
   );
-  {newCheckbox("", "")}
+  newCheckbox("", "");
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xs">
       <ModalOverlay />
