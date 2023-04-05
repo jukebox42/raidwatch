@@ -41,11 +41,7 @@ const SettingsModal = ({ isOpen, onClose }: Props) => {
             {newCheckbox("hideAnalyzeMods", "Hide Character Mod Analyzer")}
             <Stack pl={6} mt={1} spacing={1} pb={2}>
               {newCheckbox("hideAmmoFinderMods", "Hide Ammo Finder Mods", settings.hideAnalyzeMods)}
-              {newCheckbox("hideAnalyzeMods", "Hide Ammo Scavenger Mods", settings.hideAnalyzeMods)}
               {newCheckbox("hideChampionMods", "Hide Champion Mods", settings.hideAnalyzeMods)}
-              {newCheckbox("hideChargedWithLightMods", "Hide Charged With Light Mods", settings.hideAnalyzeMods)}
-              {newCheckbox("hideWellMods", "Hide Well Mods", settings.hideAnalyzeMods)}
-              {newCheckbox("hideWarmindMods", "Hide Warmind Mods", settings.hideAnalyzeMods)}
               {newCheckbox("hideRaidMods", "Hide Raid Mods", settings.hideAnalyzeMods)}
             </Stack>
           </Stack>

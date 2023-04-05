@@ -30,7 +30,7 @@ const Top = () => {
               Settings
             </MenuItem>
             <MenuItem icon={<UpDownIcon />} onClick={() => window.open(SOURCE_URL, "_blank")}>
-              Source <Text color="brand.500" as="span">(0.1.0)</Text>
+              Source <Text color="brand.500" as="span">(2.0.0b.2023.4.4)</Text>
             </MenuItem>
             <MenuItem icon={<QuestionIcon />} onClick={aboutOnOpen}>
               About

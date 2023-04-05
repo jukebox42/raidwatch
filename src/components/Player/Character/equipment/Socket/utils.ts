@@ -14,12 +14,6 @@ const getAlertText = (unusableReason: SocketUnusableReason | undefined) => {
         return "Must equip a weapon with a matching damage type for this mod to activate.";
     case SocketUnusableReason.wrongSubclass:
       return "This mod requires a different subclass to activate.";
-    case SocketUnusableReason.missingLightCharger:
-      return "Must equip a mod that charges with light. This mod may still work if your allies are running Powerful Friends or Radiant Light.";
-    case SocketUnusableReason.missingWellGenerator:
-      return "Must equip a mod that generates wells. This mod may still work if your allies can generate matching wells.";
-    case SocketUnusableReason.missingWellEnergyType:
-      return "Must equip a mod that generates a matching well energy type. This mod may still work if your allies can generate matching wells.";
     case SocketUnusableReason.missingChampionBreaker:
       return "Must have a working champion mod. This mod may still work if your allies can stun champions."
     case SocketUnusableReason.unsupported:

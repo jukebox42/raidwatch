@@ -23,7 +23,6 @@ import {
 } from "bungie-api-ts/destiny2";
 
 import { Breakers } from "components/Player/Character/equipment";
-import { energyTypeToDamageType } from "core/analyze/helpers";
 import { AppBreakerType } from "core/itemTypes";
 import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
@@ -90,11 +89,8 @@ const PlayerSynergy = () => {
         }
       });
 
-      // Damage elements (including subclass)
-      processedDamageTypes.push(
-        ...data.analyzeData.weaponDamageTypes,
-        energyTypeToDamageType(data.analyzeData.subclassEnergyType)
-      );
+      // Damage Types (including subclass)
+      processedDamageTypes.push(...data.analyzeData.weaponDamageTypes, data.analyzeData.subclassDamageType);
     });
     setDamageTypes(processedDamageTypes);
     setBreakers(breakerDefinitionsArray);
