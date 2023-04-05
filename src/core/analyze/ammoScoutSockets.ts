@@ -2,9 +2,6 @@ import { AppSocketType, SocketUsable } from "../sockets";
 import { SocketPurpose } from "./enums";
 
 const scouts = [
-  // === Artifact ===
-
-  // === Rest ===
   { name: "Heavy Ammo Scout", hash: 1274140735 },
   { name: "Special Ammo Scout", hash: 25154119 },
 ];

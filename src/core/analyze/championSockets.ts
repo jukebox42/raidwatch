@@ -2,14 +2,14 @@ import intersection from "lodash/intersection";
 
 import { AppSocketType, SocketUsable } from "../sockets";
 
-import { DestinyEnergyType, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DamageType, DestinyItemSubType } from "bungie-api-ts/destiny2";
 import { SocketPurpose, SocketUnusableReason } from "./enums";
 
 type ChampionSocketTypes = {
   name: string,
   hash: number,
   requiredTypes?: DestinyItemSubType[],
-  requiredSubclassEnergyTypes?: DestinyEnergyType[],
+  requiredSubclassDamageTypes?: DamageType[],
 }
 
 const championSockets: ChampionSocketTypes[] = [
@@ -21,8 +21,8 @@ const championSockets: ChampionSocketTypes[] = [
   { name: "Unstoppable Shotgun", hash: 3521781034, requiredTypes: [DestinyItemSubType.Shotgun] },
   { name: "Overload Machine Guns", hash: 1404465537, requiredTypes: [DestinyItemSubType.Machinegun] },
   { name: "Anti-Barrier Sniper Rifle", hash: 1404465538, requiredTypes: [DestinyItemSubType.SniperRifle] },
-  { name: "Inferno Whip", hash: 1404465541, requiredSubclassEnergyTypes: [DestinyEnergyType.Thermal] },
-  { name: "Surge Detonators", hash: 1404465540, requiredSubclassEnergyTypes: [DestinyEnergyType.Arc] },
+  { name: "Inferno Whip", hash: 1404465541, requiredSubclassDamageTypes: [DamageType.Thermal] },
+  { name: "Surge Detonators", hash: 1404465540, requiredSubclassDamageTypes: [DamageType.Arc] },
   // Season 19 Artifact
   { name: "Unstopable Hand Cannon", hash: 1360604625, requiredTypes: [DestinyItemSubType.HandCannon] },
   { name: "Overload Scout Rifle", hash: 1360604626, requiredTypes: [DestinyItemSubType.ScoutRifle] },
@@ -30,8 +30,8 @@ const championSockets: ChampionSocketTypes[] = [
   { name: "Anti-Barrier Pulse Rifle", hash: 1360604628, requiredTypes: [DestinyItemSubType.PulseRifle] },
   { name: "Overload Rounds", hash: 1360604629, requiredTypes: [DestinyItemSubType.AutoRifle, DestinyItemSubType.SubmachineGun] },
   { name: "Unstoppable Grenade Launcher", hash: 3138762878, requiredTypes: [DestinyItemSubType.GrenadeLauncher] },
-  { name: "Lord Kelvin's Basilisk", hash: 3138762875, requiredSubclassEnergyTypes: [DestinyEnergyType.Void, DestinyEnergyType.Stasis] },
-  { name: "Low Entropy Super Conductor", hash: 3138762874, requiredSubclassEnergyTypes: [DestinyEnergyType.Arc, DestinyEnergyType.Stasis] },
+  { name: "Lord Kelvin's Basilisk", hash: 3138762875, requiredSubclassDamageTypes: [DamageType.Void, DamageType.Stasis] },
+  { name: "Low Entropy Super Conductor", hash: 3138762874, requiredSubclassDamageTypes: [DamageType.Arc, DamageType.Stasis] },
 ];
 
 /**
@@ -56,7 +56,7 @@ const filterChampionSockets = (sockets: AppSocketType[]) => sockets.filter(s => 
 export const analyzeChampionSockets = (
   sockets: AppSocketType[],
   weaponTypes: DestinyItemSubType[],
-  subclassEnergy: DestinyEnergyType
+  subclassEnergy: DamageType
 ): AppSocketType[] => {
   return filterChampionSockets(sockets)
     .map(socket => {
@@ -83,8 +83,8 @@ export const analyzeChampionSockets = (
       }
 
       // if the mod depends on a subclass energy type
-      if (championSocket.requiredSubclassEnergyTypes) {
-        const matchesSubclass = championSocket.requiredSubclassEnergyTypes.includes(subclassEnergy);
+      if (championSocket.requiredSubclassDamageTypes) {
+        const matchesSubclass = championSocket.requiredSubclassDamageTypes.includes(subclassEnergy);
         return {
           ...champSocket,
           isUsable: matchesSubclass ? SocketUsable.YES : SocketUsable.NO,

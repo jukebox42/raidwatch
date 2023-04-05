@@ -2,9 +2,6 @@ import { AppSocketType, SocketUsable } from "../sockets";
 import { SocketPurpose } from "./enums";
 
 const finders = [
-  // === Artifact ===
-
-  // === Rest ===
   { name: "Heavy Ammo Finder", hash: 554409585 },
   { name: "Special Ammo Finder", hash: 3775800797 },
 ];

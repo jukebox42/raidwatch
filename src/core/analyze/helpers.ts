@@ -1,36 +1,8 @@
-import { DamageType, DestinyEnergyType, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DestinyItemSubType } from "bungie-api-ts/destiny2";
 
 export const PIERCING_HASH = 485622768;
 export const OVERLOAD_HASH = 2611060930;
 export const UNSTOPPABLE_HASH = 3178805705;
-
-export const energyTypeToDamageType = (energyType: DestinyEnergyType) => {
-  switch(energyType) {
-    case DestinyEnergyType.Arc:
-      return DamageType.Arc;
-    case DestinyEnergyType.Void:
-      return DamageType.Void;
-    case DestinyEnergyType.Thermal:
-      return DamageType.Thermal;
-    case DestinyEnergyType.Stasis:
-    default:
-      return DamageType.Stasis;
-  }
-}
-
-export const damageTypeToEnergyType = (damageType: DamageType) => {
-  switch(damageType) {
-    case DamageType.Arc:
-      return DestinyEnergyType.Arc;
-    case DamageType.Void:
-      return DestinyEnergyType.Void;
-    case DamageType.Thermal:
-      return DestinyEnergyType.Thermal;
-    case DamageType.Stasis:
-    default:
-      return DestinyEnergyType.Stasis;
-  }
-}
 
 // TODO: find a better place for this. Maybe a Maps file?
 export const weaponMap = [

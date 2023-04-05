@@ -1,17 +1,11 @@
-import { DamageType, DestinyBreakerTypeDefinition, DestinyEnergyType, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DamageType, DestinyBreakerTypeDefinition, DestinyItemSubType } from "bungie-api-ts/destiny2";
 
 import { AppArmorType, AppBreakerType, AppSubclassType, AppWeaponType } from "core/itemTypes";
 import { AppSocketType } from "core/sockets";
 
-import { damageTypeToEnergyType } from "./helpers";
-
 import { analyzeAmmoFinderSockets } from "./ammoFinderSockets";
-import { analyzeAmmoScavengerSockets } from "./ammoScavengerSockets";
-import { filterArtifactSockets } from "./artifactSockets";
 import { analyzeChampionSockets, analyzeChampionSocketTypes, } from "./championSockets";
-import { analyzeChargedWithLightChargerSockets, analyzeChargedWithLightSpenderSockets } from "./chargedWithLightSockets";
 import { filterRaidSockets } from "./raidSockets";
-import { analyzeWellGeneratorSockets, analyzeWellSpenderSockets } from "./wellSockets";
 import { analyzeChampionWeapons } from "./championWeapons";
 import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
 import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
@@ -19,23 +13,14 @@ import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
 export type ImportantSockets = {
   ammoFinderSockets: AppSocketType[],
   ammoScoutSockets: AppSocketType[],
-  ammoScavengerSockets: AppSocketType[],
   weaponDamageTypeSockets: AppSocketType[],
-  artifactSockets: AppSocketType[],
   championSockets: AppSocketType[],
-  chargedWithLightChargerSockets: AppSocketType[],
-  chargedWithLightSpenderSockets: AppSocketType[],
   raidSockets: AppSocketType[],
-  wellGeneratorSockets: AppSocketType[],
-  wellSpenderSockets: AppSocketType[],
 };
 export type AnalyzeData = {
-  subclassEnergyType: DestinyEnergyType,
+  subclassDamageType: DamageType,
   weaponTypes: DestinyItemSubType[],
   weaponDamageTypes: DamageType[],
-  wellTypesGenerated: DestinyEnergyType[],
-  canCharge: boolean,
-  canChargeFriends: boolean,
   canCauseExplosive: boolean,
   championBreakers: AppBreakerType[],
 };
@@ -55,12 +40,9 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   const allArmorSockets = armors.flatMap(a => a.armorSockets.mods);
 
   const analyzeData: AnalyzeData = {
-    subclassEnergyType: damageTypeToEnergyType(subclass.definition.talentGrid?.hudDamageType as DamageType),
+    subclassDamageType: subclass.definition.talentGrid?.hudDamageType as DamageType,
     weaponTypes: weapons.map(w => w.definition.itemSubType),
     weaponDamageTypes: weapons.map(w => w.definition.damageTypes).flat(),
-    wellTypesGenerated: [],
-    canCharge: false,
-    canChargeFriends: false,
     canCauseExplosive: true, // TODO: Support this
     championBreakers: [],
   };
@@ -68,14 +50,13 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   // Weapon
   const ammoFinderSockets = analyzeAmmoFinderSockets(allArmorSockets);
   const ammoScoutSockets = analyzeAmmoScoutSockets(allArmorSockets);
-  const ammoScavengerSockets = analyzeAmmoScavengerSockets(allArmorSockets, analyzeData.weaponTypes);
   const weaponDamageTypeSockets = analyzeWeaponDamageTypeSockets(allArmorSockets, analyzeData.weaponDamageTypes);
 
   // Champion
   const championWeaponBreakers = analyzeChampionWeapons(weapons);
   // If any weapons have breakers on them already then filter them out. They cannot double dip.
   const nonBreakerWeaponTypes = weapons.filter(w => !!!w.definition.breakerTypeHash).map(w => w.definition.itemSubType);
-  const championSockets = analyzeChampionSockets(allArmorSockets, nonBreakerWeaponTypes, analyzeData.subclassEnergyType);
+  const championSockets = analyzeChampionSockets(allArmorSockets, nonBreakerWeaponTypes, analyzeData.subclassDamageType);
   
   const activeBreakers = [
     ...analyzeChampionSocketTypes(championSockets),
@@ -93,48 +74,15 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   analyzeData.championBreakers = breakerHashes.filter(b => b.sourceNames.length > 0);
 
   // Misc
-  const artifactSockets = filterArtifactSockets(allArmorSockets);
   const raidSockets = filterRaidSockets(allArmorSockets);
-
-  // Well
-  const { wellGeneratorSockets, generatedWellEnergies } = analyzeWellGeneratorSockets(
-    allArmorSockets,
-    analyzeData.weaponDamageTypes,
-    analyzeData.subclassEnergyType);
-  analyzeData.wellTypesGenerated = generatedWellEnergies;
-  const wellSpenderSockets = analyzeWellSpenderSockets(
-    allArmorSockets,
-    analyzeData.subclassEnergyType,
-    generatedWellEnergies);
-
-  // Charged with light
-  const { chargedWithLightChargerSockets, canCharge, canChargeFriends } = analyzeChargedWithLightChargerSockets(
-    allArmorSockets,
-    analyzeData.weaponTypes,
-    generatedWellEnergies.length > 0,
-    breakerHashes.length > 0);
-  analyzeData.canCharge = canCharge;
-  analyzeData.canChargeFriends = canChargeFriends;
-
-  const chargedWithLightSpenderSockets = analyzeChargedWithLightSpenderSockets(
-    allArmorSockets,
-    analyzeData.weaponTypes,
-    analyzeData.weaponDamageTypes,
-    analyzeData.canCharge);
 
   return {
     importantSockets: {
       championSockets,
-      chargedWithLightChargerSockets,
-      chargedWithLightSpenderSockets,
-      wellGeneratorSockets,
-      wellSpenderSockets,
       raidSockets,
       ammoFinderSockets,
       ammoScoutSockets,
-      ammoScavengerSockets,
       weaponDamageTypeSockets,
-      artifactSockets,
     },
     analyzeData,
   }
