@@ -40,7 +40,6 @@ const CharacterDisplay = ({ player }: Props) => {
     ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
     ...(data.importantSockets.ammoScoutSockets),
     ...(data.importantSockets.weaponDamageTypeSockets),
-    ...(settings.hideChampionMods ? [] : data.importantSockets.championSockets),
     ...(settings.hideRaidMods ? [] : data.importantSockets.raidSockets),
   ];
   const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === data.characterId;

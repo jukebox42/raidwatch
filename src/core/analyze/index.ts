@@ -1,6 +1,6 @@
 import { DamageType, DestinyBreakerTypeDefinition, DestinyItemSubType } from "bungie-api-ts/destiny2";
 
-import { AppArmorType, AppBreakerType, AppSubclassType, AppWeaponType } from "core/itemTypes";
+import { AppArmorType, AppArtifactType, AppBreakerType, AppSubclassType, AppWeaponType } from "core/itemTypes";
 import { AppSocketType } from "core/sockets";
 
 import { analyzeAmmoFinderSockets } from "./ammoFinderSockets";
@@ -9,12 +9,12 @@ import { filterRaidSockets } from "./raidSockets";
 import { analyzeChampionWeapons } from "./championWeapons";
 import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
 import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
+import { analyzeChampionBreakers } from "./championBreakers";
 
 export type ImportantSockets = {
   ammoFinderSockets: AppSocketType[],
   ammoScoutSockets: AppSocketType[],
   weaponDamageTypeSockets: AppSocketType[],
-  championSockets: AppSocketType[],
   raidSockets: AppSocketType[],
 };
 export type AnalyzeData = {
@@ -29,6 +29,7 @@ type AnalyzeType = (
   armors: AppArmorType[],
   weapons: AppWeaponType[],
   subclass: AppSubclassType,
+  artifactPerks: AppArtifactType[],
   breakerDefinitions: { [key: number]: DestinyBreakerTypeDefinition },
 ) => { importantSockets: ImportantSockets, analyzeData: AnalyzeData };
 
@@ -36,7 +37,7 @@ type AnalyzeType = (
  * Analyze is gross and manual, it could probably be a lot better if we used data from perks but I have a feeling it'd
  * just be gross and convoluted so I'm sticking with this for now.
  */
-export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitions) => {
+export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, breakerDefinitions) => {
   const allArmorSockets = armors.flatMap(a => a.armorSockets.mods);
 
   const analyzeData: AnalyzeData = {
@@ -53,13 +54,14 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
   const weaponDamageTypeSockets = analyzeWeaponDamageTypeSockets(allArmorSockets, analyzeData.weaponDamageTypes);
 
   // Champion
+  // TODO: Replace all this breaker stuff with the new breaker stuff. remember subclass breakers ok?
   const championWeaponBreakers = analyzeChampionWeapons(weapons);
   // If any weapons have breakers on them already then filter them out. They cannot double dip.
   const nonBreakerWeaponTypes = weapons.filter(w => !!!w.definition.breakerTypeHash).map(w => w.definition.itemSubType);
-  const championSockets = analyzeChampionSockets(allArmorSockets, nonBreakerWeaponTypes, analyzeData.subclassDamageType);
+  const championBreakers = analyzeChampionBreakers(artifactPerks, nonBreakerWeaponTypes, analyzeData.subclassDamageType);
   
   const activeBreakers = [
-    ...analyzeChampionSocketTypes(championSockets),
+    ...championBreakers,
     ...championWeaponBreakers,
   ];
   const breakerHashes = Object.keys(breakerDefinitions).map(hash => {
@@ -78,7 +80,6 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, breakerDefinitio
 
   return {
     importantSockets: {
-      championSockets,
       raidSockets,
       ammoFinderSockets,
       ammoScoutSockets,

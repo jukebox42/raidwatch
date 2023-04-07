@@ -2,7 +2,7 @@ import { Box, Flex, Heading, IconButton, Menu, MenuButton, MenuDivider, MenuItem
 import { DeleteIcon, HamburgerIcon, QuestionIcon, RepeatIcon, SettingsIcon, UpDownIcon } from "@chakra-ui/icons";
 
 import { useStore } from "hooks/useStore";
-import { IS_BETA, SOURCE_URL } from "utils/constants";
+import { IS_BETA, SOURCE_URL, VERSION } from "utils/constants";
 import SettingsModal from "./SettingsModal";
 import AboutModal from "./AboutModal";
 import ResetDataModal from "./ResetDataModal";
@@ -30,7 +30,7 @@ const Top = () => {
               Settings
             </MenuItem>
             <MenuItem icon={<UpDownIcon />} onClick={() => window.open(SOURCE_URL, "_blank")}>
-              Source <Text color="brand.500" as="span">(2.0.0b.2023.4.4)</Text>
+              Source <Text color="brand.500" as="span">({VERSION})</Text>
             </MenuItem>
             <MenuItem icon={<QuestionIcon />} onClick={aboutOnOpen}>
               About

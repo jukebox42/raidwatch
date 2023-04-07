@@ -1,8 +1,21 @@
-import { DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2";
 
 export const PIERCING_HASH = 485622768;
 export const OVERLOAD_HASH = 2611060930;
 export const UNSTOPPABLE_HASH = 3178805705;
+
+export const breakerTypeToHash = (type: DestinyBreakerType) => {
+  if(type === DestinyBreakerType.Disruption) {
+    return OVERLOAD_HASH;
+  }
+  if (type === DestinyBreakerType.Stagger) {
+    return UNSTOPPABLE_HASH;
+  }
+  if (type === DestinyBreakerType.ShieldPiercing) {
+    return PIERCING_HASH;
+  }
+  return 0;
+}
 
 // TODO: find a better place for this. Maybe a Maps file?
 export const weaponMap = [

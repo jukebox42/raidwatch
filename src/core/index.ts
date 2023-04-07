@@ -4,6 +4,7 @@ import {
   DestinyActivityDefinition,
   DestinyActivityModifierDefinition,
   DestinyBreakerType,
+  DestinyCharacterProgressionComponent,
   DestinyClass,
   DestinyColor,
   DestinyItemType,
@@ -13,12 +14,12 @@ import {
 } from "bungie-api-ts/destiny2";
 
 import { getEquipment, filterEquipmentBySubclass, filterEquipmentByItemType } from "./items";
-import { AppArmorType, AppSubclassType, AppWeaponType } from "./itemTypes";
+import { AppArmorType, AppSubclassType, AppWeaponType, AppArtifactType } from "./itemTypes";
 import { AppStatType, filterOutLightStat, findLightStat, getStats } from "./stats";
 import { analyze, AnalyzeData, ImportantSockets } from "./analyze";
 
 export type { AppStatType } from "./stats";
-export type { AppArmorType, AppSubclassType, AppWeaponType } from "./itemTypes";
+export type { AppArmorType, AppSubclassType, AppWeaponType, AppArtifactType } from "./itemTypes";
 export type { AppSocketType } from "./sockets";
 
 export type AppCharacterType = {
@@ -36,6 +37,7 @@ export type AppCharacterType = {
   weapons: AppWeaponType[],
   armors: AppArmorType[],
   importantSockets: ImportantSockets,
+  artifactPerks: AppArtifactType[],
   analyzeData: AnalyzeData,
 }
 
@@ -66,8 +68,12 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
   const weapons = filterEquipmentByItemType(DestinyItemType.Weapon, equipment) as AppWeaponType[];
   const armors = filterEquipmentByItemType(DestinyItemType.Armor, equipment) as AppArmorType[];
   const breakerDefinitions = manifest.DestinyBreakerTypeDefinition;
+  let artifactPerks: AppArtifactType[] = [];
+  if (profile.characterProgressions.data && profile.characterProgressions.data[characterId]) {
+    artifactPerks = getArtifactPerks(profile.characterProgressions.data[characterId], manifest);
+  }
 
-  const { importantSockets, analyzeData } = analyze(armors, weapons, subclass, breakerDefinitions);
+  const { importantSockets, analyzeData } = analyze(armors, weapons, subclass, artifactPerks, breakerDefinitions);
   
   return {
     membershipId: profile.profile.data.userInfo.membershipId,
@@ -84,6 +90,7 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
     weapons,
     armors,
     importantSockets,
+    artifactPerks,
     analyzeData,
   };
 }
@@ -116,6 +123,22 @@ const importantModifiers = [
   { name: "Solar Burn", hash: 434011922 },
   { name: "Void Burn", hash: 2295785649 },
 ];
+
+export const getArtifactPerks = (
+  characterProgression: DestinyCharacterProgressionComponent, manifest: AllDestinyManifestComponents
+): AppArtifactType[] => {
+  const artifactPerks = characterProgression.seasonalArtifact.tiers
+    .flatMap(p => p.items)
+    .map(p => ({
+        item: p,
+        definition: {...manifest.DestinyInventoryItemDefinition[p.itemHash]}
+    }))
+    // Filter down to only what the player has active
+    .filter(p => p.item.isActive);
+
+    artifactPerks.forEach(p => console.log(p.definition.displayProperties.name, p.item.itemHash, p));
+  return artifactPerks;
+}
 
 export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest: AllDestinyManifestComponents) => {
   const activitiesList = activities

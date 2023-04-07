@@ -1,4 +1,5 @@
 import {
+  DestinyArtifactTierItem,
   DestinyBreakerTypeDefinition,
   DestinyDamageTypeDefinition,
   DestinyEnergyTypeDefinition,
@@ -39,6 +40,11 @@ export type AppArmorType = {
   definition: DestinyInventoryItemDefinition,
   sockets: AppSocketType[],
   armorSockets: AppArmorSocketsType,
+};
+
+export type AppArtifactType = {
+  item: DestinyArtifactTierItem,
+  definition: DestinyInventoryItemDefinition,
 };
 
 export type AppSubclassType = {

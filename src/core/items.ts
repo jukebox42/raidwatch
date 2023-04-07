@@ -61,6 +61,8 @@ export const getEquipment: GetEquipmentType = (profile, characterId, manifest)=>
         return subclassItem;
       }
       
+      // TODO: Sort by DestinyAmmunitionType
+      // https://bungie-net.github.io/multi/schema_Destiny-DestinyAmmunitionType.html#schema_Destiny-DestinyAmmunitionType
       // Weapons
       if (instance && instance.damageTypeHash) {
         return {

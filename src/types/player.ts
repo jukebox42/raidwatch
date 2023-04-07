@@ -11,6 +11,7 @@ export const PLAYER_COMPONENTS = [
   DestinyComponentType.Profiles,
   DestinyComponentType.Characters,
   DestinyComponentType.CharacterEquipment,
+  DestinyComponentType.CharacterProgressions,
   DestinyComponentType.ItemInstances,
   DestinyComponentType.ItemSockets,
   ...PLAYER_LIVE_COMPONENTS,
