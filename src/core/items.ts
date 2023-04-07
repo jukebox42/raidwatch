@@ -68,7 +68,7 @@ export const getEquipment: GetEquipmentType = (profile, characterId, manifest)=>
         return {
           ...tempItem,
           damageType: manifest.DestinyDamageTypeDefinition[instance.damageTypeHash],
-          weaponSockets: getWeaponSockets(sockets),
+          weaponSockets: getWeaponSockets(sockets, definition),
         };
       }
 

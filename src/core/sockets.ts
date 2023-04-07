@@ -3,6 +3,7 @@ import {
   DestinyInventoryItemDefinition,
   DestinyItemComponent,
   DestinyItemInstanceComponent,
+  DestinyItemSocketBlockDefinition,
   DestinyItemSocketState,
   DestinyProfileResponse,
   DestinySandboxPerkDefinition,
@@ -109,13 +110,35 @@ export const getSockets: GetSocketsType = (profile, item, manifest) => {
   });
 }
 
-export const getWeaponSockets = (sockets: AppSocketType[]): AppWeaponSocketsType => {
+const WEAPON_PERKS_HASH = 4241085061;
+const INTRINSIC_TRAITS_HASH = 3956125808;
+const WEAPON_MODS_HASH = 2685412949;
+//                    kill tracker, momento
+const FILTER_PERKS = [4181669225, 2947756142];
+export const getWeaponSockets = (sockets: AppSocketType[], definition: DestinyInventoryItemDefinition): AppWeaponSocketsType => {
+  const socketCategories = (definition.sockets as DestinyItemSocketBlockDefinition).socketCategories;
+  // perks
+  let perks: AppSocketType[] = [];
+  const weaponPerkIndexes = socketCategories.find(c => c.socketCategoryHash === WEAPON_PERKS_HASH);
+  if (weaponPerkIndexes) {
+    perks = weaponPerkIndexes
+      .socketIndexes.map(i => sockets[i])
+      .filter(p => p?.definition?.plug && !FILTER_PERKS.includes(p.definition.plug.plugCategoryHash));
+  }
+  // intrinsic
+  let intrinsic: AppSocketType | undefined;
+  const intrinsicTraitIndexes = socketCategories.find(c => c.socketCategoryHash === INTRINSIC_TRAITS_HASH);
+  if (intrinsicTraitIndexes) {
+    intrinsic = sockets[intrinsicTraitIndexes.socketIndexes[0]];
+  }
+  // mod
+  let mod: AppSocketType | undefined;
+  const weaponModIndexes = socketCategories.find(c => c.socketCategoryHash === WEAPON_MODS_HASH);
+  if (weaponModIndexes) {
+    mod = sockets[weaponModIndexes.socketIndexes[0]];
+  }
+
   const shader = sockets.find(s => s.definition.plug?.plugCategoryIdentifier === "shader");
-  const perkIdentifiers = ["Magazine", "Trait", "Barrel", "Origin Trait", "Enhanced Trait"];
-  const perks = sockets.filter(s => perkIdentifiers.includes(s.definition.itemTypeDisplayName));
-  const intrinsic = sockets.find(s => 
-    s.definition.itemTypeDisplayName === "Intrinsic" || s.definition.itemTypeDisplayName === "Enhanced Intrinsic");
-  const mod = sockets.find(s => s.definition.itemTypeDisplayName === "Weapon Mod");
   const catalyst = sockets.find(s => {
     if (s.definition.plug?.plugCategoryIdentifier === "v400.empty.exotic.masterwork") {
       return true;

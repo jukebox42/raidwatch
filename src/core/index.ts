@@ -136,7 +136,7 @@ export const getArtifactPerks = (
     // Filter down to only what the player has active
     .filter(p => p.item.isActive);
 
-    artifactPerks.forEach(p => console.log(p.definition.displayProperties.name, p.item.itemHash, p));
+    // artifactPerks.forEach(p => console.log(p.definition.displayProperties.name, p.item.itemHash, p));
   return artifactPerks;
 }
 

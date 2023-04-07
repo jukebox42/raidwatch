@@ -11,36 +11,21 @@ type BreakerPerkTypes = {
   weapons: DestinyItemSubType[]
 }
 
-enum BreakerCondition {
-  // Solar
-  Radiant,
-  Ignition,
-  // Arc
-  Blind,
-  Jolt,
-  // Void
-  Volatile,
-  Suppression,
-  // Stasis
-  Slow,
-  Shatter,
-  // Strand
-  Suspend,
-  Unraveling,
-}
-
-const breakerDamageRules = [
-  { name: "Arc blind effects", damageType: DamageType.Arc, condition: BreakerCondition.Blind, breakerType: DestinyBreakerType.Stagger },
-  { name: "Arc jolt effects", damageType: DamageType.Arc, condition: BreakerCondition.Jolt, breakerType: DestinyBreakerType.Disruption },
-  { name: "Solar radiant effects", damageType: DamageType.Thermal, condition: BreakerCondition.Radiant, breakerType: DestinyBreakerType.ShieldPiercing },
-  { name: "Solar ignition effects", damageType: DamageType.Thermal, condition: BreakerCondition.Ignition, breakerType: DestinyBreakerType.Stagger },
-  { name: "Void volatile rounds", damageType: DamageType.Void, condition: BreakerCondition.Volatile, breakerType: DestinyBreakerType.ShieldPiercing },
-  { name: "Void suppression effects", damageType: DamageType.Void, condition: BreakerCondition.Suppression, breakerType: DestinyBreakerType.Disruption },
-  { name: "Stasis shatter effects", damageType: DamageType.Stasis, condition: BreakerCondition.Shatter, breakerType: DestinyBreakerType.Stagger },
-  { name: "Stasis slow effects", damageType: DamageType.Stasis, condition: BreakerCondition.Slow, breakerType: DestinyBreakerType.Disruption },
-  { name: "Strand unraveling rounds", damageType: DamageType.Strand, condition: BreakerCondition.Unraveling, breakerType: DestinyBreakerType.ShieldPiercing },
-  { name: "Strand suspend effects", damageType: DamageType.Strand, condition: BreakerCondition.Suspend, breakerType: DestinyBreakerType.Stagger },
+export const breakerTraits = [
+  { name: "Radiant", hash: 1973222647, breakerType: DestinyBreakerType.ShieldPiercing },
+  { name: "Ignition", hash: 2127908492, breakerType: DestinyBreakerType.Stagger },
+  { name: "Blind", hash: 1679107659, breakerType: DestinyBreakerType.Stagger },
+  { name: "Jolted", hash: 2228690371, breakerType: DestinyBreakerType.Disruption },
+  { name: "Volatile rounds", hash: 2650036230, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Void },
+  { name: "Suppression", hash: 3172172883, breakerType: DestinyBreakerType.Disruption },
+  { name: "Slow", hash: 4135386068, breakerType: DestinyBreakerType.Disruption },
+  { name: "Shatter", hash: 4272830254, breakerType: DestinyBreakerType.Stagger },
+  { name: "Suspend", hash: 3271908156, breakerType: DestinyBreakerType.Stagger },
+  { name: "Unraveling rounds", hash: 622080519, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Strand },
 ];
+
+// TODO Pretty sure I'm going to need trait perks from the artifact to conenct the missing link
+// const traitPerks: 
 
 const breakerPerks: BreakerPerkTypes[] = [
   // Tier 1
@@ -56,7 +41,8 @@ const breakerPerks: BreakerPerkTypes[] = [
 export const analyzeChampionBreakers = (
   artifactPerks: AppArtifactType[],
   weaponTypes: DestinyItemSubType[],
-  subclassDamageType: DamageType
+  weaponDamageTypes: DamageType[],
+  traitHashes: number[],
 ) => {
   const breakers: { hash: number, sourceName: string }[] = [];
 
@@ -72,17 +58,18 @@ export const analyzeChampionBreakers = (
     }
   });
 
-  // Now handle other rules
-  // TODO: This needs to be a lot smarter, for now just give them credit for using the right subclass
-  /*breakerDamageRules.forEach(rule => {
-    console.log("R", rule, rule.damageType, subclassDamageType)
-    if (rule.damageType === subclassDamageType) {
-      breakers.push({
-        hash: breakerTypeToHash(rule.breakerType),
-        sourceName: rule.name
-      });
-    }
-  });*/
+  breakerTraits
+    .forEach(trait => {
+      if (
+        traitHashes.includes(trait.hash) && 
+        (!trait.weaponDamageType || weaponDamageTypes.includes(trait.weaponDamageType))
+      ) {
+        breakers.push({
+          hash: breakerTypeToHash(trait.breakerType),
+          sourceName: trait.name
+        });
+      }
+    });
 
   return breakers;
 }
