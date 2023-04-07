@@ -40,24 +40,33 @@ const breakerPerks: BreakerPerkTypes[] = [
 
 export const analyzeChampionBreakers = (
   artifactPerks: AppArtifactType[],
-  weaponTypes: DestinyItemSubType[],
-  weaponDamageTypes: DamageType[],
+  weapons: { type: DestinyItemSubType, damageTypes: DamageType[] }[],
   traitHashes: number[],
 ) => {
   const breakers: { hash: number, sourceName: string }[] = [];
-
+  
+  const usedWeaponTypes: DestinyItemSubType[] = [];
   // Start with the artifact perks
+  const weaponTypes = weapons.map(w => w.type);
   artifactPerks.forEach(perk => {
     const breaker = breakerPerks.find(b => b.hash.toString() === perk.item.itemHash.toString());
-    // if (breaker) console.log("B", breaker.name, breaker, intersection(breaker.weapons, weaponTypes).length > 0)
-    if (breaker && intersection(breaker.weapons, weaponTypes).length > 0) {
+    if (!breaker) {
+      return;
+    }
+    // console.log("B", breaker.name, breaker, intersection(breaker.weapons, weaponTypes).length > 0)
+    const matchingTypes = intersection(breaker.weapons, weaponTypes);
+    if (breaker && matchingTypes.length > 0) {
       breakers.push({
         hash: breakerTypeToHash(breaker.breakerType),
         sourceName: breaker.name
       });
+      // can't double dip. remember what's being used.
+      usedWeaponTypes.push(...matchingTypes);
     }
   });
 
+  // Now handle traits, we can't reuse any weapon from the artifact pool
+  const weaponDamageTypes = weapons.filter(w => !usedWeaponTypes.includes(w.type)).flatMap(w => w.damageTypes);
   breakerTraits
     .forEach(trait => {
       if (

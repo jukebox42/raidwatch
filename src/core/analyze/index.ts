@@ -55,9 +55,10 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
     ...subclass.definition.traitHashes,
     ...subclass.subclassSockets.fragments.map(f => f.definition.traitHashes).flat(),
     ...subclass.subclassSockets.aspects.map(f => f.definition.traitHashes).flat(),
-    ...subclass.subclassSockets.melee.definition.traitHashes,
-    ...subclass.subclassSockets.grenade.definition.traitHashes,
-    ...subclass.subclassSockets.super.definition.traitHashes,
+    ...( subclass.subclassSockets.ability.definition.traitHashes ? subclass.subclassSockets.ability.definition.traitHashes : []),
+    ...( subclass.subclassSockets.melee.definition.traitHashes ? subclass.subclassSockets.melee.definition.traitHashes : []),
+    ...( subclass.subclassSockets.grenade.definition.traitHashes ? subclass.subclassSockets.grenade.definition.traitHashes : []),
+    ...( subclass.subclassSockets.super.definition.traitHashes ? subclass.subclassSockets.super.definition.traitHashes : []),
   ].filter((i, p, s) => s.indexOf(i) === p);
 
   // Weapon
@@ -70,11 +71,15 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
   // TODO: Replace all this breaker stuff with the new breaker stuff. remember subclass breakers ok?
   const championWeaponBreakers = analyzeChampionWeapons(weapons);
   // If any weapons have breakers on them already then filter them out. They cannot double dip.
-  const nonBreakerWeaponTypes = weapons.filter(w => !!!w.definition.breakerTypeHash).map(w => w.definition.itemSubType);
+  const nonBreakerWeapons = weapons
+    .filter(w => !!!w.definition.breakerTypeHash)
+    .map(w => ({
+      type: w.definition.itemSubType,
+      damageTypes: w.definition.damageTypes,
+    }));
   const championBreakers = analyzeChampionBreakers(
     artifactPerks,
-    nonBreakerWeaponTypes,
-    analyzeData.weaponDamageTypes,
+    nonBreakerWeapons,
     traitHashes
   );
 
