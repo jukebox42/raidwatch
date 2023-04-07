@@ -1,7 +1,7 @@
 import intersection from "lodash/intersection";
 import { DamageType, DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2"
 
-import { AppArtifactType } from "core/itemTypes";
+import { AppArtifactType, AppWeaponType } from "core/itemTypes";
 import { breakerTypeToHash } from "./helpers"
 
 type BreakerPerkTypes = {
@@ -24,9 +24,6 @@ export const breakerTraits = [
   { name: "Unraveling rounds", hash: 622080519, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Strand },
 ];
 
-// TODO Pretty sure I'm going to need trait perks from the artifact to conenct the missing link
-// const traitPerks: 
-
 const breakerPerks: BreakerPerkTypes[] = [
   // Tier 1
   { name: "Anti-Barrier Pulse Rifle", hash: 433122833, breakerType: DestinyBreakerType.ShieldPiercing, weapons: [DestinyItemSubType.PulseRifle] },
@@ -40,33 +37,51 @@ const breakerPerks: BreakerPerkTypes[] = [
 
 export const analyzeChampionBreakers = (
   artifactPerks: AppArtifactType[],
-  weapons: { type: DestinyItemSubType, damageTypes: DamageType[] }[],
+  weapons: AppWeaponType[],
   traitHashes: number[],
 ) => {
+  /********************
+   * A note on how breakers work:
+   * Breakers cannot double dip, they are processed in the below order.
+   * First match wins. so we trim out weapons as they are used.
+   * intrinsic -> artifact -> traits
+   ********************/
   const breakers: { hash: number, sourceName: string }[] = [];
-  
-  const usedWeaponTypes: DestinyItemSubType[] = [];
-  // Start with the artifact perks
-  const weaponTypes = weapons.map(w => w.type);
-  artifactPerks.forEach(perk => {
-    const breaker = breakerPerks.find(b => b.hash.toString() === perk.item.itemHash.toString());
+  let unusedWeapons: AppWeaponType[] = [];
+
+  // Handle weapons that have intrinsic breakers
+  weapons.forEach(w => {
+    if (w.definition.breakerTypeHash === undefined) {
+      return unusedWeapons.push(w);
+    }
+    breakers.push({
+      hash: w.definition.breakerTypeHash as number,
+      sourceName: w.definition.displayProperties.name,
+    });
+  });
+
+  // Handle breakers from artifact perks
+  artifactPerks.forEach(p => {
+    const breaker = breakerPerks.find(b => b.hash.toString() === p.item.itemHash.toString());
     if (!breaker) {
       return;
     }
-    // console.log("B", breaker.name, breaker, intersection(breaker.weapons, weaponTypes).length > 0)
-    const matchingTypes = intersection(breaker.weapons, weaponTypes);
-    if (breaker && matchingTypes.length > 0) {
-      breakers.push({
-        hash: breakerTypeToHash(breaker.breakerType),
-        sourceName: breaker.name
-      });
-      // can't double dip. remember what's being used.
-      usedWeaponTypes.push(...matchingTypes);
+
+    const matches = unusedWeapons
+      .map((w, i) => ({index: i, weapon: w}))
+      .filter(w => breaker.weapons.includes(w.weapon.definition.itemSubType));
+    if (!matches.length) {
+      return;
     }
+    breakers.push({
+      hash: breakerTypeToHash(breaker.breakerType),
+      sourceName: breaker.name
+    });
+    matches.forEach(m => unusedWeapons.splice(m.index, 1));
   });
 
-  // Now handle traits, we can't reuse any weapon from the artifact pool
-  const weaponDamageTypes = weapons.filter(w => !usedWeaponTypes.includes(w.type)).flatMap(w => w.damageTypes);
+  // Handle traits
+  const weaponDamageTypes = unusedWeapons.flatMap(w => w.definition.damageTypes);
   breakerTraits
     .forEach(trait => {
       if (

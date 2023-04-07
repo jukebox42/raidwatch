@@ -95,7 +95,6 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
   };
 }
 
-// TODO: make these hashes
 // https://archive.destiny.report/version/e0c36174-e416-4093-8bb4-ca4c35cd37bd/DestinyActivityModifierDefinition
 const importantModifiers = [
   // Shielded Foes

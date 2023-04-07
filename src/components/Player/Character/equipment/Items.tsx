@@ -16,6 +16,8 @@ interface Props {
 }
 
 const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
+
+  // TODO: Sort by this instead? definition.equippingBlock.equipmentSlotTypeHash
   const weaponDisplay = weapons
     .sort((a, b) => {
       return (

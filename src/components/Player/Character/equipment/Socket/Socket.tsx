@@ -25,8 +25,6 @@ const Socket = ({ socket, full }: Props) => {
   const {cross, alertType, alertText, socketStyle } = getAlertDetails(socket.isUsable, socket.unusableReason);
   const styles = useStyleConfig("Square", { variant: socketStyle });
 
-  // TODO: you need to overlay the energy cost definition icon if it exists
-
   const fullImage = (
     <Square __css={styles}>
       <Image src={itemUrl(socket.definition.displayProperties)} />

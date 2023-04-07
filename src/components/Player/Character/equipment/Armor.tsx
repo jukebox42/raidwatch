@@ -9,7 +9,6 @@ interface Props {
 }
 
 const Armor = ({ armor, detailMode = false }: Props) => {
-  // console.log("=====");
   // console.log("Armor", armor.definition.displayProperties.name, armor);
   // armor.armorSockets.mods.forEach(s => console.log(s.definition.displayProperties.name, s.definition.hash, s));
 

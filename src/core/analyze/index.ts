@@ -5,7 +5,6 @@ import { AppSocketType } from "core/sockets";
 
 import { analyzeAmmoFinderSockets } from "./ammoFinderSockets";
 import { filterRaidSockets } from "./raidSockets";
-import { analyzeChampionWeapons } from "./championWeapons";
 import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
 import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
 import { analyzeChampionBreakers } from "./championBreakers";
@@ -20,7 +19,6 @@ export type AnalyzeData = {
   subclassDamageType: DamageType,
   weaponTypes: DestinyItemSubType[],
   weaponDamageTypes: DamageType[],
-  canCauseExplosive: boolean,
   championBreakers: AppBreakerType[],
 };
 
@@ -43,7 +41,6 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
     subclassDamageType: subclass.definition.talentGrid?.hudDamageType as DamageType,
     weaponTypes: weapons.map(w => w.definition.itemSubType),
     weaponDamageTypes: weapons.map(w => w.definition.damageTypes).flat(),
-    canCauseExplosive: true, // TODO: Support this
     championBreakers: [],
   };
 
@@ -68,25 +65,7 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
     allArmorSockets, analyzeData.weaponDamageTypes, analyzeData.subclassDamageType);
 
   // Champion
-  // TODO: Replace all this breaker stuff with the new breaker stuff. remember subclass breakers ok?
-  const championWeaponBreakers = analyzeChampionWeapons(weapons);
-  // If any weapons have breakers on them already then filter them out. They cannot double dip.
-  const nonBreakerWeapons = weapons
-    .filter(w => !!!w.definition.breakerTypeHash)
-    .map(w => ({
-      type: w.definition.itemSubType,
-      damageTypes: w.definition.damageTypes,
-    }));
-  const championBreakers = analyzeChampionBreakers(
-    artifactPerks,
-    nonBreakerWeapons,
-    traitHashes
-  );
-
-  const activeBreakers = [
-    ...championBreakers,
-    ...championWeaponBreakers,
-  ];
+  const activeBreakers = analyzeChampionBreakers(artifactPerks, weapons, traitHashes);
   const breakerHashes = Object.keys(breakerDefinitions).map(hash => {
     const sourceNames: string[] = [];
     activeBreakers.forEach(b => {
