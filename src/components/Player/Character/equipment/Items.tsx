@@ -16,20 +16,21 @@ interface Props {
 }
 
 const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
-
-  // TODO: Sort by this instead? definition.equippingBlock.equipmentSlotTypeHash
+  //                      Kinetic,    Energy,     Power
+  const equipmentSlots = [1498876634, 2465295065, 953998645 ];
   const weaponDisplay = weapons
     .sort((a, b) => {
+      const aId = (a.definition.equippingBlock as DestinyEquippingBlockDefinition).equipmentSlotTypeHash;
+      const bId = (b.definition.equippingBlock as DestinyEquippingBlockDefinition).equipmentSlotTypeHash;
       return (
-        (a.definition.equippingBlock as DestinyEquippingBlockDefinition).ammoType <
-        (b.definition.equippingBlock as DestinyEquippingBlockDefinition).ammoType ?
+        equipmentSlots.findIndex(e => e.toString() === aId.toString()) <
+        equipmentSlots.findIndex(e => e.toString() === bId.toString()) ?
         -1 : 1
       );
     })
     .map(weapon => (<Weapon key={weapon.item.itemInstanceId} weapon={weapon} detailMode={detailMode} />));
 
   if (detailMode) {
-    // TODO: There has to be a better way to sort these. There has to...
     const armorTraits = ["armor_type.head", "armor_type.arms", "armor_type.chest", "armor_type.legs", "armor_type.class"];
     const armorDisplay = armors.sort((a, b) => {
       const aTraits = intersection(a.definition.traitIds);

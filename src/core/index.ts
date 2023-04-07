@@ -146,7 +146,6 @@ export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest
         breakerTypes,
       };
     })
-    // TODO: this could likely be filtered better. I'm trying to remove the encounters that dont have champions
     .filter(a => a.surgeTypes.length > 0 || a.breakerTypes.length > 0);
 
   return [
