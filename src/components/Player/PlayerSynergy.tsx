@@ -10,7 +10,6 @@ import {
   Flex,
   IconButton,
   Spacer,
-  useBoolean,
   Select,
   Text,
   Divider,
@@ -28,25 +27,26 @@ import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
 import Modifiers from "./Character/partials/Modifiers";
 import { AppActivity } from "core";
-// import Warmind from "./Character/equipment/Warmind";
 
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
   const charStatStyles = useStyleConfig("Flex", { variant: "charstats" });
-  const [isExpanded, setIsExpanded] = useBoolean(true);
   const {
     // keys
-    manifest, players, activities, settings,
+    manifest, players, activities, settings, isCollapsed, selectedActivity,
     // functions
-    loadActivities,
+    loadActivities, toggleIsCollapsed, setSelectedActivity
   } = useStore(state => ({
     manifest: state.manifest,
     players: state.players,
     activities: state.activities,
+    selectedActivity: state.selectedActivity,
     settings: state.settings,
+    isCollapsed: state.isCollapsed,
     loadActivities: state.loadActivities,
+    toggleIsCollapsed: state.toggleIsCollapsed,
+    setSelectedActivity: state.setSelectedActivity,
   }));
-  const [selectedActivityId, setSelectedActivityId] = useState("");
   const [damageTypes, setDamageTypes] = useState<DamageType[]>([]);
   const [breakers, setBreakers] = useState<AppBreakerType[]>([]);
 
@@ -97,12 +97,12 @@ const PlayerSynergy = () => {
   }, [players, manifest]);
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedActivityId(event.target.value);
+    setSelectedActivity(event.target.value);
   }
 
   let activity: AppActivity | undefined;
-  if (selectedActivityId) {
-    activity = activities.find(a => a.activity.activityHash.toString() === selectedActivityId) as AppActivity;
+  if (selectedActivity) {
+    activity = activities.find(a => a.activity.activityHash.toString() === selectedActivity) as AppActivity;
     console.log("Selected Activity", activity);
   }
 
@@ -116,13 +116,13 @@ const PlayerSynergy = () => {
         <IconButton
           aria-label="Expand"
           size="sm"
-          icon={isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
-          onClick={setIsExpanded.toggle}
+          icon={!isCollapsed ? <ChevronDownIcon /> : <ChevronRightIcon />}
+          onClick={toggleIsCollapsed}
         />
       </Flex>
-      <Collapse in={isExpanded} animateOpacity>
+      <Collapse in={!isCollapsed} animateOpacity>
         {!settings.hideSynergyActivity && <Box p={1}>
-          <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivityId} disabled={!activities.length}>
+          <Select placeholder="Select an Activity" onChange={onSelect} value={selectedActivity} disabled={!activities.length}>
             {activities.map(a => (
               <option
                 key={a.activity.activityHash.toString()}
@@ -134,26 +134,26 @@ const PlayerSynergy = () => {
           {activity?.modifiers && <Modifiers definitions={activity.modifiers} />}
         </Box>}
         <Divider mt={1} />
-        <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
-          <GridItem>
-            <Heading size="sm" mb={1}>Damage Types</Heading>
-            <Energies
-              energyDefinitions={damageDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
-              energyEnumValues={damageTypes}
-              requiredEnumValues={!settings.hideSynergyActivity && activity ? activity.shieldTypes : []}
-            />
-          </GridItem>
-          <GridItem>
-            <Heading size="sm" mb={1}>Breaker Types</Heading>
-            <HStack>
-              <Breakers
-                breakers={breakers}
-                requiredBreakerEnumValues={!settings.hideSynergyActivity && activity ? activity.breakerTypes : []}
-              />
-            </HStack>
-          </GridItem>
-        </Grid>
       </Collapse>
+      <Grid templateColumns="repeat(2, 1fr)" gap={6} m={1}>
+        <GridItem>
+          <Heading size="sm" mb={1}>Damage Types</Heading>
+          <Energies
+            energyDefinitions={damageDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
+            energyEnumValues={damageTypes}
+            requiredEnumValues={!settings.hideSynergyActivity && activity ? activity.surgeTypes : []}
+          />
+        </GridItem>
+        <GridItem>
+          <Heading size="sm" mb={1}>Breaker Types</Heading>
+          <HStack>
+            <Breakers
+              breakers={breakers}
+              requiredBreakerEnumValues={!settings.hideSynergyActivity && activity ? activity.breakerTypes : []}
+            />
+          </HStack>
+        </GridItem>
+      </Grid>
     </Box>
   );
 }

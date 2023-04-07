@@ -13,7 +13,11 @@ import { ErrorStore } from "./errorStore";
 export type ActivityStore = {
   activePlayer: string,
   activities: AppActivity[],
+  isCollapsed: boolean,
+  selectedActivity: string,
   setActivePlayer: (membershipId: string) => void,
+  setSelectedActivity: (activityId: string) => void,
+  toggleIsCollapsed: () => void,
   loadActivities: () => void,
 }
 
@@ -21,7 +25,9 @@ type Store = PlayerStore & ManifestStore & ActivityStore & ErrorStore;
 
 export const createActivityStore: StateCreator<Store, any, [], ActivityStore> = (set, get) => ({
   activePlayer: "",
+  selectedActivity: "",
   activities: [],
+  isCollapsed: false,
 
   setActivePlayer: async (membershipId: string) => {
     console.log("activityStore:setActivePlayer", membershipId);
@@ -36,13 +42,30 @@ export const createActivityStore: StateCreator<Store, any, [], ActivityStore> = 
       get().erasePlayerProfiles();
     }
   },
+  setSelectedActivity: (activityId: string) => {
+    console.log("activityStore:setSelectedActivity", activityId);
+    db.setConfig({ selectedActivity: activityId });
+    set({ selectedActivity: activityId });
+  },
   loadActivities: async () => {
+    const config = await db.getConfig();
+
     const response = await getPublicMilestones($http);
     if (get().checkApiError(response)) {
       return;
     }
     const activities = getActivitiesData(Object.values(response.Response), get().manifest as AllDestinyManifestComponents);
-    console.log("activityStore:loadActivities", activities);
-    set({ activities });
+    console.log("activityStore:loadActivities", activities, config.selectedActivity);
+    set({
+      activities,
+      isCollapsed: !!config.isActivityCollapsed, // TODO: bad place to do this but eh...
+      selectedActivity: config.selectedActivity ? config.selectedActivity : ""
+    });
   },
+  toggleIsCollapsed: () => {
+    const isCollapsed = get().isCollapsed;
+    console.log("activityStore:toggleIsCollapsed", !isCollapsed);
+    db.setConfig({ isActivityCollapsed: !isCollapsed });
+    set({ isCollapsed: !isCollapsed });
+  }
 });

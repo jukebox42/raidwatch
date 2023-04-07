@@ -21,6 +21,8 @@ export const defaultSettings = {
   hideRaidMods: false,
 };
 
+const defaultConfig = { activePlayer: "" };
+
 class Db extends Dexie {
   AppSettings!: Table<AppSettings>;
   AppSearches!: Table<UserSearchResponseDetail>;
@@ -78,12 +80,12 @@ class Db extends Dexie {
   }
 
   async getConfig() {
-    const defaultConfig = { activePlayer: "" };
     return await this.AppConfig.get(INDEX) ?? { ...defaultConfig };
   }
 
   async setConfig(data: AppConfig) {
-    return await this.AppConfig.put(data, INDEX);
+    const config = await this.AppConfig.get(INDEX) ?? { ...defaultConfig };
+    return await this.AppConfig.put({ ...config, ...data }, INDEX);
   }
 
   /**

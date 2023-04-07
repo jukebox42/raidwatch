@@ -1,3 +1,5 @@
 export type AppConfig = {
-  activePlayer: string,
+  activePlayer?: string,
+  isActivityCollapsed?: boolean,
+  selectedActivity?: string,
 }

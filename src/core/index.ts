@@ -45,7 +45,7 @@ export type AppActivity = {
   activity: DestinyPublicMilestoneChallengeActivity,
   definition: DestinyActivityDefinition,
   modifiers: DestinyActivityModifierDefinition[],
-  shieldTypes: DamageType[],
+  surgeTypes: DamageType[],
   breakerTypes: DestinyBreakerType[],
 }
 
@@ -56,7 +56,7 @@ type GetDataType = (
 
 export const getData: GetDataType = (profile, characterId, manifest) => {
   if (!profile?.characters?.data || !profile.characters.data[characterId] || !profile.profile.data?.userInfo) {
-    return; // TODO
+    return;
   }
   const characterData = profile.characters.data[characterId];
   const equipment = getEquipment(profile, characterId, manifest);
@@ -95,34 +95,6 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
   };
 }
 
-// https://archive.destiny.report/version/e0c36174-e416-4093-8bb4-ca4c35cd37bd/DestinyActivityModifierDefinition
-const importantModifiers = [
-  // Shielded Foes
-  { name: "Shielded Foes", hash: 1651706850, damageTypes: [DamageType.Arc, DamageType.Thermal, DamageType.Void] },
-  { name: "Shielded Foes", hash: 2833087500, damageTypes: [DamageType.Arc, DamageType.Void] },
-  { name: "Shielded Foes", hash: 3230561446, damageTypes: [DamageType.Arc, DamageType.Thermal] },
-  { name: "Shielded Foes", hash: 3958417570, damageTypes: [DamageType.Thermal, DamageType.Void] },
-  { name: "Shielded Foes", hash: 3139381566, damageTypes: [DamageType.Arc] },
-  { name: "Shielded Foes", hash: 1553093202, damageTypes: [DamageType.Thermal] },
-  { name: "Shielded Foes", hash: 3538098588, damageTypes: [DamageType.Void] },
-  // Champion Foes
-  { name: "Champion Foes", hash: 2006149364, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption, DestinyBreakerType.Stagger] },
-  { name: "Champion Foes", hash: 1990363418, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption] },
-  { name: "Champion Foes", hash: 438106166, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Stagger] },
-  { name: "Champion Foes", hash: 3307318061, breakerTypes: [DestinyBreakerType.Stagger, DestinyBreakerType.Disruption] },
-  { name: "Champion Foes", hash: 2475764450, breakerTypes: [DestinyBreakerType.Stagger] },
-  { name: "Champions: Overload", hash: 1201462052, breakerTypes: [DestinyBreakerType.Disruption] },
-  { name: "Champions: Barrier", hash: 1974619026, breakerTypes: [DestinyBreakerType.ShieldPiercing] },
-  // Acute Burns
-  { name: "Acute Arc Burn", hash: 258452800 },
-  { name: "Acute Solar Burn", hash: 2931859389 },
-  { name: "Acute Void Burn", hash: 1691458972 },
-  // Burns
-  { name: "Arc Burn", hash: 2495620299 },
-  { name: "Solar Burn", hash: 434011922 },
-  { name: "Void Burn", hash: 2295785649 },
-];
-
 export const getArtifactPerks = (
   characterProgression: DestinyCharacterProgressionComponent, manifest: AllDestinyManifestComponents
 ): AppArtifactType[] => {
@@ -139,6 +111,24 @@ export const getArtifactPerks = (
   return artifactPerks;
 }
 
+// https://archive.destiny.report/version/e0c36174-e416-4093-8bb4-ca4c35cd37bd/DestinyActivityModifierDefinition
+const importantModifiers = [
+  // Surge
+  { name: "Solar Surge", hash: 426976067, damageTypes: [DamageType.Thermal,] },
+  { name: "Arc Surge", hash: 2691200658, damageTypes: [DamageType.Arc] },
+  { name: "Void Surge", hash: 3196075844, damageTypes: [DamageType.Void] },
+  { name: "Stasis Surge", hash: 3809788899, damageTypes: [DamageType.Stasis] },
+  { name: "Strand Surge", hash: 3810297122, damageTypes: [DamageType.Strand] },
+  // Champion Foes
+  { name: "Champion Foes", hash: 2006149364, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption, DestinyBreakerType.Stagger] },
+  { name: "Champion Foes", hash: 1990363418, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Disruption] },
+  { name: "Champion Foes", hash: 438106166, breakerTypes: [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Stagger] },
+  { name: "Champion Foes", hash: 3307318061, breakerTypes: [DestinyBreakerType.Stagger, DestinyBreakerType.Disruption] },
+  { name: "Champion Foes", hash: 2475764450, breakerTypes: [DestinyBreakerType.Stagger] },
+  { name: "Champions: Overload", hash: 1201462052, breakerTypes: [DestinyBreakerType.Disruption] },
+  { name: "Champions: Barrier", hash: 1974619026, breakerTypes: [DestinyBreakerType.ShieldPiercing] },
+];
+
 export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest: AllDestinyManifestComponents) => {
   const activitiesList = activities
     .filter(a => !!a.activities)
@@ -146,18 +136,18 @@ export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest
     .filter(a => !!a.modifierHashes)
     .map(activity => {
       const modifiers = importantModifiers.filter(m => activity.modifierHashes.find(hash => m.hash === hash));
-      const shieldTypes = modifiers.filter(m => m.damageTypes).flatMap(m => m.damageTypes as DamageType[]);
+      const surgeTypes = modifiers.filter(m => m.damageTypes).flatMap(m => m.damageTypes as DamageType[]);
       const breakerTypes = modifiers.filter(m => m.breakerTypes).flatMap(m => m.breakerTypes as DestinyBreakerType[]);
       return {
         activity,
         definition: manifest.DestinyActivityDefinition[activity.activityHash],
-        modifiers: modifiers.map(m => manifest.DestinyActivityModifierDefinition[m.hash]),
-        shieldTypes,
+        modifiers: activity.modifierHashes.map(m => manifest.DestinyActivityModifierDefinition[m]),
+        surgeTypes,
         breakerTypes,
       };
     })
     // TODO: this could likely be filtered better. I'm trying to remove the encounters that dont have champions
-    .filter(a => a.modifiers.length > 0);
+    .filter(a => a.surgeTypes.length > 0 || a.breakerTypes.length > 0);
 
   return [
     ...activitiesList.filter(
