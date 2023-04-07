@@ -1,6 +1,6 @@
 import { JSXElementConstructor, ReactElement, useEffect, useState } from "react";
 import { Box, BoxProps, Fade, Flex, forwardRef, IconButton, Spacer, useMediaQuery } from "@chakra-ui/react";
-import { ArrowRightIcon } from "@chakra-ui/icons";
+import { ArrowLeftIcon } from "@chakra-ui/icons";
 
 type Control = {
   icon: ReactElement<any, string | JSXElementConstructor<any>>,
@@ -122,7 +122,7 @@ const SlideBox = forwardRef<Props, "div">((props, ref) => {
       onTouchEnd={handleTouchEnd}
     >
       {!isLargeScreen && <Fade in={showArrow}>
-        <ArrowRightIcon pos="absolute" right={`${distance + 2}px`} top="50%" boxSize={3} color="brand.200" />
+        <ArrowLeftIcon pos="absolute" right={`${distance + 5}px`} top="50%" boxSize={6} color="brand.200" />
       </Fade>}
       <Box
         ml={!isLargeScreen ? `-${distance}px` : 0}
