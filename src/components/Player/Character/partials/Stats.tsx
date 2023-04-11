@@ -8,9 +8,11 @@ interface Props {
 }
 
 const Stats = ({ stats }: Props) => {
+  const orderedStats = stats.sort((a, b) => a.definition.index < b.definition.index ? -1 : 1);
   return (
     <Flex gap="2">
-      {stats.map(stat => {
+      {orderedStats.map(stat => {
+        console.log(stat.definition.displayProperties.name, stat);
         return (
           <Flex key={stat.definition.hash} alignItems="center">
             <Square size="20px">

@@ -41,9 +41,13 @@ const SettingsModal = ({ isOpen, onClose }: Props) => {
             {newCheckbox("hideAnalyzeMods", "Hide Character Mod Analyzer")}
             <Stack pl={6} mt={1} spacing={1} pb={2}>
               {newCheckbox("hideAmmoFinderMods", "Hide Ammo Finder Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideAmmoScoutMods", "Hide Ammo Scout Mods", settings.hideAnalyzeMods)}
               {newCheckbox("hideChampionMods", "Hide Champion Mods", settings.hideAnalyzeMods)}
+              {newCheckbox("hideWeaponDamageMods", "Hide Weapon Damage Mods", settings.hideAnalyzeMods)}
               {newCheckbox("hideRaidMods", "Hide Raid Mods", settings.hideAnalyzeMods)}
             </Stack>
+            <Heading size="sm">Player Display</Heading>
+            {newCheckbox("expandedCharacterModalData", "Expanded Character Modal Data")}
           </Stack>
         </ModalBody>
         <ModalFooter>

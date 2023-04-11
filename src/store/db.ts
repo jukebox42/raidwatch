@@ -13,12 +13,11 @@ export const defaultSettings = {
   hideSynergyActivity: false,
   hideAnalyzeMods: false,
   hideAmmoFinderMods: false,
-  hideAmmoScavengerMods: false,
+  hideAmmoScoutMods: false,
   hideChampionMods: false,
-  hideChargedWithLightMods: false,
-  hideWellMods: false,
-  hideWarmindMods: false,
+  hideWeaponDamageMods: false,
   hideRaidMods: false,
+  expandedCharacterModalData: false,
 };
 
 const defaultConfig = { activePlayer: "" };

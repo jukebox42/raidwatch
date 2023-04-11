@@ -4,10 +4,10 @@ export type AppSettings = {
 
   hideAnalyzeMods: boolean,
   hideAmmoFinderMods: boolean,
-  hideAmmoScavengerMods: boolean,
+  hideAmmoScoutMods: boolean,
   hideChampionMods: boolean,
-  hideChargedWithLightMods: boolean,
-  hideWellMods: boolean,
-  hideWarmindMods: boolean,
+  hideWeaponDamageMods: boolean,
   hideRaidMods: boolean,
+
+  expandedCharacterModalData: boolean,
 }

@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react"
 import { AppCharacterType } from "core";
 import { AppBreakerType } from "core/itemTypes";
+import { useStore } from "hooks/useStore";
 import { Items, ArtifactPerks } from "./equipment";
 import { LightStat, Stats } from "./partials";
 
@@ -39,7 +40,12 @@ const CharacterModal = ({ isOpen, onClose, name, data }: Props) => {
         <ModalBody>
           <Stats stats={data.stats} />
           <ArtifactPerks perks={data.artifactPerks} />
-          <Items weapons={data.weapons} armors={data.armors} subclass={data.subclass} detailMode />
+          <Items
+            weapons={data.weapons}
+            armors={data.armors}
+            subclass={data.subclass}
+            detailMode
+          />
         </ModalBody>
         <ModalFooter>
           <Button onClick={onClose} variant="ghost">

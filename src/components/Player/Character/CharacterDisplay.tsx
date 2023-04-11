@@ -38,8 +38,8 @@ const CharacterDisplay = ({ player }: Props) => {
   const data = player.characterData as AppCharacterType;
   const sockets = [
     ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
-    ...(data.importantSockets.ammoScoutSockets),
-    ...(data.importantSockets.weaponDamageTypeSockets),
+    ...(settings.hideAmmoScoutMods ? [] : data.importantSockets.ammoScoutSockets),
+    ...(settings.hideWeaponDamageMods ? [] : data.importantSockets.weaponDamageTypeSockets),
     ...(settings.hideRaidMods ? [] : data.importantSockets.raidSockets),
   ];
   const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === data.characterId;
