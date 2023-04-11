@@ -12,7 +12,7 @@ const Stats = ({ stats }: Props) => {
   return (
     <Flex gap="2">
       {orderedStats.map(stat => {
-        console.log(stat.definition.displayProperties.name, stat);
+        // console.log(stat.definition.displayProperties.name, stat);
         return (
           <Flex key={stat.definition.hash} alignItems="center">
             <Square size="20px">
