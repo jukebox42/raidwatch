@@ -38,8 +38,8 @@ export const parseDescription = (description: string): React.ReactNode[] => {
     let desc = d
       // TODO: don't hardcode this
       .replace(/\{var:[\d]+\}/, "25")
-      .replace("[Disruption]", descImg(UNSTOPPABLE_ICON_URL))
-      .replace("[Stagger]", descImg(OVERLOAD_ICON_URL))
+      .replace("[Stagger]", descImg(UNSTOPPABLE_ICON_URL))
+      .replace("[Disruption]", descImg(OVERLOAD_ICON_URL))
       .replace("[Shield-Piercing]", descImg(ANTI_BARRIER_ICON_URL));
     return <Text mb={1} key={id()} dangerouslySetInnerHTML={{__html: desc}}></Text>
   });
