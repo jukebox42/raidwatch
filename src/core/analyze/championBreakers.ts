@@ -1,4 +1,3 @@
-import intersection from "lodash/intersection";
 import { DamageType, DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2"
 
 import { AppArtifactType, AppWeaponType } from "core/itemTypes";

@@ -1,5 +1,8 @@
 import {
   Button,
+  Divider,
+  Heading,
+  ListItem,
   Modal,
   ModalBody,
   ModalContent,
@@ -7,9 +10,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  UnorderedList,
 } from "@chakra-ui/react";
-import { useStore } from "hooks/useStore";
-import { VERSION } from "utils/constants";
 
 type Props = {
   isOpen: boolean,
@@ -17,13 +19,17 @@ type Props = {
 }
 
 const AboutModal = ({ isOpen, onClose }: Props) => {
-  const manifestVersion = useStore(store => store.manifestVersion);
-
+  const changelog = [
+    {
+      version: "2023.4.11-beta",
+      description: "This version is a complete rewrite of the source to support lightfall."
+    },
+  ];
   return (
-    <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false} size="xs">
+    <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false} size="lg">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>About</ModalHeader>
+        <ModalHeader><Heading size="lg">About</Heading></ModalHeader>
         <ModalBody>
           <Text mb={2}>
             Raidwatch is a tool to give fireteam members quick information about their loadouts.
@@ -32,7 +38,15 @@ const AboutModal = ({ isOpen, onClose }: Props) => {
             It was made mostly for fun but if you find bugs feel free to file them on the github issues page.
           </Text>
           <Text>Created by PlasmaticSpoon.</Text>
-          <Text align="center" fontSize="sm" mt={5}>v{VERSION} - {manifestVersion}</Text>
+          <Divider mt={5} mb={5} />
+          <Heading size="md" mb={2}>Changelog</Heading>
+          <UnorderedList>
+            {changelog.map(c => (
+              <ListItem>
+                <Text color="brand.500" as="strong">{c.version}</Text> - {c.description}
+              </ListItem>
+            ))}
+          </UnorderedList>
         </ModalBody>
         <ModalFooter>
           <Button onClick={onClose} variant="ghost">Close</Button>
