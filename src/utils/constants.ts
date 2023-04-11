@@ -29,6 +29,9 @@ export const LANGUAGE = "en";
 export const ASSET_URL = "https://www.bungie.net";
 export const API_URL = `${ASSET_URL}/platform`;
 export const MISSING_ICON_URL = "img/misc/missing_icon_d2.png";
+export const UNSTOPPABLE_ICON_URL = "/common/destiny2_content/icons/DestinyBreakerTypeDefinition_825a438c85404efd6472ff9e97fc7251.png";
+export const OVERLOAD_ICON_URL = "/common/destiny2_content/icons/DestinyBreakerTypeDefinition_da558352b624d799cf50de14d7cb9565.png";
+export const ANTI_BARRIER_ICON_URL = "/common/destiny2_content/icons/DestinyBreakerTypeDefinition_07b9ba0194e85e46b258b04783e93d5d.png";
 
 // Temps before i do better
 export const MAX_PLAYERS = 6;

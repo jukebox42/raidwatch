@@ -1,11 +1,12 @@
-import { Divider, Heading, HStack, VStack } from "@chakra-ui/react";
+import { Heading, HStack, VStack } from "@chakra-ui/react";
 import intersection from "lodash/intersection";
+import { DestinyEquippingBlockDefinition } from "bungie-api-ts/destiny2";
 
 import { AppWeaponType, AppArmorType, AppSubclassType } from "core";
 import Weapon from "../equipment/Weapon";
 import Armor from "../equipment/Armor";
 import Subclass from "./Subclass";
-import { DestinyEquippingBlockDefinition } from "bungie-api-ts/destiny2";
+
 
 
 interface Props {
@@ -42,7 +43,6 @@ const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
 
     return (
       <>
-        <Divider mt={2} mb={2} />
         <Heading size="md" mb={1}>Subclass</Heading>
         <Subclass subclass={subclass} detailMode={detailMode} />
         <Heading size="md" mb={1}>Weapons</Heading>

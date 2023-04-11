@@ -6,7 +6,7 @@ import isInteger from "lodash/isInteger";
 export type ErrorStore = {
   _toast: CreateToastFnReturn | undefined,
   apiDisabled: boolean,
-  apiThrottle: number, // TODO
+  apiThrottle: number, // TODO support throttle
   checkApiError: (response: any) => boolean,
   setToast: (toast: CreateToastFnReturn) => void,
   showToast: (description: string, id: string | number, error?: boolean) => void,

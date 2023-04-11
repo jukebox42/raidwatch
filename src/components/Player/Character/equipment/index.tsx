@@ -6,3 +6,4 @@ export { default as Items } from "./Items";
 export { default as Sockets } from "./Sockets";
 export { default as Subclass } from "./Subclass";
 export { default as Weapon } from "./Weapon";
+export { default as ArtifactPerks } from "./ArtifactPerks";

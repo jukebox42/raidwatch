@@ -6,6 +6,7 @@ import {
   DestinyInventoryItemDefinition,
   DestinyItemComponent,
   DestinyItemInstanceComponent,
+  DestinySandboxPerkDefinition,
 } from "bungie-api-ts/destiny2";
 
 import {
@@ -45,6 +46,7 @@ export type AppArmorType = {
 export type AppArtifactType = {
   item: DestinyArtifactTierItem,
   definition: DestinyInventoryItemDefinition,
+  perkDefinitions: DestinySandboxPerkDefinition[],
 };
 
 export type AppSubclassType = {

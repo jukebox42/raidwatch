@@ -98,17 +98,21 @@ export const getData: GetDataType = (profile, characterId, manifest) => {
 export const getArtifactPerks = (
   characterProgression: DestinyCharacterProgressionComponent, manifest: AllDestinyManifestComponents
 ): AppArtifactType[] => {
-  const artifactPerks = characterProgression.seasonalArtifact.tiers
+  return characterProgression.seasonalArtifact.tiers
     .flatMap(p => p.items)
-    .map(p => ({
-        item: p,
-        definition: {...manifest.DestinyInventoryItemDefinition[p.itemHash]}
-    }))
+    .map(item => {
+      const definition = manifest.DestinyInventoryItemDefinition[item.itemHash];
+      const perkDefinitions = definition.perks
+        .map(p => manifest.DestinySandboxPerkDefinition[p.perkHash])
+        .filter(p => p.isDisplayable);
+      return {
+        item,
+        definition,
+        perkDefinitions,
+      }
+    })
     // Filter down to only what the player has active
     .filter(p => p.item.isActive);
-
-    // artifactPerks.forEach(p => console.log(p.definition.displayProperties.name, p.item.itemHash, p));
-  return artifactPerks;
 }
 
 // https://archive.destiny.report/version/e0c36174-e416-4093-8bb4-ca4c35cd37bd/DestinyActivityModifierDefinition

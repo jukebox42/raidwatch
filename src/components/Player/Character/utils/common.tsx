@@ -1,7 +1,8 @@
 import { Text } from "@chakra-ui/react";
 import { DestinyCharacterComponent } from "bungie-api-ts/destiny2";
 
-import { id } from "utils/common";
+import { id, assetUrl } from "utils/common";
+import { ANTI_BARRIER_ICON_URL, OVERLOAD_ICON_URL, UNSTOPPABLE_ICON_URL } from "utils/constants";
 
 /**
  * Get the id of the character that was last online for the player.
@@ -31,5 +32,15 @@ export const isLastOnlineCharacter = (characterId: string, characters: { [key: s
  * TODO: it's be cool if we replaced [thing] with the icon. Maybe later.
  */
 export const parseDescription = (description: string): React.ReactNode[] => {
-  return description.split("\n").map(d => <Text mb={1} key={id()}>{d}</Text>);
+  return description.split("\n").map(d => {
+    const imageStyle = "width:15px;display:inline;margin-top:2px;margin-bottom:-2px;";
+    const descImg = (path: string) => `<img src="${assetUrl(path)}" style="${imageStyle}" />`;
+    let desc = d
+      // TODO: don't hardcode this
+      .replace(/\{var:[\d]+\}/, "25")
+      .replace("[Disruption]", descImg(UNSTOPPABLE_ICON_URL))
+      .replace("[Stagger]", descImg(OVERLOAD_ICON_URL))
+      .replace("[Shield-Piercing]", descImg(ANTI_BARRIER_ICON_URL));
+    return <Text mb={1} key={id()} dangerouslySetInnerHTML={{__html: desc}}></Text>
+  });
 }
