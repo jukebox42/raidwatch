@@ -21,7 +21,7 @@ type Props = {
 const AboutModal = ({ isOpen, onClose }: Props) => {
   const changelog = [
     {
-      version: "2023.4.11-beta",
+      version: "2023.4.11",
       description: "This version is a complete rewrite of the source to support lightfall."
     },
   ];

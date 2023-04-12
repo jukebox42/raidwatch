@@ -10,6 +10,14 @@ type ManifestData<T> = { [key: number]: T };
  */
 export const id = () => v4();
 
+type DiffHash = number | string | undefined;
+/**
+ * Compares two hashes and returns true if they are.
+ * 
+ * The hashes from bungies API can be longer than an int causing diffing via number to fail.
+ */
+export const diffHashes = (a: DiffHash, b: DiffHash) => a?.toString() === b?.toString();
+
 /**
  * Generate a URL for an item's icon.
  */

@@ -3,6 +3,7 @@ import {
   DestinyItemType,
   DestinyProfileResponse
 } from "bungie-api-ts/destiny2";
+import { diffHashes } from "utils/common";
 
 import { AppEquipmentType, AppSubclassType, ITEM_TYPES } from "./itemTypes";
 
@@ -36,7 +37,7 @@ export const getEquipment: GetEquipmentType = (profile, characterId, manifest)=>
   return Object.keys(manifest.DestinyInventoryItemDefinition)
     .filter(key => equipmentKeys.includes(key.toString()))
     .map(key => {
-      const item = equipment.find(e => e.itemHash.toString() === key);
+      const item = equipment.find(e => diffHashes(e.itemHash, key));
       if (!item) {
         throw new Error("Somehow didnt find item...");
       }

@@ -9,6 +9,7 @@ import {
   DestinySandboxPerkDefinition,
   DestinyStatDefinition,
 } from "bungie-api-ts/destiny2";
+import { diffHashes } from "utils/common";
 import { SocketPurpose, SocketUnusableReason } from "./analyze/enums";
 
 import { getEnergyCostDefinition, getItemDefinitions, getPerkDefinitions } from "./common";
@@ -119,7 +120,7 @@ export const getWeaponSockets = (sockets: AppSocketType[], definition: DestinyIn
   const socketCategories = (definition.sockets as DestinyItemSocketBlockDefinition).socketCategories;
   // perks
   let perks: AppSocketType[] = [];
-  const weaponPerkIndexes = socketCategories.find(c => c.socketCategoryHash === WEAPON_PERKS_HASH);
+  const weaponPerkIndexes = socketCategories.find(c => diffHashes(c.socketCategoryHash, WEAPON_PERKS_HASH));
   if (weaponPerkIndexes) {
     perks = weaponPerkIndexes
       .socketIndexes.map(i => sockets[i])
@@ -127,13 +128,13 @@ export const getWeaponSockets = (sockets: AppSocketType[], definition: DestinyIn
   }
   // intrinsic
   let intrinsic: AppSocketType | undefined;
-  const intrinsicTraitIndexes = socketCategories.find(c => c.socketCategoryHash === INTRINSIC_TRAITS_HASH);
+  const intrinsicTraitIndexes = socketCategories.find(c => diffHashes(c.socketCategoryHash, INTRINSIC_TRAITS_HASH));
   if (intrinsicTraitIndexes) {
     intrinsic = sockets[intrinsicTraitIndexes.socketIndexes[0]];
   }
   // mod
   let mod: AppSocketType | undefined;
-  const weaponModIndexes = socketCategories.find(c => c.socketCategoryHash === WEAPON_MODS_HASH);
+  const weaponModIndexes = socketCategories.find(c => diffHashes(c.socketCategoryHash, WEAPON_MODS_HASH));
   if (weaponModIndexes) {
     mod = sockets[weaponModIndexes.socketIndexes[0]];
   }
@@ -186,7 +187,7 @@ export const getArmorSockets = (sockets: AppSocketType[]): AppArmorSocketsType =
     if (s.definition.plug && /^armor_skins/.test(s.definition.plug.plugCategoryIdentifier)) {
       return false;
     }
-    return !banList.find(s2 => s2?.definition.hash === s.definition.hash);
+    return !banList.find(s2 => diffHashes(s2?.definition.hash, s.definition.hash));
   });
 
   return {

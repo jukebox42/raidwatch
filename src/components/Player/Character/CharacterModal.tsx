@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react"
 import { AppCharacterType } from "core";
 import { AppBreakerType } from "core/itemTypes";
-import { useStore } from "hooks/useStore";
 import { Items, ArtifactPerks } from "./equipment";
 import { LightStat, Stats } from "./partials";
 

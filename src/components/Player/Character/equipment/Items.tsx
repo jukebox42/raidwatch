@@ -6,6 +6,7 @@ import { AppWeaponType, AppArmorType, AppSubclassType } from "core";
 import Weapon from "../equipment/Weapon";
 import Armor from "../equipment/Armor";
 import Subclass from "./Subclass";
+import { diffHashes } from "utils/common";
 
 
 
@@ -18,14 +19,14 @@ interface Props {
 
 const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
   //                      Kinetic,    Energy,     Power
-  const equipmentSlots = [1498876634, 2465295065, 953998645 ];
+  const equipmentSlots = [1498876634, 2465295065, 953998645];
   const weaponDisplay = weapons
     .sort((a, b) => {
       const aId = (a.definition.equippingBlock as DestinyEquippingBlockDefinition).equipmentSlotTypeHash;
       const bId = (b.definition.equippingBlock as DestinyEquippingBlockDefinition).equipmentSlotTypeHash;
       return (
-        equipmentSlots.findIndex(e => e.toString() === aId.toString()) <
-        equipmentSlots.findIndex(e => e.toString() === bId.toString()) ?
+        equipmentSlots.findIndex(e => diffHashes(e, aId)) <
+        equipmentSlots.findIndex(e => diffHashes(e, bId)) ?
         -1 : 1
       );
     })
@@ -43,13 +44,13 @@ const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
 
     return (
       <>
-        <Heading size="md" mb={1}>Subclass</Heading>
+        <Heading size="md" mb={1} mt={2}>Subclass</Heading>
         <Subclass subclass={subclass} detailMode={detailMode} />
-        <Heading size="md" mb={1}>Weapons</Heading>
+        <Heading size="md" mb={1} mt={2}>Weapons</Heading>
         <VStack spacing={1} align="stretch">
           {weaponDisplay}
         </VStack>
-        <Heading size="md" mb={1}>Armor</Heading>
+        <Heading size="md" mb={1} mt={2}>Armor</Heading>
         <VStack spacing={1} align="stretch">
           {armorDisplay}
         </VStack>

@@ -8,6 +8,7 @@ import { filterRaidSockets } from "./raidSockets";
 import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
 import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
 import { analyzeChampionBreakers } from "./championBreakers";
+import { diffHashes } from "utils/common";
 
 export type ImportantSockets = {
   ammoFinderSockets: AppSocketType[],
@@ -69,7 +70,7 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
   const breakerHashes = Object.keys(breakerDefinitions).map(hash => {
     const sourceNames: string[] = [];
     activeBreakers.forEach(b => {
-      if (b.hash.toString() === hash) {
+      if (diffHashes(b.hash, hash)) {
         sourceNames.push(b.sourceName);
       }
     });

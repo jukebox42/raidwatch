@@ -17,6 +17,7 @@ import { getEquipment, filterEquipmentBySubclass, filterEquipmentByItemType } fr
 import { AppArmorType, AppSubclassType, AppWeaponType, AppArtifactType } from "./itemTypes";
 import { AppStatType, filterOutLightStat, findLightStat, getStats } from "./stats";
 import { analyze, AnalyzeData, ImportantSockets } from "./analyze";
+import { diffHashes } from "utils/common";
 
 export type { AppStatType } from "./stats";
 export type { AppArmorType, AppSubclassType, AppWeaponType, AppArtifactType } from "./itemTypes";
@@ -139,7 +140,7 @@ export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest
     .flatMap(a => a.activities)
     .filter(a => !!a.modifierHashes)
     .map(activity => {
-      const modifiers = importantModifiers.filter(m => activity.modifierHashes.find(hash => m.hash === hash));
+      const modifiers = importantModifiers.filter(m => activity.modifierHashes.find(hash => diffHashes(m.hash, hash)));
       const surgeTypes = modifiers.filter(m => m.damageTypes).flatMap(m => m.damageTypes as DamageType[]);
       const breakerTypes = modifiers.filter(m => m.breakerTypes).flatMap(m => m.breakerTypes as DestinyBreakerType[]);
       return {
@@ -154,7 +155,6 @@ export const getActivitiesData = (activities: DestinyPublicMilestone[], manifest
 
   return [
     ...activitiesList.filter(
-      (a, i) => activitiesList.findIndex(
-        b => b.activity.activityHash.toString() === a.activity.activityHash.toString()) === i)
+      (a, i) => activitiesList.findIndex(b => diffHashes(b.activity.activityHash, a.activity.activityHash)) === i)
   ];
 }

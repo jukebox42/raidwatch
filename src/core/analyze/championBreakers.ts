@@ -1,6 +1,7 @@
 import { DamageType, DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2"
 
 import { AppArtifactType, AppWeaponType } from "core/itemTypes";
+import { diffHashes } from "utils/common";
 import { breakerTypeToHash } from "./helpers"
 
 type BreakerPerkTypes = {
@@ -61,7 +62,7 @@ export const analyzeChampionBreakers = (
 
   // Handle breakers from artifact perks
   artifactPerks.forEach(p => {
-    const breaker = breakerPerks.find(b => b.hash.toString() === p.item.itemHash.toString());
+    const breaker = breakerPerks.find(b => diffHashes(b.hash, p.item.itemHash));
     if (!breaker) {
       return;
     }

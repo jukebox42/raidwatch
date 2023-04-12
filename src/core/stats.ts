@@ -1,4 +1,5 @@
 import { AllDestinyManifestComponents, DestinyProfileResponse, DestinyStatDefinition } from "bungie-api-ts/destiny2";
+import { diffHashes } from "utils/common";
 
 /**
  * This is the hash of the light stat. Used to pull it out of the list.
@@ -30,9 +31,9 @@ export const getStats: GetStatsType = (profile, characterId, manifest) => {
 }
 
 export const findLightStat = (stats: AppStatType[]): AppStatType => {
-  return stats.find(s => s.definition.hash.toString() === LIGHT_STAT_HASH) as AppStatType;
+  return stats.find(s => diffHashes(s.definition.hash, LIGHT_STAT_HASH)) as AppStatType;
 }
 
 export const filterOutLightStat = (stats: AppStatType[]): AppStatType[] => {
-  return stats.filter(s => s.definition.hash.toString() !== LIGHT_STAT_HASH);
+  return stats.filter(s => !diffHashes(s.definition.hash, LIGHT_STAT_HASH));
 }

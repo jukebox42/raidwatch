@@ -107,6 +107,25 @@ const theme = extendTheme({
         },
       },
     },
+    Modal: {
+      baseStyle: {
+        header: {
+          p: 4,
+        },
+        footer: {
+          p: 4,
+        },
+        body: {
+          pr: 4,
+          pl: 4,
+          pt: 0,
+          pb: 0,
+        },
+        dialog: {
+          m: 1,
+        },
+      },
+    },
     Square: {
       baseStyle: {
         borderRadius: BORDER_RADIUS,

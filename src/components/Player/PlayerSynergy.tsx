@@ -27,6 +27,7 @@ import { useStore } from "hooks/useStore";
 import Energies from "./Character/partials/Energies";
 import Modifiers from "./Character/partials/Modifiers";
 import { AppActivity } from "core";
+import { diffHashes } from "utils/common";
 
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
@@ -83,7 +84,7 @@ const PlayerSynergy = () => {
 
       // Breakers
       breakerDefinitionsArray.forEach(breaker => {
-        const foundBreaker = data.analyzeData.championBreakers.find(b => b.hash === breaker.hash);
+        const foundBreaker = data.analyzeData.championBreakers.find(b => diffHashes(b.hash, breaker.hash));
         if (foundBreaker) {
           breaker.sourceNames.push(...foundBreaker.sourceNames);
         }
@@ -102,7 +103,7 @@ const PlayerSynergy = () => {
 
   let activity: AppActivity | undefined;
   if (selectedActivity) {
-    activity = activities.find(a => a.activity.activityHash.toString() === selectedActivity) as AppActivity;
+    activity = activities.find(a => diffHashes(a.activity.activityHash, selectedActivity)) as AppActivity;
     console.log("Selected Activity", activity);
   }
 

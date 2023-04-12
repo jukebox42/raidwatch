@@ -1,5 +1,6 @@
 import { DamageType } from "bungie-api-ts/destiny2";
 import intersection from "lodash/intersection";
+import { diffHashes } from "utils/common";
 import { AppSocketType, SocketUsable } from "../sockets";
 import { SocketPurpose, SocketUnusableReason } from "./enums";
 
@@ -150,11 +151,11 @@ const mods: Mod[] = [
  * Identify if a mod belongs to the weapon damage list.
  */
 export const isWeaponDamageTypeSocket = (socket: AppSocketType) => {
-  return !!mods.find(s => s.hash.toString() === socket.definition.hash.toString());
+  return !!mods.find(s => diffHashes(s.hash, socket.definition.hash));
 }
 
 const verifyUsable = (socket: AppSocketType, weaponDamageTypes: DamageType[], subclassDamageType: DamageType) => {
-  const mod = mods.find(m => m.hash.toString() === socket.definition.hash.toString());
+  const mod = mods.find(m => diffHashes(m.hash, socket.definition.hash));
   if (!mod) {
     return SocketUsable.MAYBE;
   }
