@@ -29,7 +29,7 @@
     "build": "REACT_APP_MODE=beta react-scripts build",
     "build-prod": "react-scripts build",
     "upload": "REACT_APP_MODE=beta yarn build && bash upload.sh",
-    "upload-prod": "yarn buildprod && bash uploadprod.sh"
+    "upload-prod": "yarn build-prod && bash uploadprod.sh"
   },
   "eslintConfig": {
     "extends": [
