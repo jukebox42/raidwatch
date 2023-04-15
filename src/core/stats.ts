@@ -1,4 +1,5 @@
 import { AllDestinyManifestComponents, DestinyProfileResponse, DestinyStatDefinition } from "bungie-api-ts/destiny2";
+import toInteger from "lodash/toInteger";
 import { diffHashes } from "utils/common";
 
 /**
@@ -25,8 +26,8 @@ export const getStats: GetStatsType = (profile, characterId, manifest) => {
   const stats = profile.characters.data[characterId].stats;
   
   return Object.keys(stats).map(s => ({
-    value: stats[s],
-    definition: manifest.DestinyStatDefinition[s]
+    value: stats[toInteger(s)],
+    definition: manifest.DestinyStatDefinition[toInteger(s)]
   }));
 }
 

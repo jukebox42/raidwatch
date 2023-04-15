@@ -21,6 +21,10 @@ type Props = {
 const AboutModal = ({ isOpen, onClose }: Props) => {
   const changelog = [
     {
+      version: "2023.4.15-beta",
+      description: "TBD."
+    },
+    {
       version: "2023.4.11",
       description: "This version is a complete rewrite of the source to support lightfall."
     },
@@ -42,7 +46,7 @@ const AboutModal = ({ isOpen, onClose }: Props) => {
           <Heading size="md" mb={2}>Changelog</Heading>
           <UnorderedList>
             {changelog.map(c => (
-              <ListItem>
+              <ListItem key={c.version}>
                 <Text color="brand.500" as="strong">{c.version}</Text> - {c.description}
               </ListItem>
             ))}

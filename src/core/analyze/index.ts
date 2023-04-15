@@ -1,4 +1,5 @@
 import { DamageType, DestinyBreakerTypeDefinition, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import toInteger from "lodash/toInteger";
 
 import { AppArmorType, AppArtifactType, AppBreakerType, AppSubclassType, AppWeaponType } from "core/itemTypes";
 import { AppSocketType } from "core/sockets";
@@ -9,6 +10,7 @@ import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
 import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
 import { analyzeChampionBreakers } from "./championBreakers";
 import { diffHashes } from "utils/common";
+
 
 export type ImportantSockets = {
   ammoFinderSockets: AppSocketType[],
@@ -74,7 +76,7 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
         sourceNames.push(b.sourceName);
       }
     });
-    return { hash, definition: breakerDefinitions[hash], sourceNames };
+    return { hash, definition: breakerDefinitions[toInteger(hash)], sourceNames };
   });
   analyzeData.championBreakers = breakerHashes.filter(b => b.sourceNames.length > 0);
 
