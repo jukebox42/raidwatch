@@ -1,4 +1,4 @@
-import { DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DamageType, DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2";
 
 export const PIERCING_HASH = 485622768;
 export const OVERLOAD_HASH = 2611060930;
@@ -16,6 +16,19 @@ export const breakerTypeToHash = (type: DestinyBreakerType) => {
   }
   return 0;
 }
+
+export const breakerTraits = [
+  { name: "Radiant", hash: 1973222647, breakerType: DestinyBreakerType.ShieldPiercing },
+  { name: "Ignition", hash: 2127908492, breakerType: DestinyBreakerType.Stagger },
+  { name: "Blind", hash: 1679107659, breakerType: DestinyBreakerType.Stagger },
+  { name: "Jolted", hash: 2228690371, breakerType: DestinyBreakerType.Disruption },
+  { name: "Volatile rounds", hash: 2650036230, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Void },
+  { name: "Suppression", hash: 3172172883, breakerType: DestinyBreakerType.Disruption },
+  { name: "Slow", hash: 4135386068, breakerType: DestinyBreakerType.Disruption },
+  { name: "Shatter", hash: 4272830254, breakerType: DestinyBreakerType.Stagger },
+  { name: "Suspend", hash: 3271908156, breakerType: DestinyBreakerType.Stagger },
+  { name: "Unraveling rounds", hash: 622080519, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Strand },
+];
 
 // TODO: find a better place for this. Maybe a Maps file?
 export const weaponMap = [

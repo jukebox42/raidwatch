@@ -3,10 +3,6 @@
   "version": "2.0.0b",
   "private": true,
   "dependencies": {
-    "@chakra-ui/icons": "^2.0.18",
-    "@chakra-ui/react": "^2.5.5",
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
     "bungie-api-ts": "^4.22.2",
     "chakra-react-select": "^4.6.0",
     "dexie": "^3.2.3",
@@ -51,6 +47,10 @@
     ]
   },
   "devDependencies": {
+    "@chakra-ui/icons": "^2.0.18",
+    "@chakra-ui/react": "^2.5.5",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",

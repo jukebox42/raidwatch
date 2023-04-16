@@ -1,17 +1,13 @@
 import { diffHashes } from "utils/common";
 import { AppSocketType, SocketUsable } from "../sockets";
 import { SocketPurpose } from "./enums";
-
-const scouts = [
-  { name: "Heavy Ammo Scout", hash: 1274140735 },
-  { name: "Special Ammo Scout", hash: 25154119 },
-];
+import { scoutMods } from "./mods";
 
 /**
  * Identify if a mod belongs to the Ammo Scout list.
  */
 export const isAmmoScoutSocket = (socket: AppSocketType) => {
-  return !!scouts.find(s => diffHashes(s.hash, socket.definition.hash));
+  return !!scoutMods.find(s => diffHashes(s.hash, socket.definition.hash));
 }
 
 /**

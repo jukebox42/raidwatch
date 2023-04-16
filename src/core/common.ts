@@ -1,4 +1,10 @@
-import { AllDestinyManifestComponents,  DestinyEnergyTypeDefinition,  DestinyInventoryItemDefinition, DestinySandboxPerkDefinition, DestinyStatDefinition } from "bungie-api-ts/destiny2";
+import {
+  AllDestinyManifestComponents,
+  DestinyEnergyTypeDefinition,
+  DestinyInventoryItemDefinition,
+  DestinySandboxPerkDefinition,
+  DestinyStatDefinition
+} from "bungie-api-ts/destiny2";
 import { filterManifestData } from "utils/common";
 
 export const getItemDefinitions = (keys: string[], manifest: AllDestinyManifestComponents) => {
