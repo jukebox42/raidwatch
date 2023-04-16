@@ -44,7 +44,5 @@ export const assetUrl = (path: string) => {
  * Filters manifest data by an array of keys.
  */
 export function filterManifestData<T>(data: ManifestData<T>, keys: string[]): T[] {
-  return Object.keys(data)
-    .filter(key => keys.includes(key.toString()))
-    .map(key => data[toInteger(key)]);
+  return keys.map(k => data[toInteger(k)]);
 }

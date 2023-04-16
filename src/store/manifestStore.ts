@@ -1,10 +1,12 @@
 import { StateCreator } from "zustand";
+import isArray from "lodash/isArray";
 import { AllDestinyManifestComponents, getAllDestinyManifestComponents, getDestinyManifest } from "bungie-api-ts/destiny2";
 
 import { $http, $httpUnsigned } from "bungie/api";
 import db from "./db";
 import { LANGUAGE } from "utils/constants";
 import { ErrorStore } from "./errorStore";
+import { filterManifestData } from "utils/common";
 
 export type ManifestStore = {
   isInitialized: boolean,
@@ -13,6 +15,7 @@ export type ManifestStore = {
   loadingMessage: string,
 
   loadManifest: () => Promise<void>,
+  getDefinitions: <T>(tableName: keyof AllDestinyManifestComponents, key?: number | string | string[] | number[]) => T[],
 }
 
 export const createManifestStore: StateCreator<ManifestStore & ErrorStore, any, [], ManifestStore> = (set, get) => ({
@@ -54,5 +57,17 @@ export const createManifestStore: StateCreator<ManifestStore & ErrorStore, any, 
     }).catch(reason => {
       get().showToast(reason.toString(), "ManifestComponentsFailed", true);
     });
+  },
+
+  getDefinitions: <T>(tableName: keyof AllDestinyManifestComponents, key?: number | string | string[] | number[]) => {
+    console.log("manifestStore:getDefinitions", tableName, key);
+    const manifest = get().manifest as AllDestinyManifestComponents;
+    if (key === undefined) {
+      const data = manifest[tableName];
+      return Object.keys(data).map(d => data[d as any]) as T[];
+    }
+
+    const keys = isArray(key) ? key : [key];
+    return filterManifestData<T>(manifest[tableName] as T[], keys.map(k => k.toString()));
   }
 });
