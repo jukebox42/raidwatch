@@ -16,8 +16,8 @@ import {
   Collapse
 } from "@chakra-ui/react";
 import {
-  AllDestinyManifestComponents,
   DamageType,
+  DestinyBreakerTypeDefinition,
   DestinyDamageTypeDefinition,
 } from "bungie-api-ts/destiny2";
 
@@ -29,51 +29,53 @@ import Modifiers from "./Character/partials/Modifiers";
 import { AppActivity } from "core";
 import { diffHashes } from "utils/common";
 
+// Get Damage Definitions
+const importantDamageEnums = [
+  DamageType.Arc,
+  DamageType.Thermal,
+  DamageType.Void,
+  DamageType.Stasis,
+  DamageType.Strand,
+];
+
 const PlayerSynergy = () => {
   const styles = useStyleConfig("Player", { variant: "ally" });
   const charStatStyles = useStyleConfig("Flex", { variant: "charstats" });
   const {
     // keys
-    manifest, players, activities, settings, isCollapsed, selectedActivity,
+    players, activities, settings, isCollapsed, selectedActivity,
     // functions
-    loadActivities, toggleIsCollapsed, setSelectedActivity
+    getDefinitions, loadActivities, toggleIsCollapsed, setSelectedActivity
   } = useStore(state => ({
-    manifest: state.manifest,
     players: state.players,
     activities: state.activities,
     selectedActivity: state.selectedActivity,
     settings: state.settings,
     isCollapsed: state.isCollapsed,
+    getDefinitions: state.getDefinitions,
     loadActivities: state.loadActivities,
     toggleIsCollapsed: state.toggleIsCollapsed,
     setSelectedActivity: state.setSelectedActivity,
   }));
   const [damageTypes, setDamageTypes] = useState<DamageType[]>([]);
   const [breakers, setBreakers] = useState<AppBreakerType[]>([]);
-
-  // TODO: This is the only place in the display layer we're using the manifest...
-  // Get Damage Definitions
-  const importantDamageEnums = [
-    DamageType.Arc,
-    DamageType.Thermal,
-    DamageType.Void,
-    DamageType.Stasis,
-    DamageType.Strand,
-  ];
-  const damageDefinitions = (manifest as AllDestinyManifestComponents).DestinyDamageTypeDefinition;
-  const damageDefinitionsArray: DestinyDamageTypeDefinition[] =
-    Object.values(damageDefinitions).filter(e => importantDamageEnums.includes(e.enumValue));
+  const [damageDefinitions, setDamageDefinitions] = useState<DestinyDamageTypeDefinition[]>([]);
 
   useEffect(() => {
     loadActivities();
-  }, [loadActivities, manifest]);
+  }, [loadActivities, getDefinitions]);
 
   useEffect(() => {
     const processedDamageTypes: DamageType[] = [];
-    // Get Breaker Definitions
-    const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
+    // Get damage definitions
+    setDamageDefinitions(
+      getDefinitions<DestinyDamageTypeDefinition>("DestinyDamageTypeDefinition")
+        .filter(d => importantDamageEnums.includes(d.enumValue)));
+
+    //const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
     const breakerDefinitionsArray: AppBreakerType[] =
-      Object.values(breakerDefinitions).map(b => ({ hash: b.hash.toString(), definition: b, sourceNames: [] }));
+      getDefinitions<DestinyBreakerTypeDefinition>("DestinyBreakerTypeDefinition")
+        .map(b => ({ hash: b.hash.toString(), definition: b, sourceNames: [] }));
 
     // Iterate over players for synergy
     players.forEach(player => {
@@ -95,7 +97,7 @@ const PlayerSynergy = () => {
     });
     setDamageTypes(processedDamageTypes);
     setBreakers(breakerDefinitionsArray);
-  }, [players, manifest]);
+  }, [players, getDefinitions]);
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedActivity(event.target.value);
@@ -104,7 +106,6 @@ const PlayerSynergy = () => {
   let activity: AppActivity | undefined;
   if (selectedActivity) {
     activity = activities.find(a => diffHashes(a.activity.activityHash, selectedActivity)) as AppActivity;
-    console.log("Selected Activity", activity);
   }
 
   // console.log("PlayerSynergy", breakers, wellTypes, damageTypes);
@@ -140,7 +141,7 @@ const PlayerSynergy = () => {
         <GridItem>
           <Heading size="sm" mb={1}>Damage Types</Heading>
           <Energies
-            energyDefinitions={damageDefinitionsArray.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
+            energyDefinitions={damageDefinitions.sort((a, b) => a.enumValue < b.enumValue ? -1 : 1)}
             energyEnumValues={damageTypes}
             requiredEnumValues={!settings.hideSynergyActivity && activity ? activity.surgeTypes : []}
           />

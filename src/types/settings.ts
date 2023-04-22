@@ -1,4 +1,5 @@
 export type AppSettings = {
+  [key: string]: boolean,
   hideSynergy: boolean,
   hideSynergyActivity: boolean,
 

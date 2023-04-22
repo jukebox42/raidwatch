@@ -1,7 +1,9 @@
 import { v4 } from "uuid";
+import toInteger from "lodash/toInteger";
 import { DestinyDisplayPropertiesDefinition } from "bungie-api-ts/destiny2";
 
 import { ASSET_URL, MISSING_ICON_URL } from "./constants";
+
 
 type ManifestData<T> = { [key: number]: T };
 
@@ -42,7 +44,5 @@ export const assetUrl = (path: string) => {
  * Filters manifest data by an array of keys.
  */
 export function filterManifestData<T>(data: ManifestData<T>, keys: string[]): T[] {
-  return Object.keys(data)
-    .filter(key => keys.includes(key.toString()))
-    .map(key => data[key]);
+  return keys.map(k => data[toInteger(k)]);
 }

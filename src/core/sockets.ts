@@ -198,14 +198,16 @@ export const getArmorSockets = (sockets: AppSocketType[]): AppArmorSocketsType =
   };
 }
 
+const socketMatch = (sockets: AppSocketType[], regex: RegExp) => {
+  return sockets.find(s => s.definition.plug && regex.test(s.definition.plug.plugCategoryIdentifier));
+}
+
 export const getSubclassSockets = (sockets: AppSocketType[]): AppSubclassSocketsType => {
-  const superAbility = sockets.find(s => s.definition.itemTypeDisplayName === "Super Ability");
-  const ability = sockets.find(s => s.definition.itemTypeDisplayName === "Class Ability");
-  const movement = sockets.find(s => s.definition.itemTypeDisplayName === "Movement Ability");
-  const meleeList = ["Solar Melee", "Arc Melee", "Void Melee", "Stasis Melee", "Melee"];
-  const melee = sockets.find(s => meleeList.includes(s.definition.itemTypeDisplayName));
-  const grenadeList = ["Solar Grenade", "Arc Grenade", "Void Grenade", "Stasis Grenade", "Strand Grenade"];
-  const grenade = sockets.find(s => grenadeList.includes(s.definition.itemTypeDisplayName));
+  const superAbility = socketMatch(sockets, /\.supers$/);
+  const ability = socketMatch(sockets, /\.class_abilities$/);
+  const movement = socketMatch(sockets, /\.movement$/);
+  const melee = socketMatch(sockets, /\.melee$/);
+  const grenade = socketMatch(sockets, /\.grenades$/);
   const fragments = sockets.filter(s => s.definition.traitIds && s.definition.traitIds.includes("item_type.aspect"));
   const aspects = sockets.filter(s => s.definition.traitIds && s.definition.traitIds.includes("item_type.fragment"));
   

@@ -3,8 +3,9 @@ import {
   DestinyItemType,
   DestinyProfileResponse
 } from "bungie-api-ts/destiny2";
-import { diffHashes } from "utils/common";
+import toInteger from "lodash/toInteger";
 
+import { diffHashes } from "utils/common";
 import { AppEquipmentType, AppSubclassType, ITEM_TYPES } from "./itemTypes";
 
 import {
@@ -43,7 +44,7 @@ export const getEquipment: GetEquipmentType = (profile, characterId, manifest)=>
       }
 
       const instance = item.itemInstanceId ? instances[item.itemInstanceId] : undefined;
-      const definition = manifest.DestinyInventoryItemDefinition[key];
+      const definition = manifest.DestinyInventoryItemDefinition[toInteger(key)];
       const sockets = getSockets(profile, item, manifest);
 
       const tempItem = {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Heading, Text, useToast, VStack } from "@chakra-ui/react";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 
 import { useStore } from "hooks/useStore";
 import { IS_BETA, VERSION } from "utils/constants";
