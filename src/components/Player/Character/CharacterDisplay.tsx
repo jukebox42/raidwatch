@@ -37,10 +37,10 @@ const CharacterDisplay = ({ player }: Props) => {
   const userInfo = player.profile.profile.data?.userInfo;
   const data = player.characterData as AppCharacterType;
   const sockets = [
-    ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
-    ...(settings.hideAmmoScoutMods ? [] : data.importantSockets.ammoScoutSockets),
-    ...(settings.hideWeaponDamageMods ? [] : data.importantSockets.weaponDamageTypeSockets),
-    ...(settings.hideRaidMods ? [] : data.importantSockets.raidSockets),
+    ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinder),
+    ...(settings.hideAmmoScoutMods ? [] : data.importantSockets.ammoScout),
+    ...(settings.hideWeaponDamageMods ? [] : data.importantSockets.weaponDamageType),
+    ...(settings.hideRaidMods ? [] : data.importantSockets.raid),
   ];
   const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === data.characterId;
   const name = <>{userInfo?.bungieGlobalDisplayName}#{userInfo?.bungieGlobalDisplayNameCode}</>;

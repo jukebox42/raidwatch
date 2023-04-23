@@ -15,6 +15,7 @@ import {
   AppSubclassSocketsType,
   AppWeaponSocketsType,
 } from "./sockets";
+import { BreakerSource } from "./analyze/championBreakers";
 
 export const ITEM_TYPES = {
   WEAPON: "item_type.weapon",
@@ -67,7 +68,7 @@ export type AppGenericEquipmentType = {
 export type AppBreakerType = {
   hash: string,
   definition: DestinyBreakerTypeDefinition,
-  sourceNames: string[],
+  sources: BreakerSource[],
 }
 
 export type AppEquipmentType = AppWeaponType | AppArmorType | AppSubclassType | AppGenericEquipmentType;

@@ -17,7 +17,7 @@ const Breakers = ({ breakers, requiredBreakerEnumValues = [] }: Props) => {
         const isRequired = !!requiredBreakerEnumValues.find(r => r === b.definition.enumValue);
         return (
           <WrapItem key={b.hash}>
-            <Breaker definition={b.definition} sourceNames={b.sourceNames} isRequired={isRequired} />
+            <Breaker definition={b.definition} sources={b.sources} isRequired={isRequired} />
           </WrapItem>
         )
       })}

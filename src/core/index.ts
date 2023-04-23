@@ -16,8 +16,9 @@ import {
 import { getEquipment, filterEquipmentBySubclass, filterEquipmentByItemType } from "./items";
 import { AppArmorType, AppSubclassType, AppWeaponType, AppArtifactType } from "./itemTypes";
 import { AppStatType, filterOutLightStat, findLightStat, getStats } from "./stats";
-import { analyze, AnalyzeData, ImportantSockets } from "./analyze";
+import { analyze, AnalyzeData } from "./analyze";
 import { diffHashes } from "utils/common";
+import { ImportantSockets } from "./analyze/processMods";
 
 export type { AppStatType } from "./stats";
 export type { AppArmorType, AppSubclassType, AppWeaponType, AppArtifactType } from "./itemTypes";

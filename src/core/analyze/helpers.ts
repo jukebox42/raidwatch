@@ -18,35 +18,45 @@ export const breakerTypeToHash = (type: DestinyBreakerType) => {
 }
 
 export const breakerTraits = [
-  { name: "Radiant", hash: 1973222647, breakerType: DestinyBreakerType.ShieldPiercing },
-  { name: "Ignition", hash: 2127908492, breakerType: DestinyBreakerType.Stagger },
-  { name: "Blind", hash: 1679107659, breakerType: DestinyBreakerType.Stagger },
-  { name: "Jolted", hash: 2228690371, breakerType: DestinyBreakerType.Disruption },
-  { name: "Volatile rounds", hash: 2650036230, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Void },
-  { name: "Suppression", hash: 3172172883, breakerType: DestinyBreakerType.Disruption },
-  { name: "Slow", hash: 4135386068, breakerType: DestinyBreakerType.Disruption },
-  { name: "Shatter", hash: 4272830254, breakerType: DestinyBreakerType.Stagger },
-  { name: "Suspend", hash: 3271908156, breakerType: DestinyBreakerType.Stagger },
-  { name: "Unraveling rounds", hash: 622080519, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Strand },
+  // Radiant
+  { hash: 1973222647, breakerType: DestinyBreakerType.ShieldPiercing },
+  // Ignition
+  { hash: 2127908492, breakerType: DestinyBreakerType.Stagger },
+  // Blind
+  { hash: 1679107659, breakerType: DestinyBreakerType.Stagger },
+  // Jolted
+  { hash: 2228690371, breakerType: DestinyBreakerType.Disruption },
+  // Volatile rounds
+  { hash: 2650036230, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Void },
+  // Suppression
+  { hash: 3172172883, breakerType: DestinyBreakerType.Disruption },
+  // Slow
+  { hash: 4135386068, breakerType: DestinyBreakerType.Disruption },
+  // Shatter
+  { hash: 4272830254, breakerType: DestinyBreakerType.Stagger },
+  // Suspend
+  { hash: 3271908156, breakerType: DestinyBreakerType.Stagger },
+  // Unraveling rounds
+  { hash: 622080519, breakerType: DestinyBreakerType.ShieldPiercing, weaponDamageType: DamageType.Strand },
 ];
 
 // TODO: find a better place for this. Maybe a Maps file?
 export const weaponMap = [
-  { trait: "weapon_type.auto_rifle", name: "Auto Rifle", type: DestinyItemSubType.AutoRifle },
-  { trait: "weapon_type.bow", name: "Bow", type: DestinyItemSubType.Bow },
-  { trait: "weapon_type.fusion_rifle", name: "Fusion Rifle", type: DestinyItemSubType.FusionRifle },
-  { trait: "weapon_type.glaive", name: "Glaive", type: DestinyItemSubType.Glaive },
-  { trait: "weapon_type.grenade_launcher", name: "Grenade Launcher", type: DestinyItemSubType.GrenadeLauncher },
-  { trait: "weapon_type.hand_cannon", name: "Hand Cannon", type: DestinyItemSubType.HandCannon },
-  { trait: "weapon_type.linear_fusion_rifle", name: "Linear Fusion Rifle", type: DestinyItemSubType.FusionRifleLine },
-  { trait: "weapon_type.machine_gun", name: "Machine Gun", type: DestinyItemSubType.Machinegun },
-  { trait: "weapon_type.pulse_rifle", name: "Pulse Rifle", type: DestinyItemSubType.PulseRifle },
-  { trait: "weapon_type.rocket_launcher", name: "Rocket Launcher", type: DestinyItemSubType.RocketLauncher },
-  { trait: "weapon_type.scout_rifle", name: "Scout Rifle", type: DestinyItemSubType.ScoutRifle },
-  { trait: "weapon_type.shotgun", name: "Shotgun", type: DestinyItemSubType.Shotgun },
-  { trait: "weapon_type.sidearm", name: "Sidearm", type: DestinyItemSubType.Sidearm },
-  { trait: "weapon_type.sniper_rifle", name: "Sniper Rifle", type: DestinyItemSubType.SniperRifle },
-  { trait: "weapon_type.sword", name: "Sword", type: DestinyItemSubType.Sword },
-  { trait: "weapon_type.submachinegun", name: "Submachine Gun", type: DestinyItemSubType.SubmachineGun },
-  { trait: "weapon_type.trace_rifle", name: "Trace Rifle", type: DestinyItemSubType.TraceRifle },
+  { trait: "weapon_type.auto_rifle", type: DestinyItemSubType.AutoRifle },
+  { trait: "weapon_type.bow", type: DestinyItemSubType.Bow },
+  { trait: "weapon_type.fusion_rifle", type: DestinyItemSubType.FusionRifle },
+  { trait: "weapon_type.glaive", type: DestinyItemSubType.Glaive },
+  { trait: "weapon_type.grenade_launcher", type: DestinyItemSubType.GrenadeLauncher },
+  { trait: "weapon_type.hand_cannon", type: DestinyItemSubType.HandCannon },
+  { trait: "weapon_type.linear_fusion_rifle", type: DestinyItemSubType.FusionRifleLine },
+  { trait: "weapon_type.machine_gun", type: DestinyItemSubType.Machinegun },
+  { trait: "weapon_type.pulse_rifle", type: DestinyItemSubType.PulseRifle },
+  { trait: "weapon_type.rocket_launcher", type: DestinyItemSubType.RocketLauncher },
+  { trait: "weapon_type.scout_rifle", type: DestinyItemSubType.ScoutRifle },
+  { trait: "weapon_type.shotgun", type: DestinyItemSubType.Shotgun },
+  { trait: "weapon_type.sidearm", type: DestinyItemSubType.Sidearm },
+  { trait: "weapon_type.sniper_rifle", type: DestinyItemSubType.SniperRifle },
+  { trait: "weapon_type.sword", type: DestinyItemSubType.Sword },
+  { trait: "weapon_type.submachinegun", type: DestinyItemSubType.SubmachineGun },
+  { trait: "weapon_type.trace_rifle", type: DestinyItemSubType.TraceRifle },
 ];
