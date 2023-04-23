@@ -2,7 +2,7 @@ import { DamageType, DestinyAmmunitionType } from "bungie-api-ts/destiny2";
 import intersection from "lodash/intersection";
 
 import { AppSocketType, SocketUsable } from "core/sockets";
-import { AnalyzeModType, analyzeMods } from "./mods2";
+import { AnalyzeModType, analyzeMods } from "./mods";
 import { diffHashes } from "utils/common";
 import { SocketPurpose, SocketUnusableReason } from "./enums";
 
