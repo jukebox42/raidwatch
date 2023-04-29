@@ -49,6 +49,7 @@ const theme = extendTheme({
       100: "#192231", // header bg
       150: "#343f53", // lighter header bg (tooltips)
       200: "#494E6B", // border blue
+      275: "#96a0d7", // light blue
       300: "#985E6D", // red
       350: "#F00", // socket error red
       375: "rgb(255, 167, 38)", // socket warning yellow

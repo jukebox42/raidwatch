@@ -35,6 +35,10 @@ const Shell = () => {
   const toast = useToast();
 
   useEffect(() => {
+    document.title = `Raid Watch${IS_BETA ? " [BETA]" : ""}`;
+  }, []);
+
+  useEffect(() => {
     if (isPlayersLoaded) {
       return;
     }
@@ -71,14 +75,14 @@ const Shell = () => {
           })}
           {players.length === 0 && <Box pr={30} pl={30} pt={50} textAlign="center">
             <Heading size="lg" mb={3}>
-              Welcome to Raid Watch {IS_BETA && <Text color="brand.500" as="span">BETA</Text>}
+              Welcome to Raid Watch {IS_BETA && <Text color="brand.275" as="span">BETA</Text>}
             </Heading>
             <Text size="md" mb={3}>
               A tool to give fireteam members quick information about their
               loadouts and how they work with others in the fireteam.
             </Text>
             {IS_BETA && <Text size="md">
-              This tool is in <Text color="brand.500" as="span">BETA</Text>, things may not work.
+              This tool is in <Text color="brand.275" as="span">BETA</Text>, things may not work.
             </Text>}
           </Box>}
         </VStack>}

@@ -54,7 +54,7 @@ export const processMods = (
   };
 
   sockets.forEach(socket => {
-    // Process raid mods, we dont keep a stash of these, we check by identifier
+    // Process raid mods, we don't keep a stash of these, we check by identifier
     if (isRaidSocket(socket)) {
       return mods.raid.push({
         ...socket,
@@ -63,7 +63,11 @@ export const processMods = (
       });
     }
 
-    // Check if the mod is one we care about
+    // TODO: Maybe we add support for showing broken mods from Bungie? Might be tough to keep up
+
+    // TODO: Maybe show mods you can't stack? Do these exist anymore?
+
+    // Check if the mod is one we care about, if not return.
     const analyzeMod = analyzeMods.find(m => diffHashes(m.hash, socket.definition.hash));
     if (!analyzeMod) {
       return;
@@ -72,15 +76,19 @@ export const processMods = (
     // Process ammo finder mods
     if (analyzeMod.type === AnalyzeModType.AmmoFinder) {
       const isUsable = weaponAmmoTypes.includes(analyzeMod.ammoType);
+      // Only return broken mods, otherwise this would be a long list.
+      if (isUsable) {
+        return;
+      }
       return mods.ammoFinder.push({
         ...socket,
         purpose: SocketPurpose.ammoFinderSockets,
-        isUsable: isUsable ? SocketUsable.YES : SocketUsable.NO,
-        unusableReason: isUsable ? undefined : SocketUnusableReason.missingWeapon,
+        isUsable: SocketUsable.NO,
+        unusableReason: SocketUnusableReason.missingWeapon,
       });
     }
 
-    // Process ammo scout mods
+    // Process ammo scout mods (always show because they support other players)
     if (analyzeMod.type === AnalyzeModType.AmmoScout) {
       return mods.ammoScout.push({
         ...socket,
