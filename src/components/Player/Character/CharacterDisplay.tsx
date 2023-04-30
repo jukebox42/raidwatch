@@ -79,7 +79,11 @@ const CharacterDisplay = ({ player }: Props) => {
       <Flex m={1} flex="1" gap="1" direction="column">
         <Items weapons={data.weapons} armors={data.armors} subclass={data.subclass} detailMode={false} />
         {!settings.hideAnalyzeMods && <Box pl="55px">
-          <Sockets sockets={sockets} breakers={settings.hideChampionMods ? [] : data.analyzeData.championBreakers} />
+          <Sockets
+            sockets={sockets}
+            subclassDamageType={data.subclass.damageType}
+            breakers={settings.hideChampionMods ? [] : data.analyzeData.championBreakers}
+          />
         </Box>}
       </Flex>
     </SlideBox>

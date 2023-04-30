@@ -29,7 +29,7 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
   const allArmorSockets = armors.flatMap(a => a.armorSockets.mods);
 
   const analyzeData: AnalyzeData = {
-    subclassDamageType: subclass.definition.talentGrid?.hudDamageType as DamageType,
+    subclassDamageType: subclass.damageType,
     weaponTypes: weapons.map(w => w.definition.itemSubType),
     weaponDamageTypes: weapons.map(w => w.definition.damageTypes).flat(),
     championBreakers: [],
@@ -45,16 +45,23 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
   );
 
   // Traits (we need them for breakers)
+  const subSockets = subclass.subclassSockets;
+  const subSocketHashes = [];
+  if (subSockets) {
+    subSocketHashes.push(
+    ...(subSockets.fragments.length > 0 ? subSockets.fragments.map(f => f.definition.traitHashes).flat() : []),
+    ...(subSockets.aspects.length > 0 ? subSockets.aspects.map(f => f.definition.traitHashes).flat() : []),
+    ...(subSockets.ability.definition.traitHashes ? subSockets.ability.definition.traitHashes : []),
+    ...(subSockets.melee.definition.traitHashes ? subSockets.melee.definition.traitHashes : []),
+    ...(subSockets.grenade.definition.traitHashes ? subSockets.grenade.definition.traitHashes : []),
+    ...(subSockets.super.definition.traitHashes ? subSockets.super.definition.traitHashes : []),
+    )
+  }
   const traitHashes: number[] = [
     ...armors.map(a => a.definition.traitHashes).flat(),
     ...weapons.map(w => w.definition.traitHashes).flat(),
     ...subclass.definition.traitHashes,
-    ...subclass.subclassSockets.fragments.map(f => f.definition.traitHashes).flat(),
-    ...subclass.subclassSockets.aspects.map(f => f.definition.traitHashes).flat(),
-    ...( subclass.subclassSockets.ability.definition.traitHashes ? subclass.subclassSockets.ability.definition.traitHashes : []),
-    ...( subclass.subclassSockets.melee.definition.traitHashes ? subclass.subclassSockets.melee.definition.traitHashes : []),
-    ...( subclass.subclassSockets.grenade.definition.traitHashes ? subclass.subclassSockets.grenade.definition.traitHashes : []),
-    ...( subclass.subclassSockets.super.definition.traitHashes ? subclass.subclassSockets.super.definition.traitHashes : []),
+    ...subSocketHashes,
   ].filter((i, p, s) => s.indexOf(i) === p);
 
   // Champion

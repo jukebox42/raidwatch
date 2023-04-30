@@ -1,5 +1,6 @@
 import {
   AllDestinyManifestComponents,
+  DamageType,
   DestinyItemType,
   DestinyProfileResponse
 } from "bungie-api-ts/destiny2";
@@ -58,6 +59,7 @@ export const getEquipment: GetEquipmentType = (profile, characterId, manifest)=>
       if (instance && instance.energy && equipmentIsSubclass(tempItem)) {
         const subclassItem = {
           ...tempItem,
+          damageType: tempItem.definition.talentGrid?.hudDamageType as DamageType,
           subclassSockets: getSubclassSockets(sockets),
         };
         return subclassItem;
@@ -106,6 +108,7 @@ export const filterEquipmentBySubclass = (equipment: AppEquipmentType[]): AppSub
     instance: subclass.instance,
     definition: subclass.definition,
     sockets: subclass.sockets,
+    damageType: subclass.definition.talentGrid?.hudDamageType as DamageType,
     subclassSockets: subclass.subclassSockets,
   };
 }

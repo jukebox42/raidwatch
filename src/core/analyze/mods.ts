@@ -265,3 +265,7 @@ export const analyzeMods: AnalyzeMod[] = [
   { type: AnalyzeModType.WeaponDamageType, hash: 293178904, mustMatchSubclass: true, damageTypes: [] },
   { type: AnalyzeModType.WeaponDamageType, hash: 3094620656, mustMatchSubclass: true, damageTypes: [] },
 ];
+
+export const isHarmonic = (hash: number) => {
+  return !!(analyzeMods as AnalyzeWeaponTypeMod[]).find(m => m.hash === hash && m.mustMatchSubclass);
+}

@@ -1,4 +1,5 @@
 import {
+  DamageType,
   DestinyArtifactTierItem,
   DestinyBreakerTypeDefinition,
   DestinyDamageTypeDefinition,
@@ -55,6 +56,7 @@ export type AppSubclassType = {
   instance?: DestinyItemInstanceComponent,
   definition: DestinyInventoryItemDefinition,
   sockets: AppSocketType[],
+  damageType: DamageType,
   subclassSockets: AppSubclassSocketsType,
 };
 
