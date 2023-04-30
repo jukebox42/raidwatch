@@ -21,7 +21,7 @@ type Props = {
 const AboutModal = ({ isOpen, onClose }: Props) => {
   const changelog = [
     {
-      version: "2023.4.30-beta",
+      version: "2023.4.30",
       description: "Refactor analyze to be more performant and enhance breaker detection. Will now only show mods " +
                    "that are not working (and raid mods)"
     },
