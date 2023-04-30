@@ -1,8 +1,8 @@
 import { Box, Flex, Heading, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Spacer, Text, useDisclosure } from "@chakra-ui/react";
-import { DeleteIcon, HamburgerIcon, QuestionIcon, RepeatIcon, SettingsIcon, UpDownIcon } from "@chakra-ui/icons";
+import { DeleteIcon, HamburgerIcon, MoonIcon, QuestionIcon, RepeatIcon, SettingsIcon, SunIcon, UpDownIcon } from "@chakra-ui/icons";
 
 import { useStore } from "hooks/useStore";
-import { IS_BETA, SOURCE_URL, VERSION } from "utils/constants";
+import { BETA_URL, IS_BETA, SELF_URL, SOURCE_URL, VERSION } from "utils/constants";
 import SettingsModal from "./SettingsModal";
 import AboutModal from "./AboutModal";
 import ResetDataModal from "./ResetDataModal";
@@ -35,13 +35,19 @@ const Top = () => {
             <MenuItem icon={<QuestionIcon />} onClick={aboutOnOpen}>
               About
             </MenuItem>
+            {!IS_BETA && <MenuItem icon={<MoonIcon color="brand.275" />} onClick={() => window.open(BETA_URL, "_self")}>
+              Try the <Text color="brand.275" as="span">Beta</Text> Version
+            </MenuItem>}
+            {IS_BETA && <MenuItem icon={<SunIcon color="brand.375" />} onClick={() => window.open(SELF_URL, "_self")}>
+              Try the <Text color="brand.375" as="span">Stable</Text> Version
+            </MenuItem>}
             <MenuDivider />
             <MenuItem icon={<DeleteIcon color="red.400" />} onClick={resetOnOpen}>
               <Text color="red.400">Reset App Data</Text>
             </MenuItem>
           </MenuList>
         </Menu>
-        <Heading>Raid Watch {IS_BETA && <Text color="brand.500" as="span">BETA</Text>}</Heading>
+        <Heading>Raid Watch {IS_BETA && <Text color="brand.275" as="span">BETA</Text>}</Heading>
         <Spacer />
         <IconButton
           isLoading={loadingPlayers && !apiDisabled && players.length > 0}

@@ -37,10 +37,10 @@ const CharacterDisplay = ({ player }: Props) => {
   const userInfo = player.profile.profile.data?.userInfo;
   const data = player.characterData as AppCharacterType;
   const sockets = [
-    ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinderSockets),
-    ...(settings.hideAmmoScoutMods ? [] : data.importantSockets.ammoScoutSockets),
-    ...(settings.hideWeaponDamageMods ? [] : data.importantSockets.weaponDamageTypeSockets),
-    ...(settings.hideRaidMods ? [] : data.importantSockets.raidSockets),
+    ...(settings.hideAmmoFinderMods ? [] : data.importantSockets.ammoFinder),
+    ...(settings.hideAmmoScoutMods ? [] : data.importantSockets.ammoScout),
+    ...(settings.hideWeaponDamageMods ? [] : data.importantSockets.weaponDamageType),
+    ...(settings.hideRaidMods ? [] : data.importantSockets.raid),
   ];
   const isLastOnline = lastOnlineCharacterId(player.profile.characters.data) === data.characterId;
   const name = <>{userInfo?.bungieGlobalDisplayName}#{userInfo?.bungieGlobalDisplayNameCode}</>;
@@ -79,7 +79,11 @@ const CharacterDisplay = ({ player }: Props) => {
       <Flex m={1} flex="1" gap="1" direction="column">
         <Items weapons={data.weapons} armors={data.armors} subclass={data.subclass} detailMode={false} />
         {!settings.hideAnalyzeMods && <Box pl="55px">
-          <Sockets sockets={sockets} breakers={settings.hideChampionMods ? [] : data.analyzeData.championBreakers} />
+          <Sockets
+            sockets={sockets}
+            subclassDamageType={data.subclass.damageType}
+            breakers={settings.hideChampionMods ? [] : data.analyzeData.championBreakers}
+          />
         </Box>}
       </Flex>
     </SlideBox>

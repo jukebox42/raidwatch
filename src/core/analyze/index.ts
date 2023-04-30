@@ -1,23 +1,11 @@
-import { DamageType, DestinyBreakerTypeDefinition, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DamageType, DestinyBreakerTypeDefinition, DestinyEquippingBlockDefinition, DestinyItemSubType } from "bungie-api-ts/destiny2";
 import toInteger from "lodash/toInteger";
 
 import { AppArmorType, AppArtifactType, AppBreakerType, AppSubclassType, AppWeaponType } from "core/itemTypes";
-import { AppSocketType } from "core/sockets";
-
-import { analyzeAmmoFinderSockets } from "./ammoFinderSockets";
-import { filterRaidSockets } from "./raidSockets";
-import { analyzeAmmoScoutSockets } from "./ammoScoutSockets";
-import { analyzeWeaponDamageTypeSockets } from "./weaponDamageTypeSockets";
-import { analyzeChampionBreakers } from "./championBreakers";
+import { BreakerSource, analyzeChampionBreakers } from "./championBreakers";
 import { diffHashes } from "utils/common";
+import { ImportantSockets, processMods } from "./processMods";
 
-
-export type ImportantSockets = {
-  ammoFinderSockets: AppSocketType[],
-  ammoScoutSockets: AppSocketType[],
-  weaponDamageTypeSockets: AppSocketType[],
-  raidSockets: AppSocketType[],
-};
 export type AnalyzeData = {
   subclassDamageType: DamageType,
   weaponTypes: DestinyItemSubType[],
@@ -41,55 +29,56 @@ export const analyze: AnalyzeType = (armors, weapons, subclass, artifactPerks, b
   const allArmorSockets = armors.flatMap(a => a.armorSockets.mods);
 
   const analyzeData: AnalyzeData = {
-    subclassDamageType: subclass.definition.talentGrid?.hudDamageType as DamageType,
+    subclassDamageType: subclass.damageType,
     weaponTypes: weapons.map(w => w.definition.itemSubType),
     weaponDamageTypes: weapons.map(w => w.definition.damageTypes).flat(),
     championBreakers: [],
   };
 
+  // Important Sockets
+  const weaponAmmoTypes = weapons.map(w => (w.definition.equippingBlock as DestinyEquippingBlockDefinition).ammoType);
+  const importantSockets = processMods(
+    allArmorSockets,
+    analyzeData.weaponDamageTypes,
+    weaponAmmoTypes,
+    analyzeData.subclassDamageType
+  );
+
   // Traits (we need them for breakers)
-  // https://data.destinysets.com/i/InventoryItem:3730619869/Trait:308023312 (if we wanna show em)
+  const subSockets = subclass.subclassSockets;
+  const subSocketHashes = [];
+  if (subSockets) {
+    subSocketHashes.push(
+    ...(subSockets.fragments.length > 0 ? subSockets.fragments.map(f => f.definition.traitHashes).flat() : []),
+    ...(subSockets.aspects.length > 0 ? subSockets.aspects.map(f => f.definition.traitHashes).flat() : []),
+    ...(subSockets.ability.definition.traitHashes ? subSockets.ability.definition.traitHashes : []),
+    ...(subSockets.melee.definition.traitHashes ? subSockets.melee.definition.traitHashes : []),
+    ...(subSockets.grenade.definition.traitHashes ? subSockets.grenade.definition.traitHashes : []),
+    ...(subSockets.super.definition.traitHashes ? subSockets.super.definition.traitHashes : []),
+    )
+  }
   const traitHashes: number[] = [
     ...armors.map(a => a.definition.traitHashes).flat(),
     ...weapons.map(w => w.definition.traitHashes).flat(),
     ...subclass.definition.traitHashes,
-    ...subclass.subclassSockets.fragments.map(f => f.definition.traitHashes).flat(),
-    ...subclass.subclassSockets.aspects.map(f => f.definition.traitHashes).flat(),
-    ...( subclass.subclassSockets.ability.definition.traitHashes ? subclass.subclassSockets.ability.definition.traitHashes : []),
-    ...( subclass.subclassSockets.melee.definition.traitHashes ? subclass.subclassSockets.melee.definition.traitHashes : []),
-    ...( subclass.subclassSockets.grenade.definition.traitHashes ? subclass.subclassSockets.grenade.definition.traitHashes : []),
-    ...( subclass.subclassSockets.super.definition.traitHashes ? subclass.subclassSockets.super.definition.traitHashes : []),
+    ...subSocketHashes,
   ].filter((i, p, s) => s.indexOf(i) === p);
-
-  // Weapon
-  const ammoFinderSockets = analyzeAmmoFinderSockets(allArmorSockets);
-  const ammoScoutSockets = analyzeAmmoScoutSockets(allArmorSockets);
-  const weaponDamageTypeSockets = analyzeWeaponDamageTypeSockets(
-    allArmorSockets, analyzeData.weaponDamageTypes, analyzeData.subclassDamageType);
 
   // Champion
   const activeBreakers = analyzeChampionBreakers(artifactPerks, weapons, traitHashes);
   const breakerHashes = Object.keys(breakerDefinitions).map(hash => {
-    const sourceNames: string[] = [];
+    const sources: BreakerSource[] = []
     activeBreakers.forEach(b => {
       if (diffHashes(b.hash, hash)) {
-        sourceNames.push(b.sourceName);
+        sources.push(b);
       }
     });
-    return { hash, definition: breakerDefinitions[toInteger(hash)], sourceNames };
+    return { hash, definition: breakerDefinitions[toInteger(hash)], sources };
   });
-  analyzeData.championBreakers = breakerHashes.filter(b => b.sourceNames.length > 0);
-
-  // Misc
-  const raidSockets = filterRaidSockets(allArmorSockets);
+  analyzeData.championBreakers = breakerHashes.filter(b => b.sources.length > 0);
 
   return {
-    importantSockets: {
-      raidSockets,
-      ammoFinderSockets,
-      ammoScoutSockets,
-      weaponDamageTypeSockets,
-    },
+    importantSockets,
     analyzeData,
   }
 }

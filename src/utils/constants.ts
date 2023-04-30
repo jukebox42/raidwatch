@@ -1,5 +1,5 @@
 // Handle Development
-export const VERSION = "2023.4.21";
+export const VERSION = "2023.4.30";
 
 export const DEV_MODE = process.env.NODE_ENV === "development";
 if (DEV_MODE) {
@@ -39,5 +39,8 @@ export const MAX_PLAYERS = 6;
 
 // URLs
 export const SOURCE_URL = "https://github.com/jukebox42/raidwatch";
+const BASE_URL = "raidwatch.org";
+export const BETA_URL = `https://beta.${BASE_URL}`;
+export const SELF_URL = `https://${BASE_URL}`;
 export const BUNGIE_HELP_URL = "https://help.bungie.net";
 export const BUNGIE_HELP_TWITTER_URL = "https://twitter.com/bungiehelp";

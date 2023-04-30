@@ -1,172 +1,271 @@
-import { DamageType, DestinyBreakerType, DestinyItemSubType } from "bungie-api-ts/destiny2";
+import { DamageType, DestinyAmmunitionType } from "bungie-api-ts/destiny2";
 
-type BreakerPerkTypes = {
-  name: string,
-  hash: number,
-  breakerType: DestinyBreakerType,
-  weapons: DestinyItemSubType[],
+export enum AnalyzeModType {
+  AmmoFinder = 1,
+  AmmoScout,
+  WeaponDamageType,
+  Raid,
 }
 
-type WeaponTypeMods = {
-  name: string,
+type AnalyzeBaseMod = {
   hash: number,
-  elements: DamageType[],
-  matchSubclass?: boolean,
+  type: AnalyzeModType,
 }
 
-export const finderMods = [
-  { name: "Heavy Ammo Finder", hash: 554409585 },
-  { name: "Special Ammo Finder", hash: 3775800797 },
-];
+type AmmoMod = AnalyzeBaseMod & {
+  ammoType: DestinyAmmunitionType,
+}
 
-export const scoutMods = [
-  { name: "Heavy Ammo Scout", hash: 1274140735 },
-  { name: "Special Ammo Scout", hash: 25154119 },
-];
+export type AnalyzeAmmoFinderMod = AmmoMod & {
+  type: AnalyzeModType.AmmoFinder,
+};
+export type AnalyzeAmmoScoutMod = AmmoMod & {
+  type: AnalyzeModType.AmmoScout,
+};
 
-export const breakerPerks: BreakerPerkTypes[] = [
-  // Tier 1
-  { name: "Anti-Barrier Pulse Rifle", hash: 433122833, breakerType: DestinyBreakerType.ShieldPiercing, weapons: [DestinyItemSubType.PulseRifle] },
-  { name: "Piercing Sidearms", hash: 433122834, breakerType: DestinyBreakerType.ShieldPiercing, weapons: [DestinyItemSubType.Sidearm] },
-  { name: "Overload Bow", hash: 433122835, breakerType: DestinyBreakerType.Disruption, weapons: [DestinyItemSubType.Bow] },
-  { name: "Unstoppable Scout Rifle", hash: 433122836, breakerType: DestinyBreakerType.Stagger, weapons: [DestinyItemSubType.ScoutRifle] },
-  { name: "Overloaded Auto/SMG", hash: 433122837, breakerType: DestinyBreakerType.Disruption, weapons: [DestinyItemSubType.AutoRifle, DestinyItemSubType.SubmachineGun] },
- // Tier 5
-  { name: "Medival Champion", hash: 3257939736, breakerType: DestinyBreakerType.Stagger, weapons: [DestinyItemSubType.Glaive] },
-];
+export type AnalyzeWeaponTypeMod = AnalyzeBaseMod & {
+  type: AnalyzeModType.WeaponDamageType,
+  damageTypes: DamageType[],
+  mustMatchSubclass?: boolean,
+}
 
-export const weaponTypeMods: WeaponTypeMods[] = [
-  // TODO: Why are there two of everything? I think it's because of the cost reduction from the artifact.
-  // === Dexterity ===
-  { name: "Kinetic Dexterity", hash: 2076329105, elements: [DamageType.Kinetic] },
-  { name: "Void Dexterity", hash: 467550918, elements: [DamageType.Void] },
-  { name: "Arc Dexterity", hash: 2794359402, elements: [DamageType.Arc] },
-  { name: "Solar Dexterity", hash: 3067648983, elements: [DamageType.Thermal] },
-  { name: "Strand Dexterity", hash: 3323910164, elements: [DamageType.Strand] },
-  { name: "Stasis Dexterity", hash: 193878019, elements: [DamageType.Stasis] },
-  { name: "Harmonic Dexterity", hash: 1677180919, elements: [], matchSubclass: true },
-  { name: "Kinetic Dexterity", hash: 1561736585, elements: [DamageType.Kinetic] },
-  { name: "Void Dexterity", hash: 1017385934, elements: [DamageType.Void] },
-  { name: "Arc Dexterity", hash: 2059068466, elements: [DamageType.Arc] },
-  { name: "Solar Dexterity", hash: 531665167, elements: [DamageType.Thermal] },
-  { name: "Strand Dexterity", hash: 3323910164, elements: [DamageType.Strand] },
-  { name: "Stasis Dexterity", hash: 2267311547, elements: [DamageType.Stasis] },
-  { name: "Harmonic Dexterity", hash: 1677180919, elements: [], matchSubclass: true },
-  // === Holster ===
-  { name: "Kinetic Holster", hash: 3276278122, elements: [DamageType.Kinetic] },
-  { name: "Void Holster", hash: 2452545487, elements: [DamageType.Void] },
-  { name: "Arc Holster", hash: 3798468567, elements: [DamageType.Arc] },
-  { name: "Solar Holster", hash: 3675553168, elements: [DamageType.Thermal] },
-  { name: "Strand Holster", hash: 3581696649, elements: [DamageType.Strand] },
-  { name: "Stasis Holster", hash: 335129856, elements: [DamageType.Stasis] },
-  { name: "Kinetic Holster", hash: 3573031954, elements: [DamageType.Kinetic] },
-  { name: "Void Holster", hash: 2634786903, elements: [DamageType.Void] },
-  { name: "Arc Holster", hash: 4294909663, elements: [DamageType.Arc] },
-  { name: "Solar Holster", hash: 3775916472, elements: [DamageType.Thermal] },
-  { name: "Strand Holster", hash: 2805854721, elements: [DamageType.Strand] },
-  { name: "Stasis Holster", hash: 2801811288, elements: [DamageType.Stasis] },
-  { name: "Harmonic Holster", hash: 3969361392, elements: [], matchSubclass: true },
-  // === Loader ===
-  { name: "Kinetic Loader", hash: 2237975061, elements: [DamageType.Kinetic] },
-  { name: "Void Loader", hash: 3224649746, elements: [DamageType.Void] },
-  { name: "Arc Loader", hash: 3046678542, elements: [DamageType.Arc] },
-  { name: "Solar Loader", hash: 634608391, elements: [DamageType.Thermal] },
-  { name: "Strand Loader", hash: 95934356, elements: [DamageType.Strand] },
-  { name: "Stasis Loader", hash: 703902595, elements: [DamageType.Stasis] },
-  { name: "Harmonic Loader", hash: 1702273159, elements: [], matchSubclass: true },
-  { name: "Kinetic Loader", hash: 2586562813, elements: [DamageType.Kinetic] },
-  { name: "Void Loader", hash: 3980769162, elements: [DamageType.Void] },
-  { name: "Arc Loader", hash: 1125523126, elements: [DamageType.Arc] },
-  { name: "Solar Loader", hash: 1079896271, elements: [DamageType.Thermal] },
-  { name: "Strand Loader", hash: 4244246940, elements: [DamageType.Strand] },
-  { name: "Stasis Loader", hash: 2793548555, elements: [DamageType.Stasis] },
-  { name: "Harmonic Loader", hash: 2657604783, elements: [], matchSubclass: true },
-  // === Reserves ===
-  { name: "Kinetic Reserves", hash: 2305736470, elements: [DamageType.Kinetic] },
-  { name: "Void Reserves", hash: 1669792723, elements: [DamageType.Void] },
-  { name: "Arc Reserves", hash: 450381139, elements: [DamageType.Arc] },
-  { name: "Solar Reserves", hash: 411014648, elements: [DamageType.Thermal] },
-  { name: "Strand Reserves", hash: 2303417969, elements: [DamageType.Strand] },
-  { name: "Stasis Reserves", hash: 3294892432, elements: [DamageType.Stasis] },
-  { name: "Harmonic Reserves", hash: 1103878128, elements: [], matchSubclass: true },
-  { name: "Kinetic Reserves", hash: 2407398462, elements: [DamageType.Kinetic] },
-  { name: "Void Reserves", hash: 2413278875, elements: [DamageType.Void] },
-  { name: "Arc Reserves", hash: 4283953067, elements: [DamageType.Arc] },
-  { name: "Solar Reserves", hash: 2526773280, elements: [DamageType.Thermal] },
-  { name: "Strand Reserves", hash: 4287822553, elements: [DamageType.Strand] },
-  { name: "Stasis Reserves", hash: 3462414552, elements: [DamageType.Stasis] },
-  { name: "Harmonic Reserves", hash: 1971149752, elements: [], matchSubclass: true },
-  // === Scavenger ===
-  { name: "Kinetic Scavenger", hash: 1097608874, elements: [DamageType.Kinetic] },
-  { name: "Void Scavenger", hash: 2815817957, elements: [DamageType.Void] },
-  { name: "Arc Scavenger", hash: 2436471653, elements: [DamageType.Arc] },
-  { name: "Solar Scavenger", hash: 56663992, elements: [DamageType.Thermal] },
-  { name: "Strand Scavenger", hash: 1305848463, elements: [DamageType.Strand] },
-  { name: "Stasis Scavenger", hash: 2734674728, elements: [DamageType.Stasis] },
-  { name: "Harmonic Scavenger", hash: 877723168, elements: [], matchSubclass: true },
-  { name: "Kinetic Scavenger", hash: 579997810, elements: [DamageType.Kinetic] },
-  { name: "Void Scavenger", hash: 2815817957, elements: [DamageType.Void] },
-  { name: "Arc Scavenger", hash: 534479613, elements: [DamageType.Arc] },
-  { name: "Solar Scavenger", hash: 688956976, elements: [DamageType.Thermal] },
-  { name: "Strand Scavenger", hash: 2257238439, elements: [DamageType.Strand] },
-  { name: "Stasis Scavenger", hash: 3174771856, elements: [DamageType.Stasis] },
-  { name: "Harmonic Scavenger", hash: 2815817957, elements: [], matchSubclass: true },
-  // === Siphon ===
-  { name: "Kinetic Siphon", hash: 1388734897, elements: [DamageType.Kinetic] },
-  { name: "Void Siphon", hash: 2773358872, elements: [DamageType.Void] },
-  { name: "Arc Siphon", hash: 2724068510, elements: [DamageType.Arc] },
-  { name: "Solar Siphon", hash: 4255093903, elements: [DamageType.Thermal] },
-  { name: "Strand Siphon", hash: 3279257734, elements: [DamageType.Strand] },
-  { name: "Kinetic Siphon", hash: 897335593, elements: [DamageType.Kinetic] },
-  { name: "Void Siphon", hash: 1017385934, elements: [DamageType.Void] },
-  { name: "Arc Siphon", hash: 3847471926, elements: [DamageType.Arc] },
-  { name: "Solar Siphon", hash: 1086997255, elements: [DamageType.Thermal] },
-  { name: "Strand Siphon", hash: 3926119246, elements: [DamageType.Strand] },
-  { name: "Stasis Siphon", hash: 837201397, elements: [DamageType.Stasis] },
-  { name: "Void/Strand Dual Siphon", hash: 110793779, elements: [DamageType.Void, DamageType.Strand] },
-  { name: "Solar/Strand Dual Siphon", hash: 2831374162, elements: [DamageType.Thermal, DamageType.Strand] },
-  { name: "Harmonic Siphon", hash: 3832366019, elements: [], matchSubclass: true },
+export type AnalyzeRaidMod = AnalyzeBaseMod & {
+  type: AnalyzeModType.Raid,
+}
+
+export type AnalyzeMod = AnalyzeAmmoFinderMod | AnalyzeAmmoScoutMod | AnalyzeWeaponTypeMod | AnalyzeRaidMod;
+
+export const analyzeMods: AnalyzeMod[] = [
+  // === Ammo Finder Mods ===
+
+  // Special Ammo Finder
+  { type: AnalyzeModType.AmmoFinder, hash: 3775800797, ammoType: DestinyAmmunitionType.Special },
+  // Heavy Ammo Finder
+  { type: AnalyzeModType.AmmoFinder, hash: 554409585, ammoType: DestinyAmmunitionType.Heavy },
+
+  // === Ammo Scout Mods ===
+
+  // Special Ammo Scout
+  { type: AnalyzeModType.AmmoScout, hash: 25154119, ammoType: DestinyAmmunitionType.Special },
+  // Heavy Ammo Scout
+  { type: AnalyzeModType.AmmoScout, hash: 1274140735, ammoType: DestinyAmmunitionType.Heavy },
+
+  // === Dexterity Mods ===
+
+  // Kinetic Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 2076329105, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1561736585, damageTypes: [DamageType.Kinetic] },
+  // Void Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 467550918, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1017385934, damageTypes: [DamageType.Void] },
+  
+  // Arc Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 2794359402, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2059068466, damageTypes: [DamageType.Arc] },
+  // Solar Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 3067648983, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 531665167, damageTypes: [DamageType.Thermal] },
+  // Strand Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 3323910164, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3323910164, damageTypes: [DamageType.Strand] },
+  // Stasis Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 193878019, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2267311547, damageTypes: [DamageType.Stasis] },
+  // Harmonic Dexterity
+  { type: AnalyzeModType.WeaponDamageType, hash: 1677180919, mustMatchSubclass: true, damageTypes: [] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1677180919, mustMatchSubclass: true, damageTypes: [] },
+
+  // === Holster Mods ===
+
+  // Kinetic Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 3276278122, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3573031954, damageTypes: [DamageType.Kinetic] },
+  // Void Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 2452545487, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2634786903, damageTypes: [DamageType.Void] },
+  // Arc Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 3798468567, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 4294909663, damageTypes: [DamageType.Arc] },
+  // Solar Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 3675553168, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3775916472, damageTypes: [DamageType.Thermal] },
+  // Strand Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 3581696649, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2805854721, damageTypes: [DamageType.Strand] },
+  // Stasis Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 335129856, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2801811288, damageTypes: [DamageType.Stasis] },
+  // Harmonic Holster
+  { type: AnalyzeModType.WeaponDamageType, hash: 3969361392, mustMatchSubclass: true, damageTypes: [] },
+
+  // === Loader Mods ===
+
+  // Kinetic Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 2237975061, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2586562813, damageTypes: [DamageType.Kinetic] },
+  // Void Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 3224649746, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3980769162, damageTypes: [DamageType.Void] },
+  // Arc Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 3046678542, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1125523126, damageTypes: [DamageType.Arc] },
+  // Solar Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 634608391, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1079896271, damageTypes: [DamageType.Thermal] },
+  // Strand Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 95934356, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 4244246940, damageTypes: [DamageType.Strand] },
+  // Stasis Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 703902595, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2793548555, damageTypes: [DamageType.Stasis] },
+  // Harmonic Loader
+  { type: AnalyzeModType.WeaponDamageType, hash: 1702273159, mustMatchSubclass: true, damageTypes: [] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2657604783, mustMatchSubclass: true, damageTypes: [] },
+
+  // === Reserves Mods ===
+
+  // Kinetic Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 2305736470, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2407398462, damageTypes: [DamageType.Kinetic] },
+  // Void Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 1669792723, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2413278875, damageTypes: [DamageType.Void] },
+  // Arc Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 450381139, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 4283953067, damageTypes: [DamageType.Arc] },
+  // Solar Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 411014648, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2526773280, damageTypes: [DamageType.Thermal] },
+  // Strand Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 2303417969, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 4287822553, damageTypes: [DamageType.Strand] },
+  // Stasis Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 3294892432, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3462414552, damageTypes: [DamageType.Stasis] },
+  // Harmonic Reserves
+  { type: AnalyzeModType.WeaponDamageType, hash: 1103878128, mustMatchSubclass: true, damageTypes: [] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1971149752, mustMatchSubclass: true, damageTypes: [] },
+
+  // === Scavenger Mods ===
+
+  // Kinetic Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 1097608874, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 579997810, damageTypes: [DamageType.Kinetic] },
+  // Void Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 2815817957, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2815817957, damageTypes: [DamageType.Void] },
+  // Arc Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 2436471653, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 534479613, damageTypes: [DamageType.Arc] },
+  // Solar Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 56663992, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 688956976, damageTypes: [DamageType.Thermal] },
+  // Strand Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 1305848463, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2257238439, damageTypes: [DamageType.Strand] },
+  // Stasis Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 2734674728, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3174771856, damageTypes: [DamageType.Stasis] },
+  // Harmonic Scavenger
+  { type: AnalyzeModType.WeaponDamageType, hash: 877723168, mustMatchSubclass: true, damageTypes: [] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2815817957, mustMatchSubclass: true, damageTypes: [] },
+
+  // === Siphon Mods ===
+
+  // Kinetic Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 1388734897, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 897335593, damageTypes: [DamageType.Kinetic] },
+  // Void Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 2773358872, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1017385934, damageTypes: [DamageType.Void] },
+  // Arc Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 2724068510, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3847471926, damageTypes: [DamageType.Arc] },
+  // Solar Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 4255093903, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1086997255, damageTypes: [DamageType.Thermal] },
+  // Strand Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 3279257734, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3926119246, damageTypes: [DamageType.Strand] },
+  // Stasis Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 837201397, damageTypes: [DamageType.Stasis] },
+  // Void/Strand Dual Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 110793779, damageTypes: [DamageType.Void, DamageType.Strand] },
+  // Solar/Strand Dual Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 2831374162, damageTypes: [DamageType.Thermal, DamageType.Strand] },
+  // Harmonic Siphon
+  { type: AnalyzeModType.WeaponDamageType, hash: 3832366019, mustMatchSubclass: true, damageTypes: [] },
+
   // === Surge ===
-  { name: "Kinetic Weapon Surge", hash: 14520248, elements: [DamageType.Kinetic] },
-  { name: "Void Weapon Surge", hash: 3467460423, elements: [DamageType.Void] },
-  { name: "Arc Weapon Surge", hash: 1834163303, elements: [DamageType.Arc] },
-  { name: "Solar Weapon Surge", hash: 2319885414, elements: [DamageType.Thermal] },
-  { name: "Strand Weapon Surge", hash: 1501094193, elements: [DamageType.Strand] },
-  { name: "Stasis Weapon Surge", hash: 2526922422, elements: [DamageType.Stasis] },
-  { name: "Kinetic Weapon Surge", hash: 2318667184, elements: [DamageType.Kinetic] },
-  { name: "Void Weapon Surge", hash: 3914973263, elements: [DamageType.Void] },
-  { name: "Arc Weapon Surge", hash: 2246316031, elements: [DamageType.Arc] },
-  { name: "Solar Weapon Surge", hash: 2283894334, elements: [DamageType.Thermal] },
-  { name: "Strand Weapon Surge", hash: 3112965625, elements: [DamageType.Strand] },
-  { name: "Stasis Weapon Surge", hash: 2921714558, elements: [DamageType.Stasis] },
-  // === Targeting ===
-  { name: "Kinetic Targeting", hash: 2214424583, elements: [DamageType.Kinetic] },
-  { name: "Void Targeting", hash: 1589556860, elements: [DamageType.Void] },
-  { name: "Arc Targeting", hash: 96682422, elements: [DamageType.Arc] },
-  { name: "Solar Targeting", hash: 2719698929, elements: [DamageType.Thermal] },
-  { name: "Strand Targeting", hash: 3000428062, elements: [DamageType.Strand] },
-  { name: "Stasis Targeting", hash: 1801153435, elements: [DamageType.Stasis] },
-  { name: "Harmonic Targeting", hash: 1891463783, elements: [], matchSubclass: true },
-  { name: "Kinetic Targeting", hash: 2467203039, elements: [DamageType.Kinetic] },
-  { name: "Void Targeting", hash: 2888195476, elements: [DamageType.Void] },
-  { name: "Arc Targeting", hash: 967052942, elements: [DamageType.Arc] },
-  { name: "Solar Targeting", hash: 331268185, elements: [DamageType.Thermal] },
-  { name: "Strand Targeting", hash: 3013778406, elements: [DamageType.Strand] },
-  { name: "Stasis Targeting", hash: 721001747, elements: [DamageType.Stasis] },
-  { name: "Harmonic Targeting", hash: 1305536863, elements: [], matchSubclass: true },
-  // === Unflinching Aim ===
-  { name: "Unflinching Kinetic Aim", hash: 1262438062, elements: [DamageType.Kinetic] },
-  { name: "Unflinching Void Aim", hash: 3437323171, elements: [DamageType.Void] },
-  { name: "Unflinching Arc Aim", hash: 319908131, elements: [DamageType.Arc] },
-  { name: "Unflinching Solar Aim", hash: 1553790504, elements: [DamageType.Thermal] },
-  { name: "Unflinching Strand Aim", hash: 3598972737, elements: [DamageType.Strand] },
-  { name: "Unflinching Stasis Aim", hash: 2959504464, elements: [DamageType.Stasis] },
-  { name: "Unflinching Harmonic Aim", hash: 293178904, elements: [], matchSubclass: true },
-  { name: "Unflinching Kinetic Aim", hash: 2325151798, elements: [DamageType.Kinetic] },
-  { name: "Unflinching Void Aim", hash: 3887037435, elements: [DamageType.Void] },
-  { name: "Unflinching Arc Aim", hash: 792400107, elements: [DamageType.Arc] },
-  { name: "Unflinching Solar Aim", hash: 1019574576, elements: [DamageType.Thermal] },
-  { name: "Unflinching Strand Aim", hash: 3979621113, elements: [DamageType.Strand] },
-  { name: "Unflinching Stasis Aim", hash: 1118428792, elements: [DamageType.Stasis] },
-  { name: "Unflinching Harmonic Aim", hash: 3094620656, elements: [], matchSubclass: true },
+
+  // Kinetic Weapon Surge
+  { type: AnalyzeModType.WeaponDamageType, hash: 14520248, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2318667184, damageTypes: [DamageType.Kinetic] },
+  // Void Weapon Surge
+  { type: AnalyzeModType.WeaponDamageType, hash: 3467460423, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3914973263, damageTypes: [DamageType.Void] },
+  // Arc Weapon Surge
+  { type: AnalyzeModType.WeaponDamageType, hash: 1834163303, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2246316031, damageTypes: [DamageType.Arc] },
+  // Solar Weapon Surge
+  { type: AnalyzeModType.WeaponDamageType, hash: 2319885414, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2283894334, damageTypes: [DamageType.Thermal] },
+  // Strand Weapon Surge
+  { type: AnalyzeModType.WeaponDamageType, hash: 1501094193, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3112965625, damageTypes: [DamageType.Strand] },
+  // Stasis Weapon Surge
+  { type: AnalyzeModType.WeaponDamageType, hash: 2526922422, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2921714558, damageTypes: [DamageType.Stasis] },
+
+  // === Targeting Mods ===
+
+  // Kinetic Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 2214424583, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2467203039, damageTypes: [DamageType.Kinetic] },
+  // Void Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 1589556860, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2888195476, damageTypes: [DamageType.Void] },
+  // Arc Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 96682422, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 967052942, damageTypes: [DamageType.Arc] },
+  // Solar Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 2719698929, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 331268185, damageTypes: [DamageType.Thermal] },
+  // Strand Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 3000428062, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3013778406, damageTypes: [DamageType.Strand] },
+  // Stasis Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 1801153435, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 721001747, damageTypes: [DamageType.Stasis] },
+  // Harmonic Targeting
+  { type: AnalyzeModType.WeaponDamageType, hash: 1891463783, mustMatchSubclass: true, damageTypes: [] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1305536863, mustMatchSubclass: true, damageTypes: [] },
+
+  // === Unflinching Aim Mods ===
+
+  // Unflinching Kinetic Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 1262438062, damageTypes: [DamageType.Kinetic] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 2325151798, damageTypes: [DamageType.Kinetic] },
+  // Unflinching Void Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 3437323171, damageTypes: [DamageType.Void] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3887037435, damageTypes: [DamageType.Void] },
+  // Unflinching Arc Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 319908131, damageTypes: [DamageType.Arc] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 792400107, damageTypes: [DamageType.Arc] },
+  // Unflinching Solar Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 1553790504, damageTypes: [DamageType.Thermal] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1019574576, damageTypes: [DamageType.Thermal] },
+  // Unflinching Strand Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 3598972737, damageTypes: [DamageType.Strand] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3979621113, damageTypes: [DamageType.Strand] },
+  // Unflinching Stasis Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 2959504464, damageTypes: [DamageType.Stasis] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 1118428792, damageTypes: [DamageType.Stasis] },
+  // Unflinching Harmonic Aim
+  { type: AnalyzeModType.WeaponDamageType, hash: 293178904, mustMatchSubclass: true, damageTypes: [] },
+  { type: AnalyzeModType.WeaponDamageType, hash: 3094620656, mustMatchSubclass: true, damageTypes: [] },
 ];
+
+export const isHarmonic = (hash: number) => {
+  return !!(analyzeMods as AnalyzeWeaponTypeMod[]).find(m => m.hash === hash && m.mustMatchSubclass);
+}

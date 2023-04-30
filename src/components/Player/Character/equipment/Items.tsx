@@ -40,7 +40,7 @@ const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
       const bTraits = intersection(b.definition.traitIds);
       const bTraitPosition = bTraits.length > 0 ? armorTraits.findIndex(t => t === bTraits[0]) : -1;
       return aTraitPosition < bTraitPosition ? -1 : 1;
-    }).map(armor => (<Armor key={armor.item.itemInstanceId} armor={armor} detailMode />));
+    }).map(armor => (<Armor key={armor.item.itemInstanceId} armor={armor} subclassDamageType={subclass.damageType} detailMode />));
 
     return (
       <>
@@ -65,7 +65,7 @@ const Items = ({ weapons, armors, subclass, detailMode = false }: Props) => {
       <HStack spacing={1}>
         <Subclass subclass={subclass} />
         {weaponDisplay}
-        {exoticArmor && <Armor key={exoticArmor.item.itemInstanceId} armor={exoticArmor} />}
+        {exoticArmor && <Armor key={exoticArmor.item.itemInstanceId} armor={exoticArmor} subclassDamageType={subclass.damageType} />}
       </HStack>
     </>
   );

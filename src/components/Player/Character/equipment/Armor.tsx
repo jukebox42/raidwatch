@@ -1,3 +1,5 @@
+import { DamageType } from "bungie-api-ts/destiny2";
+
 import { AppArmorType } from "core";
 import Item from "./Item";
 import Socket from "./Socket/Socket";
@@ -5,10 +7,11 @@ import Sockets from "./Sockets";
 
 interface Props {
   armor: AppArmorType;
+  subclassDamageType: DamageType;
   detailMode?: boolean;
 }
 
-const Armor = ({ armor, detailMode = false }: Props) => {
+const Armor = ({ armor, subclassDamageType, detailMode = false }: Props) => {
   // console.log("Armor", armor.definition.displayProperties.name, armor);
   // armor.armorSockets.mods.forEach(s => console.log(s.definition.displayProperties.name, s.definition.hash, s));
 
@@ -30,7 +33,7 @@ const Armor = ({ armor, detailMode = false }: Props) => {
       detailMode={detailMode}
     >
       {armor.armorSockets.intrinsic && <Socket socket={armor.armorSockets.intrinsic} full={true} />}
-      <Sockets sockets={armor.armorSockets.mods} />
+      <Sockets sockets={armor.armorSockets.mods} subclassDamageType={subclassDamageType} />
     </Item>
   );
 }

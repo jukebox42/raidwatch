@@ -1,4 +1,5 @@
 import {
+  DamageType,
   DestinyArtifactTierItem,
   DestinyBreakerTypeDefinition,
   DestinyDamageTypeDefinition,
@@ -15,6 +16,7 @@ import {
   AppSubclassSocketsType,
   AppWeaponSocketsType,
 } from "./sockets";
+import { BreakerSource } from "./analyze/championBreakers";
 
 export const ITEM_TYPES = {
   WEAPON: "item_type.weapon",
@@ -54,6 +56,7 @@ export type AppSubclassType = {
   instance?: DestinyItemInstanceComponent,
   definition: DestinyInventoryItemDefinition,
   sockets: AppSocketType[],
+  damageType: DamageType,
   subclassSockets: AppSubclassSocketsType,
 };
 
@@ -67,7 +70,7 @@ export type AppGenericEquipmentType = {
 export type AppBreakerType = {
   hash: string,
   definition: DestinyBreakerTypeDefinition,
-  sourceNames: string[],
+  sources: BreakerSource[],
 }
 
 export type AppEquipmentType = AppWeaponType | AppArmorType | AppSubclassType | AppGenericEquipmentType;

@@ -1,21 +1,33 @@
 import { AppArtifactType, AppWeaponType } from "core/itemTypes";
 import { diffHashes } from "utils/common";
 import { breakerTraits, breakerTypeToHash } from "./helpers";
-import { breakerPerks } from "./mods";
+import { breakerPerks } from "./perks";
 
+export enum BreakerSourceType {
+  WeaponIntrinsic = 1,
+  ArtifactPerk,
+  Trait,
+}
 
+export type BreakerSource = {
+  hash: number,
+  sourceType: BreakerSourceType,
+  sourceHash: number,
+}
+
+/**
+ * Analyze data related to breaking champion mods and return what breakers exist.
+ * 
+ * A note on how breakers work:
+ * Breakers cannot double dip, they are processed in the below order. First match wins.
+ * intrinsic -> artifact -> traits
+ */
 export const analyzeChampionBreakers = (
   artifactPerks: AppArtifactType[],
   weapons: AppWeaponType[],
   traitHashes: number[],
 ) => {
-  /********************
-   * A note on how breakers work:
-   * Breakers cannot double dip, they are processed in the below order.
-   * First match wins. so we trim out weapons as they are used.
-   * intrinsic -> artifact -> traits
-   ********************/
-  const breakers: { hash: number, sourceName: string }[] = [];
+  const breakers: BreakerSource[] = [];
   let unusedWeapons: AppWeaponType[] = [];
 
   // Handle weapons that have intrinsic breakers
@@ -25,7 +37,8 @@ export const analyzeChampionBreakers = (
     }
     breakers.push({
       hash: w.definition.breakerTypeHash as number,
-      sourceName: w.definition.displayProperties.name,
+      sourceType: BreakerSourceType.WeaponIntrinsic,
+      sourceHash: w.definition.hash,
     });
   });
 
@@ -44,7 +57,8 @@ export const analyzeChampionBreakers = (
     }
     breakers.push({
       hash: breakerTypeToHash(breaker.breakerType),
-      sourceName: breaker.name
+      sourceHash: breaker.hash,
+      sourceType: BreakerSourceType.ArtifactPerk,
     });
     matches.forEach(m => unusedWeapons.splice(m.index, 1));
   });
@@ -59,7 +73,8 @@ export const analyzeChampionBreakers = (
       ) {
         breakers.push({
           hash: breakerTypeToHash(trait.breakerType),
-          sourceName: trait.name
+          sourceHash: trait.hash,
+          sourceType: BreakerSourceType.Trait,
         });
       }
     });

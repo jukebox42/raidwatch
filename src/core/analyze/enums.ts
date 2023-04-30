@@ -1,6 +1,7 @@
 export enum SocketPurpose {
   ammoFinderSockets = 1,
   ammoScoutSockets,
+  damageTypeSockets,
   ammoScavengerSockets,
   artifactSockets,
   championSockets,

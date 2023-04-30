@@ -75,7 +75,7 @@ const PlayerSynergy = () => {
     //const breakerDefinitions = (manifest as AllDestinyManifestComponents).DestinyBreakerTypeDefinition;
     const breakerDefinitionsArray: AppBreakerType[] =
       getDefinitions<DestinyBreakerTypeDefinition>("DestinyBreakerTypeDefinition")
-        .map(b => ({ hash: b.hash.toString(), definition: b, sourceNames: [] }));
+        .map(b => ({ hash: b.hash.toString(), definition: b, sources: [] }));
 
     // Iterate over players for synergy
     players.forEach(player => {
@@ -88,7 +88,7 @@ const PlayerSynergy = () => {
       breakerDefinitionsArray.forEach(breaker => {
         const foundBreaker = data.analyzeData.championBreakers.find(b => diffHashes(b.hash, breaker.hash));
         if (foundBreaker) {
-          breaker.sourceNames.push(...foundBreaker.sourceNames);
+          breaker.sources.push(...foundBreaker.sources);
         }
       });
 
